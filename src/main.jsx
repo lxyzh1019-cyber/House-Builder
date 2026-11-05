@@ -11,8 +11,8 @@ import { jsonToScene, sceneToJson } from './scene-io.js'
 const storePromise =
   import.meta.env.VITE_STORE === 'local' ? import('./store-local.js') : import('./store-firestore.js')
 
-// ?fx=0 turns off Pascal's post-effects (lighter on weak GPUs and in headless tests).
-const postFx = new URLSearchParams(location.search).get('fx') !== '0'
+// ?fx=0 (or #fx0, which also works inside a claude.ai Artifact) turns off Pascal's post-effects (lighter on weak GPUs and in headless tests).
+const postFx = new URLSearchParams(location.search).get('fx') !== '0' && location.hash !== '#fx0'
 
 const pluginReady = P.loadPlugin(builtinPlugin) // once, before the Viewer mounts
 
