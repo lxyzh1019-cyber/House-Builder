@@ -19,7 +19,22 @@ The build needs `NODE_OPTIONS=--max-old-space-size=6144`.
   - WebGL path: draws the room, 4 walls and the sofa box. 15.0 x 12.3 → 20.0 x 20.0, the reload keeps 20.0 x 20.0, 0 console errors, 0 requests to outside servers.
   - Software WebGPU: draws nothing ("WebGPU device lost"). This test browser has no real GPU, so this says nothing about real devices.
 
-## Real devices (Pages link) — to fill in
+## Spike result — 2026-11-05
+
+H, after testing the Pages link on PC and phone: **"for test purpose, this is passing"**.
+
+| DONE WHEN | Status | Evidence |
+|---|---|---|
+| 1. Pages link opens on PC Chrome and phone; 3D room 15 x 12.3 ft, 4 walls, camera on the room | Pass | H: "it works" on both; H's PC screenshot shows the room |
+| 2. "Make it 20 x 20 ft" changes the room, its 4 walls and the label | Pass | Unit test; headless touch-tap run (8 states match); after DN3 H's screenshot shows label and room in step |
+| 3. Reload keeps 20 x 20, saved in Firestore `house-designer-7b6f0` | Pass | Headless run against the real project: saved, reload → "loaded", 20.0 x 20.0 |
+| 4. 3-seat sofa as a plain 7.5 x 3 ft box | Pass | Unit test (7.5 / 3.0 ft); visible in screenshots |
+| 5. Vitest covers resize + save/load round trip, runs in GitHub Actions | Pass | `test` job green (runs 41963594996, 41966354799) |
+| 6. Phone load time, main bundle size, WebGPU or WebGL on the phone | **Partial** | Bundle size recorded above. Phone load time and GPU path were **not reported** |
+
+Closed without a change: the button text stays "Make it 20 x 20 ft" at every size (DN4 not taken; H judged it passing for the spike).
+
+## Real devices (Pages link) — not reported
 
 | Device | Browser | GPU path (bottom strip) | First frame (ms) | Load time on Wi-Fi | 20 x 20 kept after reload |
 |---|---|---|---|---|---|
