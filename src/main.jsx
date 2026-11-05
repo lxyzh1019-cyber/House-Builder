@@ -1,10 +1,10 @@
-import { StrictMode, useEffect, useRef, useState } from 'react'
+import { StrictMode, useEffect, useMemo, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as P from '@pascal-app/core'
 import { builtinPlugin } from '@pascal-app/nodes'
 import { Viewer } from '@pascal-app/viewer'
-import { buildRoom, ftToM, resizeRoom, roomSizeFt, sizeLabel } from './room.js'
+import { buildRoom, ftToM, resizeRoom, roomSizeFt, sizeLabel, wallLengthsFt } from './room.js'
 import { jsonToScene, sceneToJson } from './scene-io.js'
 
 // Prototype build (VITE_STORE=local) saves in browser storage; the spike build saves in Firestore.
@@ -61,8 +61,11 @@ function useStatus() {
 
 function App() {
   const [ready, setReady] = useState(false)
-  const [size, setSize] = useState(null)
   const [error, setError] = useState(null)
+  // DN3: the label reads the room live from the scene, so it follows every change Pascal applies.
+  const nodes = P.useScene((s) => s.nodes)
+  const size = useMemo(() => roomSizeFt(nodes), [nodes])
+  const walls = useMemo(() => wallLengthsFt(nodes), [nodes])
   const st = useStatus()
   const storeRef = useRef(null)
 
@@ -77,7 +80,7 @@ function App() {
         const saved = await store.load()
         if (saved) { jsonToScene(saved); setStatus({ save: 'loaded' }) }
         else { buildRoom(); await store.save(sceneToJson()); setStatus({ save: 'new room saved' }) }
-        if (alive) { setSize(roomSizeFt()); setReady(true) }
+        if (alive) setReady(true)
       } catch (e) {
         console.error(e)
         if (alive) setError(String(e?.message || e))
@@ -87,20 +90,21 @@ function App() {
     return () => { alive = false }
   }, [])
 
-  async function makeTwenty() {
-    resizeRoom(20, 20)
-    setSize(roomSizeFt())
+  async function saveNow() {
     setStatus({ save: 'saving…' })
-    try { await storeRef.current.save(sceneToJson()); setStatus({ save: 'saved' }) }
+    await storeRef.current.save(sceneToJson())
+    setStatus({ save: 'saved' })
+  }
+
+  // DN3: any error in the resize or the save shows in the card instead of failing silently.
+  async function run(change) {
+    setError(null)
+    try { change(); await saveNow() }
     catch (e) { console.error(e); setError(String(e?.message || e)); setStatus({ save: 'error' }) }
   }
 
-  async function reset() {
-    P.useScene.getState().setScene({}, [])
-    buildRoom()
-    setSize(roomSizeFt())
-    try { await storeRef.current.save(sceneToJson()); setStatus({ save: 'saved' }) } catch (e) { setError(String(e?.message || e)) }
-  }
+  const makeTwenty = () => run(() => resizeRoom(20, 20))
+  const reset = () => run(() => { P.useScene.getState().setScene({}, []); buildRoom() })
 
   return (
     <>
@@ -123,7 +127,7 @@ function App() {
         {error && <div className="error">Could not save or load: {error}</div>}
       </div>
       <div className="readout" data-testid="readout">
-        GPU: {st.backend} · first frame: {st.firstFrameMs == null ? '…' : `${st.firstFrameMs} ms`} · save: {st.store} ({st.save}){postFx ? '' : ' · fx off'}
+        GPU: {st.backend} · first frame: {st.firstFrameMs == null ? '…' : `${st.firstFrameMs} ms`} · save: {st.store} ({st.save}) · walls {walls.length ? walls.map((w) => w.toFixed(1)).join(' / ') + ' ft' : '…'}{postFx ? '' : ' · fx off'}
       </div>
     </>
   )

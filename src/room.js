@@ -59,8 +59,9 @@ export function buildRoom(wFt = START_FT.w, dFt = START_FT.d) {
   s.createNode(sofa, level.id)
 }
 
-export const nodesOfType = (type) =>
-  Object.values(scene().nodes).filter((n) => n.type === type)
+// Each reader takes an optional nodes map so the UI can pass the live scene it subscribed to.
+export const nodesOfType = (type, nodes = scene().nodes) =>
+  Object.values(nodes).filter((n) => n.type === type)
 
 export function resizeRoom(wFt, dFt) {
   const s = scene()
@@ -68,22 +69,22 @@ export function resizeRoom(wFt, dFt) {
   const zone = nodesOfType('zone')[0]
   s.updateNode(zone.id, { polygon: c })
   nodesOfType('wall')
-    .sort((a, b) => a.name.localeCompare(b.name))
+    .sort((a, b) => (a.name ?? '').localeCompare(b.name ?? ''))
     .forEach((wall, i) => s.updateNode(wall.id, { start: c[i], end: c[(i + 1) % 4] }))
   const sofa = nodesOfType('block')[0]
   if (sofa) s.updateNode(sofa.id, { position: sofaPosition(dFt) })
 }
 
 // Room size read from the zone polygon, in feet.
-export function roomSizeFt() {
-  const zone = nodesOfType('zone')[0]
+export function roomSizeFt(nodes = scene().nodes) {
+  const zone = nodesOfType('zone', nodes)[0]
   if (!zone) return null
   const xs = zone.polygon.map((p) => p[0])
   const zs = zone.polygon.map((p) => p[1])
   return { w: mToFt(Math.max(...xs) - Math.min(...xs)), d: mToFt(Math.max(...zs) - Math.min(...zs)) }
 }
 
-export const wallLengthsFt = () =>
-  nodesOfType('wall').map((w) => mToFt(Math.hypot(w.end[0] - w.start[0], w.end[1] - w.start[1])))
+export const wallLengthsFt = (nodes = scene().nodes) =>
+  nodesOfType('wall', nodes).sort((a, b) => (a.name ?? '').localeCompare(b.name ?? '')).map((w) => mToFt(Math.hypot(w.end[0] - w.start[0], w.end[1] - w.start[1])))
 
 export const sizeLabel = (size) => (size ? `${size.w.toFixed(1)} x ${size.d.toFixed(1)} ft` : '—')

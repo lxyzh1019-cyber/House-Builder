@@ -30,6 +30,8 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 
 ## Findings
 
+- 2026-11-05: H reported that on PC and phone the 3D room switched to 20 x 20 but the size label did not change. I could not reproduce it in my test browser (phone emulation, touch taps, real Firestore). DN3 (approved "A"): the label now reads the room live from the scene, resize errors show in the card, and the strip lists the 4 wall lengths. To be retested on both devices.
+
 - Pascal's default wall finish loads textures from `editor.pascal.app`. The spike paints walls a plain colour instead, so the page makes no requests to outside servers.
 - Pascal's post-effects (SSGI lighting) are very heavy without a GPU. `?fx=0` or `#fx0` turns them off.
 - Firestore cannot store nested arrays (the room outline is a list of [x, z] pairs), so `scene` is saved as a JSON string.

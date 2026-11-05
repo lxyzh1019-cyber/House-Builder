@@ -46,3 +46,15 @@ describe('living room', () => {
     expect(nodesOfType('block')).toHaveLength(1)
   })
 })
+
+describe('live label (DN3)', () => {
+  it('a scene subscriber sees 20.0 x 20.0 ft and 4 walls of 20.0 ft after the resize', () => {
+    const seen = []
+    const stop = P.useScene.subscribe((s) => seen.push({ size: sizeLabel(roomSizeFt(s.nodes)), walls: wallLengthsFt(s.nodes) }))
+    resizeRoom(20, 20)
+    stop()
+    const last = seen.at(-1)
+    expect(last.size).toBe('20.0 x 20.0 ft')
+    expect(round1(last.walls)).toEqual([20, 20, 20, 20])
+  })
+})
