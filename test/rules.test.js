@@ -41,7 +41,7 @@ describe('projects rules', () => {
     await assertFails(getDoc(doc(db(null), 'projects/p1')))
     await assertFails(setDoc(doc(db(null), 'projects/p4'), { owner: 'x', scene: SCENE }))
   })
-  it('owner cannot hand the project to another uid (DN1)', async () => {
+  it('owner cannot hand the project to another uid (chat-D19)', async () => {
     await assertFails(updateDoc(doc(db('alice'), 'projects/p1'), { owner: 'bob' }))
   })
 })

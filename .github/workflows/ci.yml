@@ -35,7 +35,7 @@ jobs:
       - run: npm run test:rules
 
   deploy:
-    # Spike branch deploys too (Q1, 2026-11-05); needs a github-pages deployment-branch rule for it.
+    # Spike branch deploys too (chat-D20, 2026-11-05); needs a github-pages deployment-branch rule for it.
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: test
     runs-on: ubuntu-latest

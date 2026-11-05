@@ -1,4 +1,4 @@
-// Size engine (SPEC §6 R4–R7, D16, DN5). Pure functions, no React, no Pascal.
+// Size engine (SPEC §6 R4–R7, chat-D16, chat-D21). Pure functions, no React, no Pascal.
 // Sizes in ft unless named *Mm. Items carry mm sizes (furniture library unit).
 import { ruleValues } from '../rules.js'
 import { mmToFt, ftToMm, roundUp } from '../units.js'
@@ -79,7 +79,7 @@ export function minimumSize(room, overrides, ctx) {
   return { w: roundUp(raw.w, R.sizeStep), d: roundUp(raw.d, R.sizeStep), raw }
 }
 
-// D16: a plain rectangle, tried either way round. Returns the orientation with the smaller shortfall.
+// chat-D16: a plain rectangle, tried either way round. Returns the orientation with the smaller shortfall.
 function compare(min, W, D) {
   const a = { turned: false, shortW: Math.max(0, min.w - W), shortD: Math.max(0, min.d - D) }
   const b = { turned: true, shortW: Math.max(0, min.d - W), shortD: Math.max(0, min.w - D) }
