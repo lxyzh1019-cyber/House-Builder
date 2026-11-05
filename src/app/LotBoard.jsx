@@ -5,9 +5,9 @@ import { useRef, useState } from 'react'
 import { lotFt, lotSideOf, localSideOf, lotState, moveRoom, placeRoom, rotateRoom } from '../lot/lot.js'
 import { portsOf, newId } from '../rooms/types.js'
 import { ftToM, sizeFt } from '../units.js'
+import { t, tlist, tn, tx } from '../i18n.js'
 
-const SIDE_LABEL = { n: 'Street side', s: 'Rear side', w: 'Left side', e: 'Right side' }
-const PORTS = [['door', 'Door'], ['open', 'Open'], ['wall', 'Wall']]
+const PORTS = ['door', 'open', 'wall']
 
 export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms, onLot, onClusters, onOpenRoom }) {
   const svgRef = useRef(null)
@@ -57,52 +57,52 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
   return (
     <main className="lot">
       <section className="panel lot-side">
-        <h2>Lot board</h2>
+        <h2>{t('lot.title')}</h2>
         <div className="lot-inputs">
-          {[['w', 'Lot width', L.w], ['d', 'Lot depth', L.d], ['front', 'Front setback', L.front], ['rear', 'Rear setback', L.rear], ['left', 'Left setback', L.left], ['right', 'Right setback', L.right]].map(([k, label, v]) => (
-            <label key={k}>{label} (ft)<input id={`lot-${k}`} type="number" step="1" min="0" defaultValue={+v.toFixed(2)} onBlur={(e) => setLotFt(k, e.target.value)} onKeyDown={(e) => e.key === 'Enter' && setLotFt(k, e.target.value)} /></label>
+          {[['w', L.w], ['d', L.d], ['front', L.front], ['rear', L.rear], ['left', L.left], ['right', L.right]].map(([k, v]) => (
+            <label key={k}>{t(`lot.${k}`)}<input id={`lot-${k}`} type="number" step="1" min="0" defaultValue={+v.toFixed(2)} onBlur={(e) => setLotFt(k, e.target.value)} onKeyDown={(e) => e.key === 'Enter' && setLotFt(k, e.target.value)} /></label>
           ))}
         </div>
-        <p className="muted small">Type the setbacks from your zone's rules. Rooms crossing them turn red.</p>
+        <p className="muted small">{t('lot.setbackHelp')}</p>
 
         {tray.length > 0 && <>
-          <h3>Not on the lot yet</h3>
-          <ul className="tray">{tray.map((r) => <li key={r.id}><span>{r.name} · {sizeFt(st[r.id].size.w, st[r.id].size.d)}</span><button className="btn tiny" onClick={() => { onRooms(placeRoom(rooms, lot, r.id, rules)); setSel(r.id) }}>Place on lot</button></li>)}</ul>
+          <h3>{t('lot.tray')}</h3>
+          <ul className="tray">{tray.map((r) => <li key={r.id}><span>{tx(r.name)} · {sizeFt(st[r.id].size.w, st[r.id].size.d)}</span><button className="btn tiny" onClick={() => { onRooms(placeRoom(rooms, lot, r.id, rules)); setSel(r.id) }}>{t('lot.place')}</button></li>)}</ul>
         </>}
 
         {selRoom && selRoom.place && (
           <div className="item-edit lot-room">
-            <div className="q-label">{selRoom.name} · {sizeFt(view[selRoom.id].size.w, view[selRoom.id].size.d)}</div>
+            <div className="q-label">{tx(selRoom.name)} · {sizeFt(view[selRoom.id].size.w, view[selRoom.id].size.d)}</div>
             <Status r={selRoom} s={view[selRoom.id]} rooms={rooms} />
             <div className="chips">
-              <button className="btn quiet" onClick={() => onRooms(rotateRoom(rooms, selRoom.id, rules))}>Turn 90°</button>
-              <button className="btn quiet" onClick={() => { onRooms(rooms.map((x) => (x.id === selRoom.id ? { ...x, place: undefined } : x))); setSel(null) }}>Take off the lot</button>
-              <button className="btn quiet" onClick={() => onOpenRoom(selRoom.id)}>Open in Rooms</button>
+              <button className="btn quiet" onClick={() => onRooms(rotateRoom(rooms, selRoom.id, rules))}>{t('lot.turn')}</button>
+              <button className="btn quiet" onClick={() => { onRooms(rooms.map((x) => (x.id === selRoom.id ? { ...x, place: undefined } : x))); setSel(null) }}>{t('lot.takeOff')}</button>
+              <button className="btn quiet" onClick={() => onOpenRoom(selRoom.id)}>{t('lot.openRoom')}</button>
             </div>
             {['n', 'e', 's', 'w'].map((ls) => {
               const v = portsOf(selRoom)[localSideOf(ls, selRoom.place.rot || 0)]
-              return <div key={ls} className="port-row"><span>{SIDE_LABEL[ls]}</span><div className="chips">{PORTS.map(([k, label]) => <button key={k} className={`chip ${v === k ? 'on' : ''}`} onClick={() => setPort(ls, k)}>{label}</button>)}</div></div>
+              return <div key={ls} className="port-row"><span>{t(`lot.side.${ls}`)}</span><div className="chips">{PORTS.map((k) => <button key={k} className={`chip ${v === k ? 'on' : ''}`} onClick={() => setPort(ls, k)}>{t(`port.${k}`)}</button>)}</div></div>
             })}
           </div>
         )}
 
-        <h3>Glued clusters</h3>
-        {clusters.length === 0 && <p className="muted small">None yet. Tick rooms below and glue them, for example garage, mudroom, back kitchen, kitchen and dining (the daily core route).</p>}
-        <ul className="tray">{clusters.map((c) => <li key={c.id}><span>{c.name}: {c.roomIds.map((id) => rooms.find((r) => r.id === id)?.name).filter(Boolean).join(' → ')}</span><button className="btn tiny" onClick={() => onClusters(clusters.filter((x) => x.id !== c.id))}>Unglue</button></li>)}</ul>
+        <h3>{t('lot.clusters')}</h3>
+        {clusters.length === 0 && <p className="muted small">{t('lot.noClusters')}</p>}
+        <ul className="tray">{clusters.map((c) => <li key={c.id}><span>{tx(c.name)}: {c.roomIds.map((id) => rooms.find((r) => r.id === id)?.name).filter(Boolean).map(tx).join(' → ')}</span><button className="btn tiny" onClick={() => onClusters(clusters.filter((x) => x.id !== c.id))}>{t('lot.unglue')}</button></li>)}</ul>
         <div className="glue">
-          {placed.map((r) => <label key={r.id} className="check"><input type="checkbox" checked={glue.includes(r.id)} onChange={(e) => setGlue(e.target.checked ? [...glue, r.id] : glue.filter((x) => x !== r.id))} />{r.name}{clusterOf(r.id) ? ' (glued)' : ''}</label>)}
-          <button className="btn" disabled={glue.length < 2} onClick={glueNow}>Glue as core route</button>
+          {placed.map((r) => <label key={r.id} className="check"><input type="checkbox" checked={glue.includes(r.id)} onChange={(e) => setGlue(e.target.checked ? [...glue, r.id] : glue.filter((x) => x !== r.id))} />{tx(r.name)}{clusterOf(r.id) ? t('lot.glued') : ''}</label>)}
+          <button className="btn" disabled={glue.length < 2} onClick={glueNow}>{t('lot.glue')}</button>
         </div>
       </section>
 
       <section className="panel lot-board">
-        <svg ref={svgRef} className="lot-svg" viewBox={`${-pad} ${-pad} ${L.w + 2 * pad} ${L.d + 2 * pad}`} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onPointerDown={() => setSel(null)} role="img" aria-label={`Lot ${L.w} by ${L.d} ft`}>
+        <svg ref={svgRef} className="lot-svg" viewBox={`${-pad} ${-pad} ${L.w + 2 * pad} ${L.d + 2 * pad}`} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onPointerDown={() => setSel(null)} role="img" aria-label={t('lot.aria', { w: L.w, d: L.d })}>
           <defs><pattern id="lotbad" width={1.5} height={1.5} patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="1.5" stroke="var(--warn)" strokeWidth={0.4} /></pattern></defs>
           <rect x={0} y={0} width={L.w} height={L.d} fill="var(--floor)" stroke="var(--muted)" strokeWidth={0.3} />
           {Array.from({ length: Math.floor(L.w / 10) }, (_, i) => <line key={`gx${i}`} x1={(i + 1) * 10} y1={0} x2={(i + 1) * 10} y2={L.d} stroke="var(--line)" strokeWidth={0.1} />)}
           {Array.from({ length: Math.floor(L.d / 10) }, (_, i) => <line key={`gy${i}`} x1={0} y1={(i + 1) * 10} x2={L.w} y2={(i + 1) * 10} stroke="var(--line)" strokeWidth={0.1} />)}
           {bw > 0 && bd > 0 && <rect x={bx0} y={by0} width={bw} height={bd} fill="none" stroke="var(--teal)" strokeWidth={0.25} strokeDasharray="1 0.8" />}
-          <text x={L.w / 2} y={-2.5} fontSize={2.4} textAnchor="middle" fill="var(--muted)">Street (front) · {L.w} ft</text>
+          <text x={L.w / 2} y={-2.5} fontSize={2.4} textAnchor="middle" fill="var(--muted)">{t('lot.street', { w: L.w })}</text>
           <text x={-2.5} y={L.d / 2} fontSize={2.4} textAnchor="middle" fill="var(--muted)" transform={`rotate(-90 -2.5 ${L.d / 2})`}>{L.d} ft</text>
           {placed.map((r) => {
             const f = fpOf(r.id), s = view[r.id]
@@ -111,13 +111,13 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
               <g key={r.id} onPointerDown={(e) => down(e, r.id)} style={{ cursor: 'grab', touchAction: 'none' }}>
                 <rect x={f.x} y={f.y} width={f.w} height={f.d} fill={bad ? 'url(#lotbad)' : 'var(--item)'} stroke={r.id === sel ? 'var(--accent)' : clusterOf(r.id) ? 'var(--teal)' : 'var(--item-line)'} strokeWidth={r.id === sel ? 0.5 : 0.2} />
                 <Ports f={f} ports={portsOf(r)} />
-                <text x={f.x + f.w / 2} y={f.y + f.d / 2 - 0.8} fontSize={Math.min(2.2, f.w / 6)} textAnchor="middle" fill="var(--ink)" pointerEvents="none">{r.name}</text>
+                <text x={f.x + f.w / 2} y={f.y + f.d / 2 - 0.8} fontSize={Math.min(2.2, f.w / 6)} textAnchor="middle" fill="var(--ink)" pointerEvents="none">{tx(r.name)}</text>
                 <text x={f.x + f.w / 2} y={f.y + f.d / 2 + 1.8} fontSize={Math.min(1.8, f.w / 7)} textAnchor="middle" fill="var(--muted)" pointerEvents="none">{sizeFt(s.size.w, s.size.d)}</text>
               </g>
             )
           })}
         </svg>
-        <div className="legend"><span className="sw door" /> door <span className="sw open" /> open side <span className="sw wallk" /> wall <span className="sw bad" /> overlap or over a setback · dashed teal: buildable area · drag rooms (2 ft snap; edges snap to neighbours)</div>
+        <div className="legend">{tn('lot.legend', { door: <span className="sw door" />, open: <span className="sw open" />, wall: <span className="sw wallk" />, bad: <span className="sw bad" /> })}</div>
       </section>
     </main>
   )
@@ -142,10 +142,10 @@ function Ports({ f, ports }) {
 function Status({ r, s, rooms }) {
   const name = (id) => rooms.find((x) => x.id === id)?.name
   const lines = []
-  if (s.shared) lines.push(<span key="sh" className="tag pass">Walkway shared with {s.sharedWith.map((w) => name(w.id)).join(', ')}</span>)
-  for (const id of s.overlap || []) lines.push(<span key={`o${id}`} className="tag warn">Overlaps {name(id)}</span>)
-  for (const o of s.outside || []) lines.push(<span key={o} className="tag warn">Crosses the {o}</span>)
-  if (s.check) lines.push(<span key="c" className={`tag ${s.check.status === 'fits' ? 'pass' : 'warn'}`}>{s.check.status === 'fits' ? 'Fits its contents' : 'Too small for its contents'}</span>)
-  lines.push(<span key="m" className="tag">min {sizeFt(s.min.w, s.min.d)}</span>)
+  if (s.shared) lines.push(<span key="sh" className="tag pass">{t('lot.shared', { names: tlist(s.sharedWith.map((w) => name(w.id))) })}</span>)
+  for (const id of s.overlap || []) lines.push(<span key={`o${id}`} className="tag warn">{t('lot.overlaps', { name: name(id) })}</span>)
+  for (const o of s.outside || []) lines.push(<span key={o} className="tag warn">{t('lot.crosses', { what: o })}</span>)
+  if (s.check) lines.push(<span key="c" className={`tag ${s.check.status === 'fits' ? 'pass' : 'warn'}`}>{s.check.status === 'fits' ? t('lot.fitsContents') : t('lot.tooSmallContents')}</span>)
+  lines.push(<span key="m" className="tag">{t('card.minSize', { size: sizeFt(s.min.w, s.min.d) })}</span>)
   return <div className="chips">{lines}</div>
 }

@@ -4,6 +4,7 @@ import { checkSize, minimumSize, roomNotes } from '../rooms/engine.js'
 import { ROOM_TYPES, applyAnswers, makeItem, newId } from '../rooms/types.js'
 import { ftIn, ftToM, ftToMm, mToFt, mmToFt, sizeFt } from '../units.js'
 import Drawing from './Drawing.jsx'
+import { t as tr, tm, tn, tx } from '../i18n.js'
 
 const money = (n) => 'C$' + Math.round(n).toLocaleString('en-CA')
 const categories = [...new Set(LIBRARY.map((i) => i.category))]
@@ -52,76 +53,76 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, onChange, o
   return (
     <section className="editor">
       <div className="editor-head">
-        <input className="room-name" aria-label="Room name" value={room.name} onChange={(e) => update({ name: e.target.value })} />
-        <button className="btn quiet" onClick={onDelete}>Delete room</button>
+        <input className="room-name" aria-label={tr('ed.roomName')} value={tx(room.name)} onChange={(e) => update({ name: e.target.value })} />
+        <button className="btn quiet" onClick={onDelete}>{tr('ed.delete')}</button>
       </div>
 
       <div className="cols">
         <div className="col">
-          {t.plain ? <p className="muted">A plain room for now: type its size. Its own questions and furniture come in a later piece.</p> : <>
-          <h3>Start from</h3>
-          <div className="chips">{Object.keys(t.presets).map((p) => <button key={p} className={`chip ${room.preset === p ? 'on' : ''}`} onClick={() => preset(p)}>{p}</button>)}</div>
+          {t.plain ? <p className="muted">{tr('ed.plain')}</p> : <>
+          <h3>{tr('ed.startFrom')}</h3>
+          <div className="chips">{Object.keys(t.presets).map((p) => <button key={p} className={`chip ${room.preset === p ? 'on' : ''}`} onClick={() => preset(p)}>{tx(p)}</button>)}</div>
 
-          <h3>Questions</h3>
+          <h3>{tr('ed.questions')}</h3>
           {t.questions.map((q) => (
             <div key={q.id} className="q">
-              <div className="q-label">{q.label}{q.section ? <span className="tag">Questionnaire §{q.section}</span> : null}</div>
-              <div className="chips">{q.options.map(([v, label]) => <button key={v} className={`chip ${room.answers[q.id] === v ? 'on' : ''}`} onClick={() => answer(q.id, v)}>{label}</button>)}</div>
+              <div className="q-label">{tx(q.label)}{q.section ? <span className="tag">{tr('ed.section', { n: q.section })}</span> : null}</div>
+              <div className="chips">{q.options.map(([v, label]) => <button key={v} className={`chip ${room.answers[q.id] === v ? 'on' : ''}`} onClick={() => answer(q.id, v)}>{tx(label)}</button>)}</div>
             </div>
           ))}
 
-          <h3>Furniture in this room</h3>
+          <h3>{tr('ed.furniture')}</h3>
           <ul className="items">
             {room.items.map((it) => (
               <li key={it.id} className={it.id === selectedId ? 'on' : ''}>
-                <button className="item-name" onClick={() => setSelectedId(it.id)}>{it.name}</button>
+                <button className="item-name" onClick={() => setSelectedId(it.id)}>{tx(it.name)}</button>
                 <span className="dims">{ftIn(mmToFt(it.w))} x {ftIn(mmToFt(it.d))}</span>
-                <button className="btn tiny" aria-label={`Add another ${it.name}`} onClick={() => setItems([...room.items, { ...it, id: newId(), pos: undefined, byHand: true, role: it.role === 'main' ? 'side' : it.role }])}>+1</button>
-                <button className="btn tiny" aria-label={`Remove ${it.name}`} onClick={() => setItems(room.items.filter((x) => x.id !== it.id))}>Remove</button>
+                <button className="btn tiny" aria-label={tr('ed.addAnother', { name: it.name })} onClick={() => setItems([...room.items, { ...it, id: newId(), pos: undefined, byHand: true, role: it.role === 'main' ? 'side' : it.role }])}>+1</button>
+                <button className="btn tiny" aria-label={tr('ed.removeItem', { name: it.name })} onClick={() => setItems(room.items.filter((x) => x.id !== it.id))}>{tr('ed.remove')}</button>
               </li>
             ))}
           </ul>
 
           {sel && (
             <div className="item-edit">
-              <div className="q-label">Selected: {sel.name}</div>
-              <label>Width (ft)<input type="number" step="0.25" min="0.25" value={+mmToFt(sel.w).toFixed(2)} onChange={(e) => e.target.value > 0 && editItem(sel.id, { w: Math.round(ftToMm(Number(e.target.value))) })} /></label>
-              <label>Depth (ft)<input type="number" step="0.25" min="0.25" value={+mmToFt(sel.d).toFixed(2)} onChange={(e) => e.target.value > 0 && editItem(sel.id, { d: Math.round(ftToMm(Number(e.target.value))) })} /></label>
-              <button className="btn quiet" onClick={() => editItem(sel.id, { pos: { ...(geo?.items[sel.id] ?? { cx: 0, cy: 0 }), rot: (((geo?.items[sel.id]?.rot ?? 0) + 90) % 360) } })}>Rotate 90°</button>
-              <button className="btn quiet" onClick={() => editItem(sel.id, { pos: undefined })}>Back to its place</button>
+              <div className="q-label">{tr('ed.selected', { name: sel.name })}</div>
+              <label>{tr('ed.widthFt')}<input type="number" step="0.25" min="0.25" value={+mmToFt(sel.w).toFixed(2)} onChange={(e) => e.target.value > 0 && editItem(sel.id, { w: Math.round(ftToMm(Number(e.target.value))) })} /></label>
+              <label>{tr('ed.depthFt')}<input type="number" step="0.25" min="0.25" value={+mmToFt(sel.d).toFixed(2)} onChange={(e) => e.target.value > 0 && editItem(sel.id, { d: Math.round(ftToMm(Number(e.target.value))) })} /></label>
+              <button className="btn quiet" onClick={() => editItem(sel.id, { pos: { ...(geo?.items[sel.id] ?? { cx: 0, cy: 0 }), rot: (((geo?.items[sel.id]?.rot ?? 0) + 90) % 360) } })}>{tr('ed.rotate')}</button>
+              <button className="btn quiet" onClick={() => editItem(sel.id, { pos: undefined })}>{tr('ed.backToPlace')}</button>
             </div>
           )}
 
           <div className="add-row">
-            <select id="add-item" aria-label="Furniture library" value={addId} onChange={(e) => setAddId(e.target.value)}>
-              <option value="">Add from the library…</option>
-              {categories.map((c) => <optgroup key={c} label={c}>{LIBRARY.filter((i) => i.category === c).map((i) => <option key={i.id} value={i.id}>{i.name} · {ftIn(mmToFt(i.w))} x {ftIn(mmToFt(i.d))}</option>)}</optgroup>)}
+            <select id="add-item" aria-label={tr('ed.library')} value={addId} onChange={(e) => setAddId(e.target.value)}>
+              <option value="">{tr('ed.addFromLib')}</option>
+              {categories.map((c) => <optgroup key={c} label={tx(c)}>{LIBRARY.filter((i) => i.category === c).map((i) => <option key={i.id} value={i.id}>{tx(i.name)} · {ftIn(mmToFt(i.w))} x {ftIn(mmToFt(i.d))}</option>)}</optgroup>)}
             </select>
-            <button className="btn" disabled={!addId} onClick={addFromLibrary}>Add</button>
+            <button className="btn" disabled={!addId} onClick={addFromLibrary}>{tr('ed.add')}</button>
           </div>
           <div className="add-row">
-            <input id="custom-name" placeholder="Custom item name" value={custom.name} onChange={(e) => setCustom({ ...custom, name: e.target.value })} />
-            <input id="custom-w" type="number" placeholder="W ft" step="0.25" value={custom.w} onChange={(e) => setCustom({ ...custom, w: e.target.value })} />
-            <input id="custom-d" type="number" placeholder="D ft" step="0.25" value={custom.d} onChange={(e) => setCustom({ ...custom, d: e.target.value })} />
-            <button className="btn" onClick={addCustom}>Add custom</button>
+            <input id="custom-name" placeholder={tr('ed.customName')} value={custom.name} onChange={(e) => setCustom({ ...custom, name: e.target.value })} />
+            <input id="custom-w" type="number" placeholder={tr('ed.wFt')} step="0.25" value={custom.w} onChange={(e) => setCustom({ ...custom, w: e.target.value })} />
+            <input id="custom-d" type="number" placeholder={tr('ed.dFt')} step="0.25" value={custom.d} onChange={(e) => setCustom({ ...custom, d: e.target.value })} />
+            <button className="btn" onClick={addCustom}>{tr('ed.addCustom')}</button>
           </div>
           </>}
         </div>
 
         <div className="col">
           {lotNote && <div className="note">{lotNote}</div>}
-          {t.plain ? <div className="min-line">No contents to size this room yet: <b data-testid="min-size">{sizeFt(sizeNow.w, sizeNow.d)}</b> is the size you typed.</div> :
-          <div className="min-line">Minimum for these contents: <b data-testid="min-size">{sizeFt(min.w, min.d)}</b> <span className="muted">({ftIn(min.w)} x {ftIn(min.d)})</span></div>}
+          {t.plain ? <div className="min-line">{tn('ed.plainMin', { size: <b data-testid="min-size">{sizeFt(sizeNow.w, sizeNow.d)}</b> })}</div> :
+          <div className="min-line">{tn('ed.min', { size: <b data-testid="min-size">{sizeFt(min.w, min.d)}</b>, ftin: <span className="muted">({ftIn(min.w)} x {ftIn(min.d)})</span> })}</div>}
           <div className="size-row">
-            <label>Width (ft)<input id="size-w" type="number" step="0.5" min="1" value={w} onChange={(e) => setW(e.target.value)} /></label>
-            <label>Depth (ft)<input id="size-d" type="number" step="0.5" min="1" value={d} onChange={(e) => setD(e.target.value)} /></label>
-            <button id="check-size" className="btn" onClick={check}>Check my size</button>
+            <label>{tr('ed.widthFt')}<input id="size-w" type="number" step="0.5" min="1" value={w} onChange={(e) => setW(e.target.value)} /></label>
+            <label>{tr('ed.depthFt')}<input id="size-d" type="number" step="0.5" min="1" value={d} onChange={(e) => setD(e.target.value)} /></label>
+            <button id="check-size" className="btn" onClick={check}>{tr('ed.check')}</button>
           </div>
-          <div className="muted small">{room.size ? `Your size: ${sizeFt(sizeNow.w, sizeNow.d)} (saved)` : 'Using the minimum. Type your own size and press Check my size.'}</div>
+          <div className="muted small">{room.size ? tr('ed.yourSize', { size: sizeFt(sizeNow.w, sizeNow.d) }) : tr('ed.usingMin')}</div>
           <Result r={result} onMake={(W, D) => useSize(W, D)} />
-          {roomNotes(room, rules).map((n) => <div key={n} className="note">{n}</div>)}
+          {roomNotes(room, rules).map((n) => <div key={n[0]} className="note">{tm(n)}</div>)}
           <Drawing room={room} geo={geo} sizeFt={sizeNow} rules={rules} ctx={ctx} selectedId={selectedId} onSelect={setSelectedId} onMove={(id, pos) => editItem(id, { pos })} />
-          <div className="legend"><span className="sw walk" /> walkway or chair space <span className="sw bad" /> overlapping or outside the room · tap an item to see its clearances, drag to move it</div>
+          <div className="legend">{tn('ed.legend', { walk: <span className="sw walk" />, bad: <span className="sw bad" /> })}</div>
         </div>
       </div>
     </section>
@@ -130,21 +131,21 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, onChange, o
 
 function Result({ r, onMake }) {
   if (!r) return null
-  if (r.status === 'bad') return <div className="result bad">Type a width and a depth in feet.</div>
+  if (r.status === 'bad') return <div className="result bad">{tr('res.bad')}</div>
   if (r.status === 'fits') return (
     <div className="result ok" data-testid="check-result">
-      <div><b>Fits.</b> {sizeFt(r.W, r.D)} holds these contents{r.turned ? ' (turned the other way round)' : ''}.{' '}
-      {r.spare > 0.05 ? <>Spare <b>{r.spare.toFixed(1)} ft²</b> over the minimum, about {money(r.costLow)}–{money(r.costHigh)} at the build rate.</> : 'It is the minimum.'}</div>
+      <div>{tn('res.fits', { size: sizeFt(r.W, r.D), turned: r.turned ? tr('res.turned') : '' })}{' '}
+      {r.spare > 0.05 ? tn('res.spare', { area: <b>{r.spare.toFixed(1)} ft²</b>, low: money(r.costLow), high: money(r.costHigh) }) : tr('res.isMin')}</div>
     </div>
   )
   return (
     <div className="result bad" data-testid="check-result">
-      <div><b>Too small.</b> Short by <b>{r.shortW.toFixed(1)} ft</b> in width and <b>{r.shortD.toFixed(1)} ft</b> in depth.</div>
+      <div>{tn('res.tooSmall', { w: <b>{r.shortW.toFixed(1)} ft</b>, d: <b>{r.shortD.toFixed(1)} ft</b> })}</div>
       {r.changes.length > 0 && <>
-        <div>Smallest changes that fit:</div>
-        <ul>{r.changes.map((c, i) => <li key={i}>{c.changes.join(' + ')}{c.turned ? ' (room turned the other way round)' : ''}</li>)}</ul>
+        <div>{tr('res.changes')}</div>
+        <ul>{r.changes.map((c, i) => <li key={i}>{(c.msgs || c.changes).map(tm).join(' + ')}{c.turned ? tr('res.roomTurned') : ''}</li>)}</ul>
       </>}
-      <button className="btn" onClick={() => onMake(r.min.w, r.min.d)}>or make it {sizeFt(r.min.w, r.min.d)}</button>
+      <button className="btn" onClick={() => onMake(r.min.w, r.min.d)}>{tr('res.makeIt', { size: sizeFt(r.min.w, r.min.d) })}</button>
     </div>
   )
 }

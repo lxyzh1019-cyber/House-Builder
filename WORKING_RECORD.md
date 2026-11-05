@@ -65,3 +65,11 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 - Tests: `npm run test:rules` 26 of 26 pass locally (L1–L6 in `test/lot.test.js`, L7 save and reload in the Firestore emulator, T1–T6 and the earlier tests still green).
 - Headless Chromium against the real Firestore project (no GPU): three rooms placed on the 60 x 100 ft lot; the dining room dragged under the open living room snapped into contact and the living room showed "Walkway shared with Dining room", 15.0 x 11.0 ft, keeping the shared side in place (L5); turning the living room 90° gave 13.5 x 15 and flagged its overlap; a 30 ft front setback flagged all three rooms; Office + Dining glued as a core route; a reload kept the layout and the cluster (L7). Spec tests tab: 12 of 12 pass. Phone width 412 px: no sideways scroll. 0 console errors.
 - Owner check of the Lot board on the Pages link: to do after deploy.
+
+## Piece 4: English / 简体中文 (2026-11-05)
+
+- A switch in the header (English | 中文) changes every screen. It is saved per browser; with nothing saved, a browser set to Chinese starts in Chinese. Projects stay in English in Firestore (room, furniture and rule names are translated only on screen), so the same project reads in both languages; names the user types show as typed.
+- Strings live in `src/i18n.js`. `test/i18n.test.js` checks that every key has both languages with the same {values}, that every room, question, furniture and rules-table name has Chinese, and that every key the screens ask for exists.
+- Tests: `npm run test:rules` 30 of 30 pass locally.
+- Headless Chromium (local store, WebGL path), PC 1280 px and phone 390 px, both languages, tabs Rooms (with a "Too small" result), Lot board, Rules table, Spec tests and 3D view: no sideways scroll, 0 console errors, Spec tests 12 of 12 in both. Chinese screens show no English except units (ft, in), fixed names (Pascal, WebGL, Furnish2, SPEC, test IDs) and "Claude" as the author of two rules-table rows. A reload kept Chinese.
+- Owner check on the Pages link (PC and phone): to do.
