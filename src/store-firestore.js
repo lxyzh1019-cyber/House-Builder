@@ -1,4 +1,4 @@
-// Spike store: anonymous sign-in + Firestore.
+// Anonymous sign-in + Firestore (projects/{projectId}).
 import { initializeApp } from 'firebase/app'
 import { getAuth, signInAnonymously } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
@@ -16,16 +16,17 @@ async function signIn() {
   return uid
 }
 
+// Returns { scene, rooms, rules } or null when this user has no project yet.
 export async function load() {
   await signIn()
   const p = await findProject(db, uid)
   if (!p) return null
   projectId = p.id
-  return p.scene
+  return p
 }
 
-export async function save(json) {
+export async function save(data) {
   await signIn()
-  if (projectId) await saveProject(db, uid, projectId, json)
-  else projectId = await createProject(db, uid, json)
+  if (projectId) await saveProject(db, uid, projectId, data)
+  else projectId = await createProject(db, uid, data)
 }
