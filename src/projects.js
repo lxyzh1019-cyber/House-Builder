@@ -10,8 +10,8 @@ export async function findProject(db, uid) {
   const snap = await getDocs(query(collection(db, 'projects'), where('owner', '==', uid), limit(1)))
   if (snap.empty) return null
   const d = snap.docs[0]
-  const { scene = null, rooms = [], rules = {}, lot = null, clusters = [] } = d.data()
-  return { id: d.id, scene, rooms, rules, lot, clusters }
+  const { scene = null, rooms = [], rules = {}, lot = null, clusters = [], trace = null } = d.data()
+  return { id: d.id, scene, rooms, rules, lot, clusters, trace }
 }
 
 export async function createProject(db, uid, data) {

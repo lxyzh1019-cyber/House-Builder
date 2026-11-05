@@ -43,6 +43,10 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D24 (garage, kitchen, back kitchen) | Plain rectangles for now: a size the user types, no questions or furniture yet. Was piece3-rooms. | 2026-11-05 |
 | chat-D25 (walkway sharing and a set size) | Sharing changes the minimum and the check only; a size the user set stays; a room with no set size follows its minimum. Was piece3-shared. | 2026-11-05 |
 | chat-D26 (lot shape) | A rectangle (width x depth) with 4 setbacks: front, rear, left, right, in feet. Was piece3-lot. | 2026-11-05 |
+| chat-D27 (where an uploaded plan picture lives) | In the browser that uploaded it only (IndexedDB), "for now". The trace itself (walls, doors, windows, rooms, scale, size checks) is saved with the project in Firestore. Was DN6. | 2026-11-05 |
+| chat-D28 (one project on every device) | Not now: each device keeps its own anonymous project until family sharing (section 9) decides how people sign in. Was DN7. | 2026-11-05 |
+| chat-D29 (where project data lives) | Firestore, as now. Nothing is saved to the GitHub repo (public; no real plans in it). | 2026-11-05 |
+| chat-D30 (plan intake done-when) | I1–I8 in section 11. | 2026-11-05 |
 
 ## 4. Architecture
 - Vite + React. Pascal packages @pascal-app/core, viewer, nodes, editor at 1.0.6 (MIT). Deploy to GitHub Pages with GitHub Actions.
@@ -130,6 +134,7 @@ Tests (done when):
 ## 10. Open items
 - 12 canvas fixes from the canvas v54 review, to apply when the matching piece starts: C1 ledger, L2 sun room, L3 feng shui roles, G1 new-design branch, L5 study bedroom-ready, L6 homework, O1 tour copy, C3 back-kitchen make-up air, O2 feng shui list, C2 sizes from questionnaire counts, K1 date old items, L4 rename the two 7 lists.
 - Later pieces' sections (section 12 rows marked Later) are written here before each starts.
+- Seeing a traced plan on another device needs real sign-in (chat-D28); decide it with family sharing (section 9). The plan picture would then also need a shared home (chat-D27 "for now").
 
 ## 11. Plan intake (trace a plan)
 Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovation's current house, a builder's plan, or a plan the family likes. This is a design method of its own, parallel to room blocks (chat-D18), not a step before or after it.
@@ -139,6 +144,15 @@ Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovatio
 - P4 With no real plan yet, every piece works on a sample plan.
 - P5 Test fit (a traced plan marked "test fit"): the user names each traced room's type and picks its contents (or a preset). Rooms from contents then gives each room a Check my size verdict: fits with spare, or too small by how much. A new design is a separate branch, not a change to a traced plan.
 - P6 The site review finds the zone (from the land title or the City zoning map) to set setbacks, height and lot coverage.
+- Tests (done when, chat-D30):
+  - I1 The sample plan's 4 outside walls, traced, give its printed outside size within the tolerance (rules table: plan trace tolerance).
+  - I2 Two points 100 px apart set to 10 ft make a 200 px wall read 20.0 ft.
+  - I3 Three matching sizes say the trace matches; one size off by more than the tolerance says "trace again" and names that size.
+  - I4 A door and a window sit on their wall in the Pascal scene, at the place and width traced.
+  - I5 A traced room becomes a Pascal room with its name and area; a wall traced on Level 1 sits on Level 1.
+  - I6 The trace is saved and survives a reload (the picture stays as chat-D27 says).
+  - I7 The site limits (zone, height, lot coverage) are saved; coverage = area under the placed rooms / lot area, flagged when over the limit.
+  - I8 The owner traces the sample plan's outside walls on a PC in 10 minutes or less.
 
 ## 12. Feature inventory (nothing leaves this list without a decision)
 Status: Now = in a planned piece; Later = kept, its section is written before its piece starts.

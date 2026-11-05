@@ -73,3 +73,28 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 - Tests: `npm run test:rules` 30 of 30 pass locally.
 - Headless Chromium (local store, WebGL path), PC 1280 px and phone 390 px, both languages, tabs Rooms (with a "Too small" result), Lot board, Rules table, Spec tests and 3D view: no sideways scroll, 0 console errors, Spec tests 12 of 12 in both. Chinese screens show no English except units (ft, in), fixed names (Pascal, WebGL, Furnish2, SPEC, test IDs) and "Claude" as the author of two rules-table rows. A reload kept Chinese.
 - Owner check on the Pages link (PC and phone): to do.
+
+## Piece 5: Plan intake (2026-11-05)
+
+- Owner decisions: the uploaded picture stays in this browser only (DN6 A, chat-D27); one project on every device waits for family sharing (DN7 "Not now", chat-D28); data stays in Firestore, nothing goes to GitHub (chat-D29); done-when I1–I8 (chat-D30).
+- Step 1 check (headless, WebGL path): Pascal drew a guide picture under a wall, a door (closed panel) and windows on two walls, all created from our code. So the trace is built on Pascal's own guide, wall, door, window, zone and level nodes.
+- New tab "Plan intake / 描图":
+  - a made-up sample plan (40 x 30 ft, 20 px per ft), or an upload of a picture or a PDF (first page drawn by pdf.js);
+  - scale from two taps and a typed length;
+  - walls (ends snap together, lines square up), doors and windows on a wall, rooms, levels, undo and erase;
+  - size check of 3 sizes against the drawing (tolerance 3 in, a new rules-table row);
+  - a see-through slider for the picture under the model, in 2D and in the 3D view ("Traced plan").
+  The traced plan is its own building in the Pascal scene, rebuilt from the saved trace, so room blocks never erase it. The saved scene leaves the picture out.
+- Lot board: site review (zone, max height, max lot coverage %), with coverage of the placed rooms flagged when over the limit. Height is saved and checked once roofs exist.
+- Tests: `npm run test:rules` 37 of 37 pass locally (I1–I5 and I7 in `test/trace.test.js`, I6 in the Firestore emulator, everything earlier still green).
+- Headless Chromium (local store, WebGL path), PC 1280 px and phone 390 px:
+  - sample plan: scale set from its 40'-0" dimension line;
+  - 5 walls, a door, a window and a room traced;
+  - 3 sizes checked, "Trace matches the drawing";
+  - a reload kept the trace;
+  - Chinese screens fully Chinese;
+  - site coverage turned red over a 1% limit;
+  - 3D view showed the traced walls and window on the picture;
+  - no sideways scroll and 0 console errors.
+  An uploaded PNG and a PDF both showed as the plan picture, and the picture came back after a reload in the same browser.
+- Not checked: a real phone or PC by the owner (I8), and a real plan.

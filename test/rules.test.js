@@ -74,6 +74,27 @@ describe('project save and load round trip (emulator)', () => {
     expect(p.rooms[1].place).toEqual(dining.place)
   })
 
+  it('I6: a traced plan (scale, levels, walls, doors, windows, rooms, size checks) and the site limits survive a reload', async () => {
+    await env.clearFirestore()
+    const d = db('gina')
+    const trace = {
+      image: { kind: 'local', name: 'plan.png', w: 920, h: 740 },
+      scale: { a: { x: 60, y: 40 }, b: { x: 860, y: 40 }, ft: 40 },
+      levels: [
+        { id: 'lv0', name: 'Level 0', walls: [{ id: 'w0', a: { x: 60, y: 80 }, b: { x: 860, y: 80 }, openings: [{ id: 'o1', kind: 'door', t: 0.175, width: 0.9144 }, { id: 'o2', kind: 'window', t: 0.6, width: 1.2192 }] }],
+          rooms: [{ id: 'r1', name: 'Living', pts: [{ x: 60, y: 80 }, { x: 460, y: 80 }, { x: 460, y: 440 }, { x: 60, y: 440 }] }] },
+        { id: 'lv1', name: 'Level 1', walls: [], rooms: [] },
+      ],
+      checks: [{ id: 'c1', wallId: 'w0', ft: 40 }],
+      opacity: 45,
+    }
+    const lot = { w: ftToM(60), d: ftToM(100), setbacks: { front: 0, rear: 0, left: 0, right: 0 }, site: { zone: 'RS', maxHeightFt: 30, maxCoveragePct: 40 } }
+    await createProject(d, 'gina', { scene: '{}', rooms: [], lot, trace })
+    const p = await findProject(db('gina'), 'gina')
+    expect(p.trace).toEqual(trace)
+    expect(p.lot.site).toEqual(lot.site)
+  })
+
   it('T4: the T1 living room set to 20 x 20 ft is saved and still 20 x 20 after a reload', async () => {
     await env.clearFirestore()
     const d = db('erin')

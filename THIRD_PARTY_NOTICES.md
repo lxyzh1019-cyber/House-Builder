@@ -61,6 +61,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+## pdf.js
+
+Plan intake reads an uploaded PDF with `pdfjs-dist` (version 6.4.299, https://github.com/mozilla/pdf.js),
+Copyright Mozilla Foundation, under the Apache License, Version 2.0
+(https://www.apache.org/licenses/LICENSE-2.0). The full licence text ships in `node_modules/pdfjs-dist/LICENSE`
+and is copied with the built files as `pdfjs-LICENSE.txt`. The code is loaded only when a PDF is opened; it is
+used unchanged.
+
 ## Other packages
 
 Other packages (React, three.js, React Three Fiber, drei, zustand, Firebase JS SDK and their dependencies)

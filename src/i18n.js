@@ -50,6 +50,73 @@ export const UI = {
   'lotNote.alone': ['On the lot no open room touches an open side, so it keeps its full walkway. (The lot board decides this, not the "Open to the next room" answer.)', '在地块上没有开放的房间贴着它的开放边，所以保留完整通道。（这由地块布局决定，而不是“是否与相邻房间打通”这个回答。）'],
   'list.sep': [', ', '、'],
 
+  'tab.trace': ['Plan intake', '描图'],
+  '3d.aim.room': ['This room', '当前房间'],
+  '3d.aim.trace': ['Traced plan', '描好的平面图'],
+  'tr.title': ['Plan intake', '描图'],
+  'tr.help': ['Put a plan under the model and trace it once: set the scale, then walls, doors, windows and rooms. No automatic reading of drawings.', '把平面图垫在模型下面，描一次：先定比例，再描墙、门、窗和房间。不会自动识别图纸。'],
+  'tr.sample': ['Use the sample plan', '用示例平面图'],
+  'tr.upload': ['Upload a picture or PDF', '上传图片或 PDF'],
+  'tr.reading': ['Reading the file…', '正在读取文件…'],
+  'tr.privacy': ['Your picture stays in this browser only. The trace is saved with the project.', '你的图片只保存在这个浏览器里。描好的线随项目保存。'],
+  'tr.noPicture': ['The picture is on the device that uploaded it. The trace is here; upload the picture again to see it underneath.', '图片在上传它的那台设备上。描好的线在这里；再上传一次图片就能垫在下面看。'],
+  'tr.notKept': ['This browser would not keep the picture (private window or storage blocked). It shows until you close the page.', '这个浏览器不能保存图片（隐私窗口或存储被阻止）。关闭页面前仍可看到。'],
+  'tr.badFile': ['That file is not a picture or a PDF that can be read.', '这个文件不是能读取的图片或 PDF。'],
+  'tr.scaleH': ['1. Scale', '1. 比例'],
+  'tr.scaleSet': ['Set: {px} px on the picture = {ft} ft.', '已设定：图上 {px} 像素 = {ft} ft。'],
+  'tr.scaleNone': ['Not set. With Scale on, tap both ends of a length you know (a dimension line), then type it.', '还没设定。选“比例”，点一段已知长度（尺寸线）的两端，再输入长度。'],
+  'tr.realLength': ['Real length (ft)', '实际长度（ft）'],
+  'tr.setScale': ['Set the scale', '设定比例'],
+  'tr.toolsH': ['2. Trace', '2. 描图'],
+  'tr.tool.scale': ['Scale', '比例'],
+  'tr.tool.wall': ['Wall', '墙'],
+  'tr.tool.door': ['Door', '门'],
+  'tr.tool.window': ['Window', '窗'],
+  'tr.tool.room': ['Room', '房间'],
+  'tr.tool.check': ['Size check', '尺寸核对'],
+  'tr.tool.erase': ['Erase', '擦除'],
+  'tr.how.scale': ['Tap both ends of a length you know.', '点一段已知长度的两端。'],
+  'tr.how.wall': ['Tap corner after corner; each tap adds a wall. Tap the same point twice, or End line, to stop. Ends snap together and lines square up.', '一个角接一个角地点；每点一下加一面墙。同一点点两下或按“结束这条线”停止。端点会吸附，线会自动横平竖直。'],
+  'tr.how.door': ['Tap a wall where the door is.', '在有门的墙上点一下。'],
+  'tr.how.window': ['Tap a wall where the window is.', '在有窗的墙上点一下。'],
+  'tr.how.room': ['Tap the room corners, then tap the first corner again to close it.', '依次点房间的角，最后再点第一个角把房间围起来。'],
+  'tr.how.check': ['Tap a wall, then type its size from the drawing.', '点一面墙，再输入图纸上标的尺寸。'],
+  'tr.how.erase': ['Tap a door, window, wall or room to remove it.', '点门、窗、墙或房间把它去掉。'],
+  'tr.doorW': ['Door width (ft)', '门宽（ft）'],
+  'tr.winW': ['Window width (ft)', '窗宽（ft）'],
+  'tr.endLine': ['End line', '结束这条线'],
+  'tr.undo': ['Undo', '撤销'],
+  'tr.levelsH': ['Levels', '楼层'],
+  'tr.addLevel': ['Level', '楼层'],
+  'tr.checkH': ['3. Size check', '3. 尺寸核对'],
+  'tr.checkHelp': ['Type {n} sizes from the drawing. Each may differ from the trace by {tol} at most; if not, trace again.', '输入图纸上的 {n} 个尺寸。每个和描图的差最多 {tol}；超出就重描。'],
+  'tr.drawingSays': ['Drawing says (ft)', '图纸标的（ft）'],
+  'tr.addCheck': ['Add size', '加入尺寸'],
+  'tr.checkRow': ['Drawing {drawing} · traced {traced} · {diff}', '图纸 {drawing} · 描图 {traced} · {diff}'],
+  'tr.ok': ['matches', '相符'],
+  'tr.off': ['off', '不符'],
+  'tr.match': ['Trace matches the drawing ({n} sizes).', '描图与图纸相符（{n} 个尺寸）。'],
+  'tr.again': ['Trace again: {list} does not match.', '请重描：{list} 不相符。'],
+  'tr.need': ['{n} of {of} sizes checked.', '已核对 {n}/{of} 个尺寸。'],
+  'tr.overlayH': ['4. Overlay', '4. 叠图检查'],
+  'tr.opacity': ['Picture under the model: {n}%', '模型下的图片：{n}%'],
+  'tr.roomsH': ['Rooms on this level', '本层的房间'],
+  'tr.area': ['{a} ft²', '{a} ft²'],
+  'tr.startOver': ['Start the trace over', '重新描图'],
+  'tr.startOverAsk': ['Remove every traced wall, door, window, room and size on all levels?', '删除所有楼层上描好的墙、门、窗、房间和尺寸吗？'],
+  'tr.empty': ['Pick the sample plan or upload a plan to start.', '先选示例平面图或上传一张平面图。'],
+  'tr.aria': ['Trace of {name}', '{name}描图'],
+  'tr.legend': ['{wall} wall {door} door {win} window {room} room · red: a size that does not match', '{wall} 墙 {door} 门 {win} 窗 {room} 房间 · 红色：尺寸不符'],
+  'tr.size': ['The whole picture is {w} x {d} at this scale.', '按这个比例，整张图是 {w} x {d}。'],
+  'site.title': ['Site review', '场地审查'],
+  'site.help': ['From the land title or the City zoning map. Typed by you; nothing is looked up.', '来自地契或市政分区图，由你输入，不会自动查询。'],
+  'site.zone': ['Zone', '分区'],
+  'site.height': ['Max height (ft)', '最大高度（ft）'],
+  'site.coverage': ['Max lot coverage (%)', '最大建筑覆盖率（%）'],
+  'site.used': ['Rooms cover {pct}% of the lot ({area} of {lot} ft²); limit {max}%.', '房间占地块 {pct}%（{lot} ft² 中的 {area}）；上限 {max}%。'],
+  'site.over': ['Over the limit: rooms cover {pct}% of the lot ({area} of {lot} ft²); limit {max}%.', '超出上限：房间占地块 {pct}%（{lot} ft² 中的 {area}）；上限 {max}%。'],
+  'site.heightNote': ['Height limit {ft} ft saved. It is checked once roofs are designed.', '高度上限 {ft} ft 已保存。设计屋顶后再检查。'],
+
   'ed.roomName': ['Room name', '房间名称'],
   'ed.delete': ['Delete room', '删除房间'],
   'ed.plain': ['A plain room for now: type its size. Its own questions and furniture come in a later piece.', '目前是简单房间：直接输入尺寸。它自己的问题和家具会在以后的版本加入。'],
@@ -222,6 +289,9 @@ export const DATA = {
   'Queen Bed': 'Queen 大床', 'King Bed': 'King 特大床', 'Twin Bed': 'Twin 单人床', 'Full Bed': 'Full 双人床',
   'Desk 4 ft': '书桌 4 ft', 'Desk 5 ft': '书桌 5 ft', 'Desk 6 ft': '书桌 6 ft', 'Shelf Wall': '整墙书架', '8-Seat Dining Table': '八人餐桌',
   'Locker (per person)': '储物格（每人一个）', '3-Seat Sofa Bed': '三人沙发床', 'Sofa Bed (2-seat)': '双人沙发床',
+  // Plan intake
+  'Sample plan': '示例平面图', 'Plan trace: a size may differ from the drawing by': '描图：尺寸与图纸的差最多',
+  'Assumed starting value (Claude, 2026-11-05), plan approved by the owner; replace with a sourced row': '假设的起始值（Claude，2026-11-05），业主已批准计划；以后换成有出处的数值',
   // Drawing, lot board and cluster names made by the code
   'walkway': '通道', 'chair space': '椅子空间', 'Core route': '核心动线',
   'front setback': '前退线', 'rear setback': '后退线', 'left setback': '左退线', 'right setback': '右退线',
@@ -268,7 +338,13 @@ export function setLang(l) {
 export const useLang = () => useSyncExternalStore((f) => { listeners.add(f); return () => listeners.delete(f) }, getLang, getLang)
 
 // A data name (room type, furniture, rule row…) on screen; text not in DATA shows as is.
-export const tx = (s) => (lang === 'zh' && typeof s === 'string' && DATA[s]) || s
+const NUMBERED = [[/^Room (\d+)$/, '房间 $1'], [/^Level (\d+)$/, '第 $1 层']]
+export const tx = (s) => {
+  if (lang !== 'zh' || typeof s !== 'string') return s
+  if (DATA[s]) return DATA[s]
+  for (const [re, zh] of NUMBERED) if (re.test(s)) return s.replace(re, zh)
+  return s
+}
 
 const fill = (key) => {
   const row = UI[key]

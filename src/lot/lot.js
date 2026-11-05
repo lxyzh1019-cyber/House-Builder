@@ -159,3 +159,23 @@ export function placeRoom(rooms, lot, id, rules) {
   }
   return rooms.map((r) => (r.id === id ? { ...r, place: { x: ftToM(x0), y: ftToM(y0), rot: 0 } } : r))
 }
+
+// P6 site review: what the zone allows (typed from the land title or the City zoning map) and how much
+// of the lot the placed rooms cover. Coverage = area under the placed rooms (overlaps counted once) /
+// lot area. `site` = { zone, maxHeightFt, maxCoveragePct } (empty values = not set).
+export const newSite = () => ({ zone: '', maxHeightFt: null, maxCoveragePct: null })
+export function coverage(lot, state) {
+  const L = lotFt(lot)
+  const fps = Object.values(state || {}).map((s) => s.fp).filter(Boolean)
+  const xs = [...new Set(fps.flatMap((f) => [f.x, f.x + f.w]))].sort((a, b) => a - b)
+  const ys = [...new Set(fps.flatMap((f) => [f.y, f.y + f.d]))].sort((a, b) => a - b)
+  let area = 0
+  for (let i = 0; i < xs.length - 1; i++) for (let j = 0; j < ys.length - 1; j++) {
+    const cx = (xs[i] + xs[i + 1]) / 2, cy = (ys[j] + ys[j + 1]) / 2
+    if (fps.some((f) => cx > f.x && cx < f.x + f.w && cy > f.y && cy < f.y + f.d)) area += (xs[i + 1] - xs[i]) * (ys[j + 1] - ys[j])
+  }
+  const lotArea = L.w * L.d
+  const pct = lotArea > 0 ? (area / lotArea) * 100 : 0
+  const max = lot.site?.maxCoveragePct
+  return { area, lotArea, pct, over: Number.isFinite(max) && max > 0 && pct > max + 1e-9 }
+}

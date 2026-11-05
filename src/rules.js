@@ -20,6 +20,7 @@ export const RULES = [
   { id: 'lotD', label: 'Lot depth (new project)', value: 100, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
   { id: 'lotSnap', label: 'Lot board snap', value: 2, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7' },
   { id: 'edgeSnap', label: 'Snap to a neighbour room edge within', value: 1, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'Assumed starting value (Claude, 2026-11-05) so rooms can touch when sizes are not whole 2 ft steps' },
+  { id: 'traceTol', label: 'Plan trace: a size may differ from the drawing by', value: 3, unit: 'in', tag: 'E3', date: '2026-11-05', source: 'Assumed starting value (Claude, 2026-11-05), plan approved by the owner; replace with a sourced row' },
   { id: 'bedSide', label: 'Walking space beside a bed', value: 2.5, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'Assumed starting value (Claude, 2026-11-05); replace with a sourced row' },
 ]
 

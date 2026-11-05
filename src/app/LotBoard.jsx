@@ -2,7 +2,7 @@
 // crossings in red, set each side to a door, an open side or a wall, and glue the daily core route into
 // one cluster. Room outlines are read from the Pascal scene (readLot); a drag shows a preview first.
 import { useRef, useState } from 'react'
-import { lotFt, lotSideOf, localSideOf, lotState, moveRoom, placeRoom, rotateRoom } from '../lot/lot.js'
+import { coverage, lotFt, lotSideOf, localSideOf, lotState, moveRoom, newSite, placeRoom, rotateRoom } from '../lot/lot.js'
 import { portsOf, newId } from '../rooms/types.js'
 import { ftToM, sizeFt } from '../units.js'
 import { t, tlist, tn, tx } from '../i18n.js'
@@ -64,6 +64,7 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
           ))}
         </div>
         <p className="muted small">{t('lot.setbackHelp')}</p>
+        <Site lot={lot} st={st} onLot={onLot} />
 
         {tray.length > 0 && <>
           <h3>{t('lot.tray')}</h3>
@@ -148,4 +149,26 @@ function Status({ r, s, rooms }) {
   if (s.check) lines.push(<span key="c" className={`tag ${s.check.status === 'fits' ? 'pass' : 'warn'}`}>{s.check.status === 'fits' ? t('lot.fitsContents') : t('lot.tooSmallContents')}</span>)
   lines.push(<span key="m" className="tag">{t('card.minSize', { size: sizeFt(s.min.w, s.min.d) })}</span>)
   return <div className="chips">{lines}</div>
+}
+
+// P6 site review: the zone's limits, typed from the land title or the City zoning map.
+function Site({ lot, st, onLot }) {
+  const site = { ...newSite(), ...(lot.site || {}) }
+  const c = coverage(lot, st)
+  const set = (k, v) => onLot({ ...lot, site: { ...site, [k]: k === 'zone' ? v : v === '' ? null : Number(v) } })
+  return (
+    <div className="item-edit site">
+      <div className="q-label">{t('site.title')}</div>
+      <p className="muted small">{t('site.help')}</p>
+      <div className="lot-inputs">
+        <label>{t('site.zone')}<input id="site-zone" type="text" defaultValue={site.zone} onBlur={(e) => set('zone', e.target.value.trim())} /></label>
+        <label>{t('site.height')}<input id="site-height" type="number" step="0.5" min="0" defaultValue={site.maxHeightFt ?? ''} onBlur={(e) => set('maxHeightFt', e.target.value)} /></label>
+        <label>{t('site.coverage')}<input id="site-coverage" type="number" step="1" min="0" max="100" defaultValue={site.maxCoveragePct ?? ''} onBlur={(e) => set('maxCoveragePct', e.target.value)} onKeyDown={(e) => e.key === 'Enter' && set('maxCoveragePct', e.target.value)} /></label>
+      </div>
+      <div className={`tag ${c.over ? 'warn' : Number.isFinite(site.maxCoveragePct) ? 'pass' : ''}`} data-testid="site-coverage">
+        {t(c.over ? 'site.over' : 'site.used', { pct: c.pct.toFixed(1), area: Math.round(c.area).toLocaleString('en-CA'), lot: Math.round(c.lotArea).toLocaleString('en-CA'), max: site.maxCoveragePct ?? '–' })}
+      </div>
+      {Number.isFinite(site.maxHeightFt) && <p className="muted small">{t('site.heightNote', { ft: site.maxHeightFt })}</p>}
+    </div>
+  )
 }
