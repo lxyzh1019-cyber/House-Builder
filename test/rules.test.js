@@ -1,4 +1,5 @@
 // Runs in the Firestore emulator: npm run test:rules
+import { sampleFit } from './helpers/sample-fit.js'
 import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing'
@@ -93,6 +94,16 @@ describe('project save and load round trip (emulator)', () => {
     const p = await findProject(db('gina'), 'gina')
     expect(p.trace).toEqual(trace)
     expect(p.lot.site).toEqual(lot.site)
+  })
+
+  it('F6: test-fit choices (room types, presets, contents) survive a reload', async () => {
+    await env.clearFirestore()
+    const d = db('hana')
+    const trace = sampleFit()
+    await createProject(d, 'hana', { scene: '{}', rooms: [], trace })
+    const p = await findProject(db('hana'), 'hana')
+    expect(p.trace.fit).toEqual(trace.fit)
+    expect(p.trace.fit.rooms.liv.items.length).toBeGreaterThan(0)
   })
 
   it('T4: the T1 living room set to 20 x 20 ft is saved and still 20 x 20 after a reload', async () => {

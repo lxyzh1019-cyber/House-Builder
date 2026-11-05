@@ -55,7 +55,7 @@ describe('i18n (SPEC §4 Language rule)', () => {
     const dyn = [['lot', ['w', 'd', 'front', 'rear', 'left', 'right']], ['lot.side', ['n', 'e', 's', 'w']], ['port', ['door', 'open', 'wall']],
       ['rules', ['rule', 'value', 'unit', 'tag', 'source', 'date']], ['tests', ['test', 'what', 'expected', 'got', 'result']], ['st', ['fits', 'too-small']],
       ['store', ['Firestore', 'browser storage']], ['save', ['loading', 'loaded', 'new', 'saving', 'saved', 'error']], ['gpu', ['webgpu', 'webgl', 'unknown']],
-      ['tr.tool', ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']], ['tr.how', ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']], ['3d.aim', ['room', 'trace']], ['tr', ['noPicture', 'notKept', 'badFile']]]
+      ['tr.tool', ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']], ['tr.how', ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']], ['3d.aim', ['room', 'trace']], ['tr', ['noPicture', 'notKept', 'badFile']], ['fit', ['contents', 'hideContents']]]
     for (const [pre, ks] of dyn) ks.forEach((k) => used.add(`${pre}.${k}`))
     expect(used.size).toBeGreaterThan(100)
     expect([...used].filter((k) => !UI[k])).toEqual([])

@@ -98,3 +98,26 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - no sideways scroll and 0 console errors.
   An uploaded PNG and a PDF both showed as the plan picture, and the picture came back after a reload in the same browser.
 - Not checked: a real phone or PC by the owner (I8), and a real plan.
+
+## Piece 6: Test fit (2026-11-05)
+
+- Owner: "continue the work, i will check later"; plan and tests F1–F7 approved (chat-D31). Built on the same branch, so PR #7 holds Plan intake and Test fit.
+- Plan intake tab, new section "5. Test fit":
+  - mark the traced plan as a test fit;
+  - per traced room, pick a room type, a preset and (if wanted) the type's questions;
+  - each room gets Check my size at its traced size: fits with spare, or too small by how much, with the smallest changes;
+  - room shapes on the plan turn green or red;
+  - "Copy into Rooms as a new design" adds the typed rectangular rooms to Rooms at their traced sizes, and the traced plan does not change.
+- Rooms (R13): "Sizes you know" lists traced rooms of the same type with their sizes, under the minimum.
+- Only a room traced with 4 square corners gets a verdict (the size check is a plain rectangle, chat-D16).
+- Tests: `npm run test:rules` 43 of 43 pass locally (F1–F5 in `test/fit.test.js`, F6 in the emulator).
+- Headless Chromium (local store, WebGL path), PC 1280 px and phone 390 px:
+  - sample plan scaled, two rooms traced;
+  - Living as a Family TV room "Fits, spare 157.7 ft²" (F1's 157.5 plus about a pixel of tapping); Bath as a home office "Too small, short 4.0 ft in width" (3.9 on the phone);
+  - green and red room shapes;
+  - fewer seats raised the spare;
+  - copying added 2 rooms to Rooms, where the living room showed "Sizes you know: Room 1 (traced plan) 20′ 0″ x 18′ 0″";
+  - a reload kept the choices;
+  - Chinese fully Chinese, no sideways scroll, 0 console errors.
+- Seen: tracing on a phone is less precise (20′ 1″ instead of 20′ 0″ for the same room). This fits the PC-first plan.
+- Not checked: the owner's F7 and I8.

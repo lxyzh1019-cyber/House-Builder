@@ -47,6 +47,7 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D28 (one project on every device) | Not now: each device keeps its own anonymous project until family sharing (section 9) decides how people sign in. Was DN7. | 2026-11-05 |
 | chat-D29 (where project data lives) | Firestore, as now. Nothing is saved to the GitHub repo (public; no real plans in it). | 2026-11-05 |
 | chat-D30 (plan intake done-when) | I1–I8 in section 11. | 2026-11-05 |
+| chat-D31 (test fit done-when) | F1–F7 in section 11. Only a traced room with 4 square corners gets a verdict, because the size check is a plain rectangle (chat-D16). A new design is a copy into Rooms; the traced plan never changes. | 2026-11-05 |
 
 ## 4. Architecture
 - Vite + React. Pascal packages @pascal-app/core, viewer, nodes, editor at 1.0.6 (MIT). Deploy to GitHub Pages with GitHub Actions.
@@ -153,6 +154,14 @@ Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovatio
   - I6 The trace is saved and survives a reload (the picture stays as chat-D27 says).
   - I7 The site limits (zone, height, lot coverage) are saved; coverage = area under the placed rooms / lot area, flagged when over the limit.
   - I8 The owner traces the sample plan's outside walls on a PC in 10 minutes or less.
+- Test fit tests (done when, chat-D31):
+  - F1 The sample plan's Living room (20 x 18 ft) as a Family TV room fits, spare 157.5 ft².
+  - F2 The sample's Bath (6 x 12 ft) as a home office is too small: width short 4.0 ft, depth 0; it needs 10 x 10.
+  - F3 A traced room that is not a rectangle says the check needs a rectangle.
+  - F4 R13: a living room in Rooms shows the traced living room's 20 x 18 ft as a size you know.
+  - F5 "Copy into Rooms as a new design" adds the rooms at their traced sizes; the traced plan is unchanged.
+  - F6 The test-fit choices are saved and survive a reload.
+  - F7 The owner marks the sample as a test fit on a PC, names 2 rooms and reads their verdicts in 10 minutes or less.
 
 ## 12. Feature inventory (nothing leaves this list without a decision)
 Status: Now = in a planned piece; Later = kept, its section is written before its piece starts.

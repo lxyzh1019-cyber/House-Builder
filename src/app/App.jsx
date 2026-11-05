@@ -11,6 +11,7 @@ import SpecTests from './SpecTests.jsx'
 import { LANGS, setLang, t, tlist, tx, useLang } from '../i18n.js'
 import TraceBoard from './TraceBoard.jsx'
 import { newTrace, traceFrame } from '../trace/trace.js'
+import { copyToRooms, knownSizes } from '../trace/fit.js'
 import { SAMPLE, sampleUrl } from '../trace/sample.js'
 import { fileToPicture, loadPicture, pictureSize, savePicture } from '../trace/picture.js'
 
@@ -143,10 +144,10 @@ export default function App({ store, pluginReady }) {
               <div className="chips">{TYPE_ORDER.map((ty) => <button key={ty} className="chip" onClick={() => addRoom(ty)}>+ {tx(ROOM_TYPES[ty].label)}</button>)}</div>
             </div>
           </aside>
-          {room ? <RoomEditor key={room.id} room={room} rules={rules} geo={geo} ctx={st[room.id]?.ctx} lotNote={lotNote(room, st, rooms)} onChange={changeRoom} onDelete={() => deleteRoom(room.id)} /> : <div className="panel muted">{t('app.addToStart')}</div>}
+          {room ? <RoomEditor key={room.id} room={room} rules={rules} geo={geo} ctx={st[room.id]?.ctx} lotNote={lotNote(room, st, rooms)} known={knownSizes(trace, room.type)} onChange={changeRoom} onDelete={() => deleteRoom(room.id)} /> : <div className="panel muted">{t('app.addToStart')}</div>}
         </main>
       )}
-      {ready && tab === 'trace' && <TraceBoard trace={trace} rules={rules} nodes={nodes} pictureUrl={pictureUrl} pictureNote={pictureNote} onTrace={setTrace} onSample={pickSample} onUpload={upload} />}
+      {ready && tab === 'trace' && <TraceBoard trace={trace} rules={rules} nodes={nodes} pictureUrl={pictureUrl} pictureNote={pictureNote} onTrace={setTrace} onSample={pickSample} onUpload={upload} onCopyRooms={() => { const add = copyToRooms(trace); if (add.length) setRooms([...rooms, ...add]); return add.length }} />}
       {ready && tab === 'lot' && <LotBoard rooms={rooms} lot={lot} clusters={clusters} rules={rules} st={st} fps={fps} onRooms={setRooms} onLot={setLot} onClusters={setClusters} onOpenRoom={(id) => { setSelId(id); location.hash = 'rooms' }} />}
       {ready && tab === 'rules' && <RulesTable overrides={rules} onChange={setRules} />}
       {tab === 'tests' && <SpecTests />}

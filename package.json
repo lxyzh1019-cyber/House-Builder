@@ -8,7 +8,7 @@
     "build": "NODE_OPTIONS=--max-old-space-size=6144 vite build",
     "build:local": "NODE_OPTIONS=--max-old-space-size=6144 VITE_STORE=local vite build",
     "preview": "vite preview",
-    "test": "vitest run test/room.test.js test/engine.test.js test/sync.test.js test/lot.test.js test/i18n.test.js test/trace.test.js",
+    "test": "vitest run test/room.test.js test/engine.test.js test/sync.test.js test/lot.test.js test/i18n.test.js test/trace.test.js test/fit.test.js",
     "test:rules": "firebase emulators:exec --only firestore --project demo-house-designer \"vitest run\""
   },
   "dependencies": {

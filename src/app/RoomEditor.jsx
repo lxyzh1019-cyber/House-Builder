@@ -9,7 +9,7 @@ import { t as tr, tm, tn, tx } from '../i18n.js'
 const money = (n) => 'C$' + Math.round(n).toLocaleString('en-CA')
 const categories = [...new Set(LIBRARY.map((i) => i.category))]
 
-export default function RoomEditor({ room, rules, geo, ctx, lotNote, onChange, onDelete }) {
+export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [], onChange, onDelete }) {
   const t = ROOM_TYPES[room.type]
   const min = minimumSize(room, rules, ctx)
   const set = room.size ? { w: mToFt(room.size.w), d: room.size.d && mToFt(room.size.d) } : null
@@ -113,6 +113,7 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, onChange, o
           {lotNote && <div className="note">{lotNote}</div>}
           {t.plain ? <div className="min-line">{tn('ed.plainMin', { size: <b data-testid="min-size">{sizeFt(sizeNow.w, sizeNow.d)}</b> })}</div> :
           <div className="min-line">{tn('ed.min', { size: <b data-testid="min-size">{sizeFt(min.w, min.d)}</b>, ftin: <span className="muted">({ftIn(min.w)} x {ftIn(min.d)})</span> })}</div>}
+          {known.length > 0 && <div className="known" data-testid="known-sizes">{tr('ed.known', { list: known.map((k) => tr('ed.knownOne', { name: k.name, w: ftIn(k.w), d: ftIn(k.d) })).join(tr('list.sep')) })}</div>}
           <div className="size-row">
             <label>{tr('ed.widthFt')}<input id="size-w" type="number" step="0.5" min="1" value={w} onChange={(e) => setW(e.target.value)} /></label>
             <label>{tr('ed.depthFt')}<input id="size-d" type="number" step="0.5" min="1" value={d} onChange={(e) => setD(e.target.value)} /></label>

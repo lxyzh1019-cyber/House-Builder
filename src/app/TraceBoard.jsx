@@ -6,12 +6,14 @@ import { useMemo, useRef, useState } from 'react'
 import { CHECKS_NEEDED, mPerPx, nearestWall, placeOpening, roomAreaFt2, sizeCheck, snapPoint, tid, wallEnds, wallFt } from '../trace/trace.js'
 import { readTrace } from '../scene/sync.js'
 import { ftIn, ftToM, mToFt } from '../units.js'
-import { t, tn, tx } from '../i18n.js'
+import { t, tm, tn, tx } from '../i18n.js'
+import { fitOf, fitRoom, fitVerdict, newFit, rectFt } from '../trace/fit.js'
+import { ROOM_TYPES, TYPE_ORDER, applyAnswers } from '../rooms/types.js'
 
 const TOOLS = ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']
 const inside = (p, pts) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const a = pts[i], b = pts[j]; if ((a.y > p.y) !== (b.y > p.y) && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x) c = !c } return c }
 
-export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNote, onTrace, onSample, onUpload }) {
+export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNote, onTrace, onSample, onUpload, onCopyRooms }) {
   const svgRef = useRef(null), fileRef = useRef(null)
   const [tool, setTool] = useState(trace.scale ? 'wall' : 'scale')
   const [pts, setPts] = useState([])
@@ -140,6 +142,7 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
             <h3>{t('tr.roomsH')}</h3>
             <ul className="tray">{level.rooms.map((rm) => <li key={rm.id}><input aria-label={t('ed.roomName')} value={tx(rm.name)} onChange={(e) => onTrace({ ...trace, levels: trace.levels.map((l) => (l.id === level.id ? { ...l, rooms: l.rooms.map((x) => (x.id === rm.id ? { ...x, name: e.target.value } : x)) } : l)) })} /><span className="muted small">{t('tr.area', { a: (roomAreaFt2(trace, rm) ?? 0).toFixed(0) })}</span></li>)}</ul>
           </>}
+          <TestFit trace={trace} rules={rules} onTrace={onTrace} onCopyRooms={onCopyRooms} />
           <button className="btn quiet" onClick={() => { if (confirm(t('tr.startOverAsk'))) { commit({ ...trace, levels: trace.levels.map((l) => ({ ...l, walls: [], rooms: [] })), checks: [] }); setPts([]) } }}>{t('tr.startOver')}</button>
         </>}
       </section>
@@ -153,7 +156,9 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
             {shown.rooms.map((rm) => {
               const cx = rm.pts.reduce((s, p) => s + p.x, 0) / rm.pts.length, cy = rm.pts.reduce((s, p) => s + p.y, 0) / rm.pts.length
               const a = roomAreaFt2(trace, rm)
-              return <g key={rm.id} pointerEvents="none"><polygon points={rm.pts.map((p) => `${p.x},${p.y}`).join(' ')} fill="var(--accent)" fillOpacity={0.12} stroke="var(--accent)" strokeWidth={sw / 3} /><text x={cx} y={cy} fontSize={sw * 3} textAnchor="middle" fill="var(--ink)">{tx(rm.name)}</text>{a != null && <text x={cx} y={cy + sw * 3.5} fontSize={sw * 2.4} textAnchor="middle" fill="var(--muted)">{a.toFixed(0)} ft²</text>}</g>
+              const v = trace.fit?.on ? fitVerdict(trace, rm, rules).status : null
+              const col = v === 'fits' ? 'var(--ok)' : v === 'too-small' ? 'var(--warn)' : 'var(--accent)'
+              return <g key={rm.id} pointerEvents="none" data-verdict={v || undefined}><polygon points={rm.pts.map((p) => `${p.x},${p.y}`).join(' ')} fill={col} fillOpacity={v === 'fits' || v === 'too-small' ? 0.2 : 0.12} stroke={col} strokeWidth={sw / 3} /><text x={cx} y={cy} fontSize={sw * 3} textAnchor="middle" fill="var(--ink)">{tx(rm.name)}</text>{a != null && <text x={cx} y={cy + sw * 3.5} fontSize={sw * 2.4} textAnchor="middle" fill="var(--muted)">{a.toFixed(0)} ft²</text>}</g>
             })}
             {shown.walls.map((w) => {
               const chk = check.rows.find((c) => c.wallId === w.id)
@@ -177,5 +182,59 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
         {img && k && <p className="muted small">{t('tr.size', { w: ftIn(mToFt(img.w * k)), d: ftIn(mToFt(img.h * k)) })}</p>}
       </section>
     </main>
+  )
+}
+
+// P5 test fit: name each traced room's type and contents; Rooms from contents checks it at its traced size.
+function TestFit({ trace, rules, onTrace, onCopyRooms }) {
+  const [open, setOpen] = useState(null)
+  const [copied, setCopied] = useState(null)
+  const fit = trace.fit || newFit()
+  const rooms = trace.levels.flatMap((l) => l.rooms.map((r) => ({ ...r, level: l.name })))
+  const setFit = (next) => onTrace({ ...trace, fit: next })
+  const setRoom = (id, v) => setFit({ ...fit, rooms: { ...fit.rooms, [id]: v } })
+  const clearRoom = (id) => { const r = { ...fit.rooms }; delete r[id]; setFit({ ...fit, rooms: r }) }
+  return (
+    <div className="item-edit testfit">
+      <h3>{t('fit.title')}</h3>
+      <p className="muted small">{t('fit.help')}</p>
+      <label className="check"><input type="checkbox" data-testid="fit-on" checked={!!fit.on} onChange={(e) => setFit({ ...fit, on: e.target.checked })} />{t('fit.mark')}</label>
+      {fit.on && rooms.length === 0 && <p className="muted small">{t('fit.noRooms')}</p>}
+      {fit.on && rooms.map((rm) => {
+        const f = fitOf(trace, rm.id), size = rectFt(trace, rm), v = fitVerdict(trace, rm, rules)
+        const ty = f && ROOM_TYPES[f.type]
+        return (
+          <div key={rm.id} className="fit-room" data-testid={`fit-${rm.id}`}>
+            <div className="q-label">{tx(rm.name)} <span className="muted small">· {size ? `${ftIn(size.w)} x ${ftIn(size.d)}` : t('fit.notRectShort')}</span></div>
+            <select aria-label={t('fit.type', { name: rm.name })} value={f?.type || ''} onChange={(e) => (e.target.value ? setRoom(rm.id, fitRoom(e.target.value)) : clearRoom(rm.id))}>
+              <option value="">{t('fit.pickType')}</option>
+              {TYPE_ORDER.map((k) => <option key={k} value={k}>{tx(ROOM_TYPES[k].label)}</option>)}
+            </select>
+            {ty && !ty.plain && <div className="chips">{Object.keys(ty.presets).map((p) => <button key={p} className={`chip ${f.preset === p ? 'on' : ''}`} onClick={() => setRoom(rm.id, fitRoom(f.type, p))}>{tx(p)}</button>)}<button className="chip" onClick={() => setOpen(open === rm.id ? null : rm.id)}>{t(open === rm.id ? 'fit.hideContents' : 'fit.contents')}</button></div>}
+            {ty && !ty.plain && open === rm.id && ty.questions.map((q) => (
+              <div key={q.id} className="q"><div className="q-label small">{tx(q.label)}</div><div className="chips">{q.options.map(([val, label]) => <button key={val} className={`chip ${f.answers?.[q.id] === val ? 'on' : ''}`} onClick={() => { const r = applyAnswers({ ...f, items: f.items || [] }, { ...f.answers, [q.id]: val }); setRoom(rm.id, { type: f.type, preset: f.preset, answers: r.answers, items: r.items }) }}>{tx(label)}</button>)}</div></div>
+            ))}
+            <Verdict v={v} />
+          </div>
+        )
+      })}
+      {fit.on && rooms.some((r) => fitOf(trace, r.id) && rectFt(trace, r)) && <>
+        <button className="btn" data-testid="fit-copy" onClick={() => { const n = onCopyRooms(); setCopied(n) }}>{t('fit.copy')}</button>
+        <p className="muted small">{copied != null ? t('fit.copied', { n: copied }) : t('fit.copyHelp')}</p>
+      </>}
+    </div>
+  )
+}
+
+function Verdict({ v }) {
+  if (v.status === 'no-type') return null
+  if (v.status === 'not-rect') return <div className="result" data-testid="fit-verdict">{t('fit.notRect')}</div>
+  if (v.status === 'plain') return <div className="result" data-testid="fit-verdict">{t('fit.plain')}</div>
+  if (v.status === 'fits') return <div className="result ok" data-testid="fit-verdict">{tn('fit.fits', { spare: v.spare.toFixed(1) })}</div>
+  return (
+    <div className="result bad" data-testid="fit-verdict">
+      <div>{tn('fit.tooSmall', { w: v.shortW.toFixed(1), d: v.shortD.toFixed(1), min: `${v.min.w.toFixed(1)} x ${v.min.d.toFixed(1)} ft` })}</div>
+      {v.changes?.length > 0 && <ul className="small">{v.changes.map((c, i) => <li key={i}>{(c.msgs || c.changes).map(tm).join(' + ')}</li>)}</ul>}
+    </div>
   )
 }
