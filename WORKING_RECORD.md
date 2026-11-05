@@ -58,4 +58,4 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 
 - Build: what the page loads at start is 154 files, 7,499 kB (2,381 kB gzipped), about the same total as the spike, split into more files. The 3D viewer code loads only when the 3D tab opens.
 - Headless Chromium against the real Firestore project (no GPU, WebGL path): Spec tests tab shows 6 of 6 pass. By hand: T1 15.0 x 13.5, T5 14 x 13 too small (short 1.0 / 0.5, "Remove one Loveseat" with the room turned), T4 20 x 20 fits with spare 197.5 ft², still 20 x 20 after a reload, T2 15.0 x 11.0, T3 10.0 x 10.0. Dragging an item moved it with wall snap. Phone width 412 px: no sideways scroll. 0 console errors.
-- T7 (owner's phone test): to do after merge.
+- T7 (owner's phone test, after merging PR #2): **Pass**. Owner, 2026-11-05: "T7 less than 10s", recorded as written. The limit is 10 minutes per room, so it passes either way. Device and browser not reported.
