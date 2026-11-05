@@ -30,11 +30,13 @@ H, after testing the Pages link on PC and phone: **"for test purpose, this is pa
 | 3. Reload keeps 20 x 20, saved in Firestore `house-designer-7b6f0` | Pass | Headless run against the real project: saved, reload → "loaded", 20.0 x 20.0 |
 | 4. 3-seat sofa as a plain 7.5 x 3 ft box | Pass | Unit test (7.5 / 3.0 ft); visible in screenshots |
 | 5. Vitest covers resize + save/load round trip, runs in GitHub Actions | Pass | `test` job green (runs 41963594996, 41966354799) |
-| 6. Phone load time, main bundle size, WebGPU or WebGL on the phone | **Partial** | Bundle size recorded above. Phone load time and GPU path were **not reported** |
+| 6. Phone load time, main bundle size, WebGPU or WebGL on the phone | **Partial** | Bundle size recorded above. Phone (H, 2026-11-05): opened, showed the room in **10 s or less**, kept 20 x 20 after a reload (exact seconds not timed). GPU path on the phone **not reported** |
 
 Closed without a change: the button text stays "Make it 20 x 20 ft" at every size (DN4 not taken; H judged it passing for the spike).
 
-## Real devices (Pages link) — not reported
+## Real devices (Pages link)
+
+Phone, reported by H on 2026-11-05: opened yes, load 10 s or less, 20 x 20 kept after reload yes. Device, browser and GPU path not reported.
 
 | Device | Browser | GPU path (bottom strip) | First frame (ms) | Load time on Wi-Fi | 20 x 20 kept after reload |
 |---|---|---|---|---|---|
@@ -51,3 +53,9 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 - Pascal's post-effects (SSGI lighting) are very heavy without a GPU. `?fx=0` or `#fx0` turns them off.
 - Firestore cannot store nested arrays (the room outline is a list of [x, z] pairs), so `scene` is saved as a JSON string.
 - Load uses a query on `owner == uid`, because the owner-only read rule denies a `get` of a document that doesn't exist.
+
+## Piece 2: Rooms from contents (2026-11-05)
+
+- Build: what the page loads at start is 154 files, 7,499 kB (2,381 kB gzipped), about the same total as the spike, split into more files. The 3D viewer code loads only when the 3D tab opens.
+- Headless Chromium against the real Firestore project (no GPU, WebGL path): Spec tests tab shows 6 of 6 pass. By hand: T1 15.0 x 13.5, T5 14 x 13 too small (short 1.0 / 0.5, "Remove one Loveseat" with the room turned), T4 20 x 20 fits with spare 197.5 ft², still 20 x 20 after a reload, T2 15.0 x 11.0, T3 10.0 x 10.0. Dragging an item moved it with wall snap. Phone width 412 px: no sideways scroll. 0 console errors.
+- T7 (owner's phone test): to do after merge.
