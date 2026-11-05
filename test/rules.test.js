@@ -106,6 +106,17 @@ describe('project save and load round trip (emulator)', () => {
     expect(p.trace.fit.rooms.liv.items.length).toBeGreaterThan(0)
   })
 
+  it('B1 + B6: every budget line (goal, lot, lot in goal, soft costs, contingency, both rates) is saved and survives a reload', async () => {
+    await env.clearFirestore()
+    const d = db('ivan')
+    const budget = { goal: 800000, lotPrice: 200000, lotInGoal: false, contingencyPct: 10, soft: [{ id: 's1', name: 'Permits', amount: 12000 }, { id: 's2', name: 'Design', amount: 18000 }] }
+    const rules = { rateLow: 180, rateHigh: 290 }
+    await createProject(d, 'ivan', { scene: '{}', rooms: [], rules, budget })
+    const p = await findProject(db('ivan'), 'ivan')
+    expect(p.budget).toEqual(budget)
+    expect(p.rules).toEqual(rules)
+  })
+
   it('T4: the T1 living room set to 20 x 20 ft is saved and still 20 x 20 after a reload', async () => {
     await env.clearFirestore()
     const d = db('erin')

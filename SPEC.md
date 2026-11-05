@@ -48,6 +48,7 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D29 (where project data lives) | Firestore, as now. Nothing is saved to the GitHub repo (public; no real plans in it). | 2026-11-05 |
 | chat-D30 (plan intake done-when) | I1–I8 in section 11. | 2026-11-05 |
 | chat-D31 (test fit done-when) | F1–F7 in section 11. Only a traced room with 4 square corners gets a verdict, because the size check is a plain rectangle (chat-D16). A new design is a copy into Rooms; the traced plan never changes. | 2026-11-05 |
+| chat-D32 (budget meter) | Contingency is a share of the build cost only, not of soft costs or the lot (was DN8). Build rates are the Rules table rows. Area = rooms placed on the Lot board. Done-when B1–B7 in section 8. | 2026-11-05 |
 
 ## 4. Architecture
 - Vite + React. Pascal packages @pascal-app/core, viewer, nodes, editor at 1.0.6 (MIT). Deploy to GitHub Pages with GitHub Actions.
@@ -127,6 +128,14 @@ Tests (done when):
 - Lines, all editable, no hidden numbers: budget goal, lot price, soft costs line by line, contingency %, build rate low and high.
 - The lot price is inside the goal by default (chat-D7, lot in budget).
 - Shows rooms placed so far (ft² and cost range) and what is left of the goal.
+- Tests (done when, chat-D32; made-up numbers):
+  - B1 Every line can be edited and is saved: goal, lot price, lot in the goal, soft-cost lines (add, rename, remove), contingency %, both build rates.
+  - B2 A goal of 800,000 with a 200,000 lot inside it and no rooms placed leaves 600,000.
+  - B3 The T1 living room (15 x 13.5) and an office (10 x 10) on the lot = 302.5 ft²: build 52,937.50 to 83,187.50 at 175 and 275 per ft².
+  - B4 With 10% contingency on the build cost and 30,000 of soft costs: total 288,231.25 to 321,506.25, left 511,768.75 to 478,493.75.
+  - B5 With the lot taken out of the goal: left 711,768.75 to 678,493.75.
+  - B6 The budget is saved and survives a reload.
+  - B7 The owner types their own numbers on a PC and reads what is left in 5 minutes or less.
 
 ## 9. Family sharing
 - projects/{id} holds a members list. Members read and write; only the owner adds members or deletes.

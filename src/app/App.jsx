@@ -10,13 +10,15 @@ import RulesTable from './RulesTable.jsx'
 import SpecTests from './SpecTests.jsx'
 import { LANGS, setLang, t, tlist, tx, useLang } from '../i18n.js'
 import TraceBoard from './TraceBoard.jsx'
+import Budget from './Budget.jsx'
+import { newBudget } from '../budget/budget.js'
 import { newTrace, traceFrame } from '../trace/trace.js'
 import { copyToRooms, knownSizes } from '../trace/fit.js'
 import { SAMPLE, sampleUrl } from '../trace/sample.js'
 import { fileToPicture, loadPicture, pictureSize, savePicture } from '../trace/picture.js'
 
 const View3D = lazy(() => import('./View3D.jsx'))
-const TABS = [['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
+const TABS = [['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['budget', 'tab.budget'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
 const tabFromHash = () => (TABS.some(([id]) => `#${id}` === location.hash) ? location.hash.slice(1) : 'rooms')
 // ?fx=0 (or #fx0) turns off Pascal's post-effects in the 3D view.
 const postFx = new URLSearchParams(location.search).get('fx') !== '0'
@@ -28,6 +30,7 @@ export default function App({ store, pluginReady }) {
   const [lot, setLot] = useState(() => newLot())
   const [clusters, setClusters] = useState([])
   const [trace, setTrace] = useState(() => newTrace())
+  const [budget, setBudget] = useState(() => newBudget())
   const [pictureUrl, setPictureUrl] = useState(null)
   const [pictureNote, setPictureNote] = useState(null)
   const [aim, setAim] = useState('room')
@@ -51,6 +54,7 @@ export default function App({ store, pluginReady }) {
         if (!alive) return
         if (data?.rooms?.length) { setRooms(data.rooms); setRules(data.rules || {}); setLot(data.lot || newLot(data.rules)); setClusters(data.clusters || []); setSelId(data.rooms[0].id); setSaveState('loaded') }
         if (data?.trace) { setTrace(data.trace); await showPicture(data.trace.image) }
+        if (data?.budget) setBudget(data.budget)
         else { const start = [newRoom('living', 'Family TV room'), newRoom('office', 'Home office')]; setRooms(start); setSelId(start[0].id); setSaveState('new') }
         setReady(true)
       } catch (e) { console.error(e); setError(String(e?.message || e)); setSaveState('error') }
@@ -66,10 +70,10 @@ export default function App({ store, pluginReady }) {
     clearTimeout(saveTimer.current)
     setSaveState('saving')
     saveTimer.current = setTimeout(async () => {
-      try { await store.save({ scene: sceneJson(), rooms, rules, lot, clusters, trace }); setSaveState('saved') }
+      try { await store.save({ scene: sceneJson(), rooms, rules, lot, clusters, trace, budget }); setSaveState('saved') }
       catch (e) { console.error(e); setError(t('err.save', { msg: e?.message || e })); setSaveState('error') }
     }, 600)
-  }, [ready, rooms, rules, lot, clusters, trace, pictureUrl, st, store])
+  }, [ready, rooms, rules, lot, clusters, trace, budget, pictureUrl, st, store])
 
   const room = rooms.find((r) => r.id === selId)
   const geo = useMemo(() => (room ? readRoom(nodes, room.id) : null), [nodes, room])
@@ -149,6 +153,7 @@ export default function App({ store, pluginReady }) {
       )}
       {ready && tab === 'trace' && <TraceBoard trace={trace} rules={rules} nodes={nodes} pictureUrl={pictureUrl} pictureNote={pictureNote} onTrace={setTrace} onSample={pickSample} onUpload={upload} onCopyRooms={() => { const add = copyToRooms(trace); if (add.length) setRooms([...rooms, ...add]); return add.length }} />}
       {ready && tab === 'lot' && <LotBoard rooms={rooms} lot={lot} clusters={clusters} rules={rules} st={st} fps={fps} onRooms={setRooms} onLot={setLot} onClusters={setClusters} onOpenRoom={(id) => { setSelId(id); location.hash = 'rooms' }} />}
+      {ready && tab === 'budget' && <Budget budget={budget} rooms={rooms} st={st} rules={rules} onBudget={setBudget} onRules={setRules} />}
       {ready && tab === 'rules' && <RulesTable overrides={rules} onChange={setRules} />}
       {tab === 'tests' && <SpecTests />}
       {ready && tab === '3d' && (

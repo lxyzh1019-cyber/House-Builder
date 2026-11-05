@@ -113,6 +113,13 @@
       .site { margin-top: 12px; }
       .testfit { margin: 12px 0; } .fit-room { border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px; display: grid; gap: 6px; } .fit-room select { max-width: 100%; }
       .known { font-size: 13px; color: var(--muted); }
+      .bud-table td:last-child { text-align: right; font-family: var(--font-data); white-space: nowrap; } .bud-table tr.sum td { border-top: 1px solid var(--line); } .bud-table td.warn { color: var(--warn); }
+      .tray.soft li { display: grid; grid-template-columns: minmax(0, 1fr) 7.5em auto; gap: 6px; align-items: center; } .tray.soft input { min-width: 0; width: 100%; box-sizing: border-box; }
+      .bud-bar { position: relative; height: 18px; border-radius: 9px; background: var(--line); margin: 14px 0 6px; overflow: hidden; }
+      .bud-bar .lo { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); }
+      .bud-bar .hi { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--accent) 40%, transparent); }
+      .bud-bar .goal { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1px; background: var(--ink); }
+      .sw.bud-lo { background: var(--accent); } .sw.bud-hi { background: color-mix(in srgb, var(--accent) 40%, transparent); } .sw.bud-goal { background: var(--ink); width: 3px; }
       @media (max-width: 900px) { .lot { grid-template-columns: minmax(0, 1fr); } }
       @media (max-width: 900px) { .rooms, .cols { grid-template-columns: minmax(0, 1fr); } .room-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
     </style>

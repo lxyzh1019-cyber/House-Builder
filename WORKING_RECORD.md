@@ -121,3 +121,23 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - Chinese fully Chinese, no sideways scroll, 0 console errors.
 - Seen: tracing on a phone is less precise (20′ 1″ instead of 20′ 0″ for the same room). This fits the PC-first plan.
 - Not checked: the owner's F7 and I8.
+
+## Piece 7: Budget meter (2026-11-05)
+
+- Owner picked the Budget meter next ("A"), then approved the plan, tests B1–B7 and DN8 = A (contingency on the build cost only), recorded as chat-D32. Built on the same branch, so PR #7 holds Plan intake, Test fit and the Budget meter.
+- New tab "Budget / 预算":
+  - lines typed by the user: goal, lot price (inside the goal by default, chat-D7), soft costs line by line, contingency %, build rate low and high (the Rules table rows, one home);
+  - shows: area of the rooms placed on the Lot board, build cost range, contingency, soft costs, lot, total, what is left of the goal (low and high rate), a bar, and the rooms not counted yet;
+  - the verdict says inside the goal, over at the high rate only, or over even at the low rate.
+- Tests: `npm run test:rules` 48 of 48 pass locally (B2–B5 in `test/budget.test.js`, B1 + B6 in the emulator).
+- Headless Chromium (local store, WebGL path), PC 1280 px and phone 390 px, with the two starting rooms placed and a dining room left off the lot:
+  - 302.5 ft², build C$52,938 – C$83,188 (B3);
+  - with C$12,000 + C$18,000 soft costs and 10% contingency: total C$288,231 – C$321,506, left C$511,769 – C$478,494 (B4);
+  - with the lot out of the goal: left C$711,769 – C$678,494 (B5);
+  - a C$300,000 goal turned the verdict red;
+  - a low rate of 180 changed the Rules table row too;
+  - a soft line was added, renamed and removed, and a reload kept everything;
+  - the dining room was listed as not counted;
+  - Chinese fully Chinese, no sideways scroll, 0 console errors.
+- Fixed during the check: soft-cost inputs overlapped their Remove button; the goal mark sat on the bar's edge.
+- Not checked: the owner's B7, with real numbers (those stay in Firestore only).
