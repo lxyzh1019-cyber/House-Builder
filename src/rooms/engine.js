@@ -97,28 +97,28 @@ function candidateChanges(room) {
     if (!['side', 'extra', 'shelf', 'deskside', 'wall'].includes(it.role)) continue
     if (seen.has(it.name)) continue
     seen.add(it.name)
-    ops.push({ key: `rm:${it.name}`, label: `Remove one ${it.name}`, apply: (r) => { const i = r.items.findIndex((x) => x.name === it.name); return i < 0 ? null : { ...r, items: r.items.filter((_, k) => k !== i) } } })
+    ops.push({ key: `rm:${it.name}`, label: `Remove one ${it.name}`, msg: ['chg.remove', { name: it.name }], apply: (r) => { const i = r.items.findIndex((x) => x.name === it.name); return i < 0 ? null : { ...r, items: r.items.filter((_, k) => k !== i) } } })
   }
   const tv = room.items.find((i) => i.role === 'tv')
   if (tv) {
     const next = TV_STEPS.find((s) => s < Math.round(tvDiagIn(tv)))
-    if (next) ops.push({ key: 'tv', label: `Smaller TV: ${next} in`, apply: (r) => ({ ...r, items: r.items.map((i) => (i.role === 'tv' ? { ...i, ...pick(byId(`app-tv${next}`)) } : i)) }) })
+    if (next) ops.push({ key: 'tv', label: `Smaller TV: ${next} in`, msg: ['chg.tv', { n: next }], apply: (r) => ({ ...r, items: r.items.map((i) => (i.role === 'tv' ? { ...i, ...pick(byId(`app-tv${next}`)) } : i)) }) })
   }
-  if (room.type === 'living' && room.answers?.open !== 'yes') ops.push({ key: 'open', label: 'Open it to the next room (shares the walkway)', apply: (r) => ({ ...r, answers: { ...r.answers, open: 'yes' } }) })
+  if (room.type === 'living' && room.answers?.open !== 'yes') ops.push({ key: 'open', label: 'Open it to the next room (shares the walkway)', msg: ['chg.open'], apply: (r) => ({ ...r, answers: { ...r.answers, open: 'yes' } }) })
   const desk = room.items.find((i) => i.role === 'desk')
   if (desk) {
     const feet = Math.round(ft(desk.w))
-    if (feet > 4) ops.push({ key: 'desk', label: `Shorter desk: ${feet - 1} ft`, apply: (r) => ({ ...r, items: r.items.map((i) => (i.role === 'desk' ? { ...i, ...pick(byId(`app-desk${feet - 1}`)) } : i)) }) })
+    if (feet > 4) ops.push({ key: 'desk', label: `Shorter desk: ${feet - 1} ft`, msg: ['chg.desk', { n: feet - 1 }], apply: (r) => ({ ...r, items: r.items.map((i) => (i.role === 'desk' ? { ...i, ...pick(byId(`app-desk${feet - 1}`)) } : i)) }) })
   }
   const bed = room.items.find((i) => i.libId === 'app-king' || i.libId === 'app-full')
   if (bed) {
     const smaller = bed.libId === 'app-king' ? 'app-queen' : 'app-twin'
-    ops.push({ key: 'bed', label: `Smaller bed: ${byId(smaller).name}`, apply: (r) => ({ ...r, items: r.items.map((i) => (i.id === bed.id ? { ...i, ...pick(byId(smaller)) } : i)) }) })
+    ops.push({ key: 'bed', label: `Smaller bed: ${byId(smaller).name}`, msg: ['chg.bed', { name: byId(smaller).name }], apply: (r) => ({ ...r, items: r.items.map((i) => (i.id === bed.id ? { ...i, ...pick(byId(smaller)) } : i)) }) })
   }
   const table = room.items.find((i) => i.role === 'table')
   if (table && table.libId !== 'f2-32') {
     const smaller = table.libId === 'app-table8' ? 'f2-33' : 'f2-32'
-    ops.push({ key: 'table', label: `Smaller table: ${byId(smaller).name}`, apply: (r) => ({ ...r, items: r.items.map((i) => (i.id === table.id ? { ...i, ...pick(byId(smaller)) } : i)) }) })
+    ops.push({ key: 'table', label: `Smaller table: ${byId(smaller).name}`, msg: ['chg.table', { name: byId(smaller).name }], apply: (r) => ({ ...r, items: r.items.map((i) => (i.id === table.id ? { ...i, ...pick(byId(smaller)) } : i)) }) })
   }
   return ops
 }
@@ -132,7 +132,7 @@ export function smallestChanges(room, W, D, overrides, limit = 3, ctx) {
     let r = room
     for (const op of list) { r = op.apply(r); if (!r) return null }
     const m = minimumSize(r, overrides, ctx)
-    return fits(m, W, D) ? { changes: list.map((o) => o.label), min: m, turned: compare(m, W, D).turned } : null
+    return fits(m, W, D) ? { changes: list.map((o) => o.label), msgs: list.map((o) => o.msg), min: m, turned: compare(m, W, D).turned } : null
   }
   for (const op of ops) { const f = tryOps([op]); if (f) found.push(f) }
   const singles = new Set(found.map((f) => f.changes[0]))
@@ -159,11 +159,11 @@ export function checkSize(room, W, D, overrides, ctx) {
   return { status: 'fits', min, W, D, turned: c.turned, spare, costLow: spare * R.rateLow, costHigh: spare * R.rateHigh }
 }
 
-// Notes the room needs (sofa bed → egress window if anyone sleeps there).
+// Notes the room needs (sofa bed → egress window if anyone sleeps there), as [key, params] for src/i18n.js.
 export function roomNotes(room, overrides) {
   const R = ruleValues(overrides)
   const notes = []
-  if (room.items.some((i) => i.sofaBed)) notes.push(`A sofa bed opens to ${R.sofaBedOpen} ft and means an egress window if anyone sleeps here.`)
+  if (room.items.some((i) => i.sofaBed)) notes.push(['note.sofaBed', { ft: R.sofaBedOpen }])
   return notes
 }
 

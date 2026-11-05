@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from 'react'
 import { aabb, clearances, isOutside, overlaps, snapMove } from '../furniture/geometry.js'
 import { layoutRoom } from '../rooms/engine.js'
 import { ftIn, mmToFt } from '../units.js'
+import { t, tx } from '../i18n.js'
 
 export default function Drawing({ room, geo, sizeFt, rules, ctx, selectedId, onSelect, onMove }) {
   const svgRef = useRef(null)
@@ -44,25 +45,25 @@ export default function Drawing({ room, geo, sizeFt, rules, ctx, selectedId, onS
     setDrag(null)
   }
 
-  if (!geo) return <div className="drawing-empty">Drawing loads with the 3D scene…</div>
+  if (!geo) return <div className="drawing-empty">{t('dr.loading')}</div>
   const fs = 13 * k
   return (
-    <svg ref={svgRef} className="drawing" viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${D + 2 * pad}`} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onPointerDown={() => onSelect(null)} role="img" aria-label={`Drawing of ${room.name}, ${ftIn(mmToFt(W))} by ${ftIn(mmToFt(D))}`}>
+    <svg ref={svgRef} className="drawing" viewBox={`${-pad} ${-pad} ${W + 2 * pad} ${D + 2 * pad}`} onPointerMove={move} onPointerUp={up} onPointerCancel={up} onPointerDown={() => onSelect(null)} role="img" aria-label={t('dr.aria', { name: room.name, w: ftIn(mmToFt(W)), d: ftIn(mmToFt(D)) })}>
       <defs>
         <pattern id="hatch" width={150} height={150} patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="150" stroke="var(--walk)" strokeWidth={30} /></pattern>
         <pattern id="redhatch" width={120} height={120} patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><line x1="0" y1="0" x2="0" y2="120" stroke="var(--warn)" strokeWidth={30} /></pattern>
       </defs>
       <rect x={0} y={0} width={W} height={D} fill="var(--floor)" />
       {walkways.map((w, i) => w.ring
-        ? <path key={i} fillRule="evenodd" fill="url(#hatch)" d={`M${w.x} ${w.y}h${w.w}v${w.d}h${-w.w}z M${w.ring.x} ${w.ring.y}h${w.ring.w}v${w.ring.d}h${-w.ring.w}z`}><title>{w.label}</title></path>
-        : <rect key={i} x={w.x} y={w.y} width={Math.max(0, Math.min(w.w, W - w.x))} height={Math.max(0, Math.min(w.d, D - w.y))} fill="url(#hatch)"><title>{w.label}</title></rect>)}
+        ? <path key={i} fillRule="evenodd" fill="url(#hatch)" d={`M${w.x} ${w.y}h${w.w}v${w.d}h${-w.w}z M${w.ring.x} ${w.ring.y}h${w.ring.w}v${w.ring.d}h${-w.ring.w}z`}><title>{tx(w.label)}</title></path>
+        : <rect key={i} x={w.x} y={w.y} width={Math.max(0, Math.min(w.w, W - w.x))} height={Math.max(0, Math.min(w.d, D - w.y))} fill="url(#hatch)"><title>{tx(w.label)}</title></rect>)}
       <rect x={-75} y={-75} width={W + 150} height={D + 150} fill="none" stroke="var(--wall)" strokeWidth={150} />
       {[...items].sort((a, b) => (a.type === 'tv') - (b.type === 'tv')).map((f) => {
         const bad = clash.has(f.id) || outside.has(f.id)
         return (
           <g key={f.id} transform={`translate(${f.cx} ${f.cy}) rotate(${f.rot})`} onPointerDown={(e) => down(e, f)} style={{ cursor: 'grab', touchAction: 'none' }}>
             <rect x={-f.w / 2} y={-f.d / 2} width={f.w} height={f.d} rx={40} fill={bad ? 'url(#redhatch)' : 'var(--item)'} stroke={bad ? 'var(--warn)' : f.id === selectedId ? 'var(--accent)' : 'var(--item-line)'} strokeWidth={f.id === selectedId ? 40 : 20} />
-            {Math.min(f.w, f.d) > 300 && <text x={0} y={0} fontSize={Math.min(fs, f.d * 0.4)} textAnchor="middle" dominantBaseline="central" fill="var(--ink)" transform={Math.abs(f.rot % 180) === 90 ? 'rotate(-90)' : undefined} pointerEvents="none">{f.name}</text>}
+            {Math.min(f.w, f.d) > 300 && <text x={0} y={0} fontSize={Math.min(fs, f.d * 0.4)} textAnchor="middle" dominantBaseline="central" fill="var(--ink)" transform={Math.abs(f.rot % 180) === 90 ? 'rotate(-90)' : undefined} pointerEvents="none">{tx(f.name)}</text>}
           </g>
         )
       })}

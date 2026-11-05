@@ -27,7 +27,7 @@ function GpuProbe({ onBackend }) {
     if (done.current) return
     done.current = true
     const b = gl?.backend
-    onBackend(b?.isWebGPUBackend ? 'WebGPU' : b?.isWebGLBackend ? 'WebGL (fallback)' : 'unknown')
+    onBackend(b?.isWebGPUBackend ? 'webgpu' : b?.isWebGLBackend ? 'webgl' : 'unknown') // shown through i18n gpu.*
   })
   return null
 }

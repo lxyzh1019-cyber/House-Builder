@@ -14,7 +14,7 @@
         --bg: #eef0f1; --panel: #ffffff; --ink: #1d2327; --muted: #5a646c; --line: #c9d0d6;
         --accent: #2d5e8c; --accent-ink: #ffffff; --warn: #b4411b; --ok: #2f7a4f; --teal: #0e7f75;
         --floor: #faf8f4; --wall: #3a3f44; --item: #e7dfd2; --item-line: #8f8678; --walk: #b9c6d2;
-        --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --font-ui: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
         --font-data: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
         --gutter-l: max(16px, env(safe-area-inset-left, 0px));
         --gutter-r: max(16px, env(safe-area-inset-right, 0px));
@@ -36,6 +36,9 @@
       .top { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: baseline; }
       .brand { font-weight: 700; font-size: 18px; }
       .save { font: 12px var(--font-data); color: var(--muted); }
+      .top-right { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+      .lang { display: flex; gap: 4px; }
+      .lang .chip { min-height: 32px; padding: 0 10px; font-size: 13px; }
       .tabs { display: flex; gap: 4px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
       .tabs a { padding: 10px 12px; color: var(--muted); text-decoration: none; border-bottom: 3px solid transparent; }
       .tabs a.on { color: var(--ink); border-color: var(--accent); font-weight: 600; }
