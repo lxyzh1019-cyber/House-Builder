@@ -6,11 +6,11 @@ import { aabb, clearances, isOutside, overlaps, snapMove } from '../furniture/ge
 import { layoutRoom } from '../rooms/engine.js'
 import { ftIn, mmToFt } from '../units.js'
 
-export default function Drawing({ room, geo, sizeFt, rules, selectedId, onSelect, onMove }) {
+export default function Drawing({ room, geo, sizeFt, rules, ctx, selectedId, onSelect, onMove }) {
   const svgRef = useRef(null)
   const [drag, setDrag] = useState(null) // { id, ox, oy, cx, cy }
   const W = geo?.W ?? 0, D = geo?.D ?? 0
-  const { walkways } = useMemo(() => layoutRoom(room, sizeFt.w, sizeFt.d, rules), [room, sizeFt.w, sizeFt.d, rules])
+  const { walkways } = useMemo(() => layoutRoom(room, sizeFt.w, sizeFt.d, rules, ctx), [room, sizeFt.w, sizeFt.d, rules, ctx])
   const items = room.items.map((it) => {
     const p = drag?.id === it.id ? { cx: drag.cx, cy: drag.cy, rot: geo.items[it.id]?.rot ?? 0 } : geo?.items[it.id] ?? { cx: W / 2, cy: D / 2, rot: 0 }
     return { ...it, ...p }

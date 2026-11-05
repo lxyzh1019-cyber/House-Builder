@@ -126,17 +126,39 @@ export const ROOM_TYPES = {
   },
 }
 
-export const TYPE_ORDER = ['living', 'office', 'dining', 'primary', 'kid', 'mudroom']
+// Plain rooms (owner's answer 2026-11-05): a size you type, no questions or furniture yet. Their preset
+// sizes are starting values (a guess, not from a source) until their own question sets arrive.
+const plain = (label, presets) => ({ label, plain: true, questions: [], presets, items: () => [] })
+ROOM_TYPES.garage = plain('Garage', { 'Double garage': { w: 22, d: 22 }, 'Single garage': { w: 12, d: 22 } })
+ROOM_TYPES.kitchen = plain('Kitchen', { Kitchen: { w: 12, d: 14 } })
+ROOM_TYPES.backkitchen = plain('Back kitchen', { 'Back kitchen': { w: 8, d: 10 } })
+
+export const TYPE_ORDER = ['living', 'office', 'dining', 'primary', 'kid', 'mudroom', 'garage', 'kitchen', 'backkitchen']
+
+// Room sides before rotation: n = top of the room drawing (the TV wall in a living room), s = bottom
+// (behind the walkway), w = left, e = right. Each is a door, an open side or a wall (SPEC §7 ports).
+export function defaultPorts(room) {
+  const p = { n: 'wall', e: 'wall', s: 'door', w: 'wall' }
+  if (room.type === 'living' && room.answers?.open === 'yes') p.s = 'open'
+  if (room.type === 'dining') p.n = 'open'
+  return p
+}
+export const portsOf = (room) => room.ports || defaultPorts(room)
 
 export function newRoom(type, presetName) {
   const t = ROOM_TYPES[type]
   const name = presetName || Object.keys(t.presets)[0]
+  if (t.plain) {
+    const p = t.presets[name]
+    return { id: newId(), type, name: t.label, preset: name, answers: {}, items: [], size: { w: p.w * 0.3048, d: p.d * 0.3048 } }
+  }
   const answers = { ...t.presets[name] }
   return { id: newId(), type, name: t.label, preset: name, answers, items: t.items(answers), size: null }
 }
 
 // Re-answering a question rebuilds the question-made items but keeps items the user added by hand.
 export function applyAnswers(room, answers) {
+  if (ROOM_TYPES[room.type].plain) return room
   const kept = room.items.filter((i) => i.byHand)
   return { ...room, answers, items: [...ROOM_TYPES[room.type].items(answers), ...kept] }
 }

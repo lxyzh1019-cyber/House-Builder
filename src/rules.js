@@ -16,6 +16,10 @@ export const RULES = [
   { id: 'seatGap', label: 'Gap between seat pieces at a corner', value: 0.5, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'DN5 (owner approved 2026-11-05)' },
   { id: 'sizeStep', label: 'Room sizes round up to', value: 0.5, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'DN5 (owner approved 2026-11-05)' },
   { id: 'officeMinSide', label: 'Office: every side at least (bedroom-ready)', value: 10, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'Owner answer 2026-11-05 (T3); see open item L5' },
+  { id: 'lotW', label: 'Lot width (new project)', value: 60, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
+  { id: 'lotD', label: 'Lot depth (new project)', value: 100, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
+  { id: 'lotSnap', label: 'Lot board snap', value: 2, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7' },
+  { id: 'edgeSnap', label: 'Snap to a neighbour room edge within', value: 1, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'Assumed starting value (Claude, 2026-11-05) so rooms can touch when sizes are not whole 2 ft steps' },
   { id: 'bedSide', label: 'Walking space beside a bed', value: 2.5, unit: 'ft', tag: 'E3', date: '2026-11-05', source: 'Assumed starting value (Claude, 2026-11-05); replace with a sourced row' },
 ]
 
