@@ -58,6 +58,22 @@ describe('project save and load round trip (emulator)', () => {
     expect(await findProject(db('dave'), 'dave')).toBeNull()
   })
 
+  it('L7: the lot layout (lot, places, sides, clusters) is saved and survives a reload', async () => {
+    await env.clearFirestore()
+    const d = db('fred')
+    const living = { ...newRoom('living', 'Family TV room'), place: { x: ftToM(10), y: ftToM(20), rot: 90 }, ports: { n: 'wall', e: 'wall', s: 'open', w: 'door' } }
+    const dining = { ...newRoom('dining'), place: { x: ftToM(10), y: ftToM(33.5), rot: 0 } }
+    const lot = { w: ftToM(60), d: ftToM(100), setbacks: { front: ftToM(20), rear: ftToM(25), left: ftToM(4), right: ftToM(4) } }
+    const clusters = [{ id: 'c1', name: 'Core route', roomIds: [living.id, dining.id] }]
+    await createProject(d, 'fred', { scene: '{}', rooms: [living, dining], lot, clusters })
+    const p = await findProject(db('fred'), 'fred')
+    expect(p.lot).toEqual(lot)
+    expect(p.clusters).toEqual(clusters)
+    expect(p.rooms[0].place).toEqual(living.place)
+    expect(p.rooms[0].ports).toEqual(living.ports)
+    expect(p.rooms[1].place).toEqual(dining.place)
+  })
+
   it('T4: the T1 living room set to 20 x 20 ft is saved and still 20 x 20 after a reload', async () => {
     await env.clearFirestore()
     const d = db('erin')

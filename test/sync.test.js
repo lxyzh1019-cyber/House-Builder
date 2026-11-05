@@ -22,3 +22,21 @@ describe('rooms -> Pascal scene', () => {
     expect(Object.keys(b.items)).toHaveLength(office.items.length)
   })
 })
+
+describe('rooms on the lot -> Pascal scene', () => {
+  it('a room placed and turned 90° on the lot becomes a turned zone; the board reads it back', async () => {
+    const { lotState, newLot, rotateRoom } = await import('../src/lot/lot.js')
+    const { readLot } = await import('../src/scene/sync.js')
+    let living = { ...newRoom('living', 'Family TV room'), place: { x: ftToM(10), y: ftToM(20), rot: 0 } }
+    ;[living] = rotateRoom([living], living.id, {})
+    const lot = newLot()
+    syncScene([living], {}, { lot, state: lotState([living], lot, {}) })
+    const fp = readLot(P.useScene.getState().nodes)[living.id]
+    expect(fp.rot).toBe(90)
+    expect(Math.round(fp.w * 10) / 10).toBe(13.5)
+    expect(Math.round(fp.d * 10) / 10).toBe(15)
+    const r = readRoom(P.useScene.getState().nodes, living.id)
+    expect(Math.round(r.W / 304.8 * 10) / 10).toBe(15) // room frame keeps its own width
+    expect(r.walls).toBe(4)
+  })
+})

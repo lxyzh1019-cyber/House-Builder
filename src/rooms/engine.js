@@ -4,13 +4,18 @@ import { ruleValues } from '../rules.js'
 import { mmToFt, ftToMm, roundUp } from '../units.js'
 import { byId } from '../furniture/library.js'
 
+export const ROOM_PLAIN = new Set(['garage', 'kitchen', 'backkitchen'])
+
 const ft = (mm) => mmToFt(mm)
 const ofRole = (room, role) => room.items.filter((i) => i.role === role)
 const tvDiagIn = (tv) => tv.diagIn ?? (tv.w / 25.4) * (Math.hypot(16, 9) / 16)
 const sum = (xs) => xs.reduce((a, b) => a + b, 0)
 
 // Walkway after sharing with an open neighbour (R10): minus the shared strip.
-const walkOf = (room, R) => (room.answers?.open === 'yes' ? Math.max(0, R.walkway - R.sharedStrip) : R.walkway)
+// Is the main walkway shared with an open neighbour (R10)? On the lot board the lot decides (ctx.shared:
+// an open side touching a neighbour's open side); off the lot the room's own "open" answer does.
+export const isShared = (room, ctx) => (ctx && typeof ctx.shared === 'boolean' ? ctx.shared : room.answers?.open === 'yes')
+const walkOf = (room, R, ctx) => (room.type === 'living' && isShared(room, ctx) ? Math.max(0, R.walkway - R.sharedStrip) : R.walkway)
 
 // Items lined along the right wall (role "extra"): the strip adds their depth to the width and
 // the room must be at least as deep as they are long together.
@@ -21,8 +26,12 @@ function addExtras(room, w, d) {
 }
 
 // Unrounded minimum (ft) for each room type.
-function rawMinimum(room, R) {
-  const walk = walkOf(room, R)
+function rawMinimum(room, R, ctx) {
+  const walk = walkOf(room, R, ctx)
+  if (ROOM_PLAIN.has(room.type)) {
+    // Plain rooms (garage, kitchen, back kitchen) have no contents to size them yet: their size is the one typed.
+    return room.size ? { w: room.size.w / 0.3048, d: room.size.d / 0.3048 } : { w: 0, d: 0 }
+  }
   let w = 0, d = 0
   if (room.type === 'living') {
     const seats = [...ofRole(room, 'main'), ...ofRole(room, 'side')]
@@ -64,9 +73,9 @@ function rawMinimum(room, R) {
 }
 
 // R4: the smallest rectangle (ft) where the items fit with their clearances, rounded up to the size step.
-export function minimumSize(room, overrides) {
+export function minimumSize(room, overrides, ctx) {
   const R = ruleValues(overrides)
-  const raw = rawMinimum(room, R)
+  const raw = rawMinimum(room, R, ctx)
   return { w: roundUp(raw.w, R.sizeStep), d: roundUp(raw.d, R.sizeStep), raw }
 }
 
@@ -116,13 +125,13 @@ function candidateChanges(room) {
 const pick = (lib) => ({ libId: lib.id, name: lib.name, w: lib.w, d: lib.d, ...(lib.diagIn ? { diagIn: lib.diagIn } : {}) })
 
 // R6: the smallest sets of changes (1 or 2 changes) after which the room fits W x D.
-export function smallestChanges(room, W, D, overrides, limit = 3) {
-  const ops = candidateChanges(room)
+export function smallestChanges(room, W, D, overrides, limit = 3, ctx) {
+  const ops = candidateChanges(room).filter((o) => !(o.key === 'open' && ctx && typeof ctx.shared === 'boolean'))
   const found = []
   const tryOps = (list) => {
     let r = room
     for (const op of list) { r = op.apply(r); if (!r) return null }
-    const m = minimumSize(r, overrides)
+    const m = minimumSize(r, overrides, ctx)
     return fits(m, W, D) ? { changes: list.map((o) => o.label), min: m, turned: compare(m, W, D).turned } : null
   }
   for (const op of ops) { const f = tryOps([op]); if (f) found.push(f) }
@@ -139,12 +148,12 @@ export function smallestChanges(room, W, D, overrides, limit = 3) {
 }
 
 // R5–R7: "Check my size".
-export function checkSize(room, W, D, overrides) {
+export function checkSize(room, W, D, overrides, ctx) {
   const R = ruleValues(overrides)
-  const min = minimumSize(room, overrides)
+  const min = minimumSize(room, overrides, ctx)
   const c = compare(min, W, D)
   if (c.shortW > 1e-9 || c.shortD > 1e-9) {
-    return { status: 'too-small', min, W, D, shortW: c.shortW, shortD: c.shortD, turned: c.turned, changes: smallestChanges(room, W, D, overrides) }
+    return { status: 'too-small', min, W, D, shortW: c.shortW, shortD: c.shortD, turned: c.turned, changes: smallestChanges(room, W, D, overrides, 3, ctx) }
   }
   const spare = W * D - min.w * min.d
   return { status: 'fits', min, W, D, turned: c.turned, spare, costLow: spare * R.rateLow, costHigh: spare * R.rateHigh }
@@ -160,9 +169,9 @@ export function roomNotes(room, overrides) {
 
 // Default positions (mm, origin at the top-left inside corner; x along the width, y along the depth).
 // Returns { place: { [itemId]: { cx, cy, rot } }, walkways: [{ x, y, w, d, label }] }.
-export function layoutRoom(room, Wft, Dft, overrides) {
+export function layoutRoom(room, Wft, Dft, overrides, ctx) {
   const R = ruleValues(overrides)
-  const W = ftToMm(Wft), D = ftToMm(Dft), walk = ftToMm(walkOf(room, R))
+  const W = ftToMm(Wft), D = ftToMm(Dft), walk = ftToMm(walkOf(room, R, ctx))
   const place = {}, walkways = []
   const put = (it, cx, cy, rot = 0) => { place[it.id] = { cx: Math.round(cx), cy: Math.round(cy), rot } }
   const extras = ofRole(room, 'extra')

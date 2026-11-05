@@ -8,9 +8,9 @@ import Drawing from './Drawing.jsx'
 const money = (n) => 'C$' + Math.round(n).toLocaleString('en-CA')
 const categories = [...new Set(LIBRARY.map((i) => i.category))]
 
-export default function RoomEditor({ room, rules, geo, onChange, onDelete }) {
+export default function RoomEditor({ room, rules, geo, ctx, lotNote, onChange, onDelete }) {
   const t = ROOM_TYPES[room.type]
-  const min = minimumSize(room, rules)
+  const min = minimumSize(room, rules, ctx)
   const set = room.size ? { w: mToFt(room.size.w), d: room.size.d && mToFt(room.size.d) } : null
   const [w, setW] = useState(set ? +set.w.toFixed(2) : min.w)
   const [d, setD] = useState(set ? +set.d.toFixed(2) : min.d)
@@ -34,9 +34,9 @@ export default function RoomEditor({ room, rules, geo, onChange, onDelete }) {
     const W = Number(w), D = Number(d)
     if (!(W > 0 && D > 0)) { setResult({ status: 'bad' }); return }
     update({ size: { w: ftToM(W), d: ftToM(D) } })
-    setResult(checkSize(room, W, D, rules))
+    setResult(checkSize(room, W, D, rules, ctx))
   }
-  const useSize = (W, D) => { setW(W); setD(D); update({ size: { w: ftToM(W), d: ftToM(D) } }); setResult(checkSize(room, W, D, rules)) }
+  const useSize = (W, D) => { setW(W); setD(D); update({ size: { w: ftToM(W), d: ftToM(D) } }); setResult(checkSize(room, W, D, rules, ctx)) }
 
   const addFromLibrary = () => {
     const lib = LIBRARY.find((i) => i.id === addId)
@@ -58,6 +58,7 @@ export default function RoomEditor({ room, rules, geo, onChange, onDelete }) {
 
       <div className="cols">
         <div className="col">
+          {t.plain ? <p className="muted">A plain room for now: type its size. Its own questions and furniture come in a later piece.</p> : <>
           <h3>Start from</h3>
           <div className="chips">{Object.keys(t.presets).map((p) => <button key={p} className={`chip ${room.preset === p ? 'on' : ''}`} onClick={() => preset(p)}>{p}</button>)}</div>
 
@@ -104,10 +105,13 @@ export default function RoomEditor({ room, rules, geo, onChange, onDelete }) {
             <input id="custom-d" type="number" placeholder="D ft" step="0.25" value={custom.d} onChange={(e) => setCustom({ ...custom, d: e.target.value })} />
             <button className="btn" onClick={addCustom}>Add custom</button>
           </div>
+          </>}
         </div>
 
         <div className="col">
-          <div className="min-line">Minimum for these contents: <b data-testid="min-size">{sizeFt(min.w, min.d)}</b> <span className="muted">({ftIn(min.w)} x {ftIn(min.d)})</span></div>
+          {lotNote && <div className="note">{lotNote}</div>}
+          {t.plain ? <div className="min-line">No contents to size this room yet: <b data-testid="min-size">{sizeFt(sizeNow.w, sizeNow.d)}</b> is the size you typed.</div> :
+          <div className="min-line">Minimum for these contents: <b data-testid="min-size">{sizeFt(min.w, min.d)}</b> <span className="muted">({ftIn(min.w)} x {ftIn(min.d)})</span></div>}
           <div className="size-row">
             <label>Width (ft)<input id="size-w" type="number" step="0.5" min="1" value={w} onChange={(e) => setW(e.target.value)} /></label>
             <label>Depth (ft)<input id="size-d" type="number" step="0.5" min="1" value={d} onChange={(e) => setD(e.target.value)} /></label>
@@ -116,7 +120,7 @@ export default function RoomEditor({ room, rules, geo, onChange, onDelete }) {
           <div className="muted small">{room.size ? `Your size: ${sizeFt(sizeNow.w, sizeNow.d)} (saved)` : 'Using the minimum. Type your own size and press Check my size.'}</div>
           <Result r={result} onMake={(W, D) => useSize(W, D)} />
           {roomNotes(room, rules).map((n) => <div key={n} className="note">{n}</div>)}
-          <Drawing room={room} geo={geo} sizeFt={sizeNow} rules={rules} selectedId={selectedId} onSelect={setSelectedId} onMove={(id, pos) => editItem(id, { pos })} />
+          <Drawing room={room} geo={geo} sizeFt={sizeNow} rules={rules} ctx={ctx} selectedId={selectedId} onSelect={setSelectedId} onMove={(id, pos) => editItem(id, { pos })} />
           <div className="legend"><span className="sw walk" /> walkway or chair space <span className="sw bad" /> overlapping or outside the room · tap an item to see its clearances, drag to move it</div>
         </div>
       </div>

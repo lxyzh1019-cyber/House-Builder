@@ -38,6 +38,10 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | spike-Q1 (Pages deploy branch) | GitHub Pages deploys from `main` and from the working branch, so a phone test needs no merge. Kept from PR #1. | 2026-11-05 |
 | piece2-DN5 (size model) | Living room depth = TV stand 1.5 ft + viewing distance (screen to sofa back) + walkway; width = main sofa + side seats' depth + 0.5 ft gap at each corner; open to a neighbour takes the 2.5 ft shared strip off the walkway; sizes round up to the next 0.5 ft. | 2026-11-05 |
 | piece2-T3 (office side) | An office keeps every side at 10 ft or more, so it can become a bedroom later (see open item L5). | 2026-11-05 |
+| piece3-tests (lot board done-when) | L1–L7 in section 7. | 2026-11-05 |
+| piece3-rooms (garage, kitchen, back kitchen) | Plain rectangles for now: a size the user types, no questions or furniture yet. | 2026-11-05 |
+| piece3-shared (walkway sharing and a set size) | Sharing changes the minimum and the check only; a size the user set stays; a room with no set size follows its minimum. | 2026-11-05 |
+| piece3-lot (lot shape) | A rectangle (width x depth) with 4 setbacks: front, rear, left, right, in feet. | 2026-11-05 |
 
 ## 4. Architecture
 - Vite + React. Pascal packages @pascal-app/core, viewer, nodes, editor at 1.0.6 (MIT). Deploy to GitHub Pages with GitHub Actions.
@@ -92,6 +96,16 @@ Tests (done when):
 - Drag rooms onto a lot (default 60 x 100 ft), 2 ft snap, rotate, overlap flags, setbacks entered by the user from the zone.
 - Ports: each room side can be a door, an open side or a wall. An open living room touching another open room shares its walkway (minus a 2.5 ft strip); alone, the strip is added back.
 - The daily core route (garage, mudroom, back kitchen, kitchen, dining) can be glued into one cluster that moves as a whole.
+- Garage, kitchen and back kitchen join the room types as plain rectangles (piece3-rooms).
+
+Tests (done when):
+- L1 A new lot is 60 x 100 ft and rooms drag on it with 2 ft snap.
+- L2 A room rotates 90°.
+- L3 Two overlapping rooms are flagged red.
+- L4 A room crossing a setback line is flagged.
+- L5 The T1 living room, open, placed against an open dining room needs 15 x 11 ft; moved away it needs 15 x 13.5 again.
+- L6 A glued core route moves as one.
+- L7 The layout is saved and survives a reload.
 
 ## 8. Budget meter
 - Lines, all editable, no hidden numbers: budget goal, lot price, soft costs line by line, contingency %, build rate low and high.
