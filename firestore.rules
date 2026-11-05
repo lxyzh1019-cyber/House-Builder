@@ -6,7 +6,7 @@ service cloud.firestore {
     match /projects/{projectId} {
       allow read: if request.auth != null && request.auth.uid == resource.data.owner;
       allow create: if request.auth != null && request.auth.uid == request.resource.data.owner;
-      // DN1 (approved 2026-11-05): the owner cannot hand the project to another uid.
+      // chat-D19 (approved 2026-11-05): the owner cannot hand the project to another uid.
       allow update: if request.auth != null && request.auth.uid == resource.data.owner
                     && request.resource.data.owner == resource.data.owner;
       allow delete: if request.auth != null && request.auth.uid == resource.data.owner;
