@@ -43,6 +43,14 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D24 (garage, kitchen, back kitchen) | Plain rectangles for now: a size the user types, no questions or furniture yet. Was piece3-rooms. | 2026-11-05 |
 | chat-D25 (walkway sharing and a set size) | Sharing changes the minimum and the check only; a size the user set stays; a room with no set size follows its minimum. Was piece3-shared. | 2026-11-05 |
 | chat-D26 (lot shape) | A rectangle (width x depth) with 4 setbacks: front, rear, left, right, in feet. Was piece3-lot. | 2026-11-05 |
+| chat-D27 (where an uploaded plan picture lives) | In the browser that uploaded it only (IndexedDB), "for now". The trace itself (walls, doors, windows, rooms, scale, size checks) is saved with the project in Firestore. Was DN6. | 2026-11-05 |
+| chat-D28 (one project on every device) | Not now: each device keeps its own anonymous project until family sharing (section 9) decides how people sign in. Was DN7. | 2026-11-05 |
+| chat-D29 (where project data lives) | Firestore, as now. Nothing is saved to the GitHub repo (public; no real plans in it). | 2026-11-05 |
+| chat-D30 (plan intake done-when) | I1–I8 in section 11. | 2026-11-05 |
+| chat-D31 (test fit done-when) | F1–F7 in section 11. Only a traced room with 4 square corners gets a verdict, because the size check is a plain rectangle (chat-D16). A new design is a copy into Rooms; the traced plan never changes. | 2026-11-05 |
+| chat-D32 (budget meter) | Contingency is a share of the build cost only, not of soft costs or the lot (was DN8). Build rates are the Rules table rows. Area = rooms placed on the Lot board. Done-when B1–B7 in section 8. | 2026-11-05 |
+| chat-D33 (members without sign-in) | Each device's anonymous account id is its device code; the owner adds a member by pasting their code. Members read and write; only the owner adds or removes members and deletes. A later sign-in that links the anonymous account keeps the same id. Was DN9. | 2026-11-06 |
+| chat-D34 (projects and setup) | Many projects per person, each with its own data; Stage 0 setup holds name, new build or renovation, city and household (the budget goal stays on the Budget tab). Done-when S1–S7 in section 9. | 2026-11-06 |
 
 ## 4. Architecture
 - Vite + React. Pascal packages @pascal-app/core, viewer, nodes, editor at 1.0.6 (MIT). Deploy to GitHub Pages with GitHub Actions.
@@ -122,14 +130,32 @@ Tests (done when):
 - Lines, all editable, no hidden numbers: budget goal, lot price, soft costs line by line, contingency %, build rate low and high.
 - The lot price is inside the goal by default (chat-D7, lot in budget).
 - Shows rooms placed so far (ft² and cost range) and what is left of the goal.
+- Tests (done when, chat-D32; made-up numbers):
+  - B1 Every line can be edited and is saved: goal, lot price, lot in the goal, soft-cost lines (add, rename, remove), contingency %, both build rates.
+  - B2 A goal of 800,000 with a 200,000 lot inside it and no rooms placed leaves 600,000.
+  - B3 The T1 living room (15 x 13.5) and an office (10 x 10) on the lot = 302.5 ft²: build 52,937.50 to 83,187.50 at 175 and 275 per ft².
+  - B4 With 10% contingency on the build cost and 30,000 of soft costs: total 288,231.25 to 321,506.25, left 511,768.75 to 478,493.75.
+  - B5 With the lot taken out of the goal: left 711,768.75 to 678,493.75.
+  - B6 The budget is saved and survives a reload.
+  - B7 The owner types their own numbers on a PC and reads what is left in 5 minutes or less.
 
 ## 9. Family sharing
 - projects/{id} holds a members list. Members read and write; only the owner adds members or deletes.
 - Firestore emulator tests: a member writes, a non-member is denied.
+- Members are added by device code (chat-D33); one project per device is gone (chat-D34).
+- Tests (done when, chat-D34):
+  - S1 A member reads and writes the project and finds it under "shared with me".
+  - S2 A non-member is denied and finds nothing.
+  - S3 A member cannot add or remove members, rename them, change the owner or delete.
+  - S4 The owner adds and removes members and is the only one who deletes.
+  - S5 Two projects per owner: both are listed, and saving one leaves the other as it was.
+  - S6 Project setup (name, new build or renovation, city, household) survives a reload.
+  - S7 The owner adds their phone by its device code and sees the same project on the phone.
 
 ## 10. Open items
 - 12 canvas fixes from the canvas v54 review, to apply when the matching piece starts: C1 ledger, L2 sun room, L3 feng shui roles, G1 new-design branch, L5 study bedroom-ready, L6 homework, O1 tour copy, C3 back-kitchen make-up air, O2 feng shui list, C2 sizes from questionnaire counts, K1 date old items, L4 rename the two 7 lists.
 - Later pieces' sections (section 12 rows marked Later) are written here before each starts.
+- Seeing a traced plan on another device: done by device code (chat-D33). The plan picture still stays on the device that uploaded it (chat-D27 "for now"). Real sign-in (chat-D28) is still open; linking keeps each device's id.
 
 ## 11. Plan intake (trace a plan)
 Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovation's current house, a builder's plan, or a plan the family likes. This is a design method of its own, parallel to room blocks (chat-D18), not a step before or after it.
@@ -139,6 +165,23 @@ Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovatio
 - P4 With no real plan yet, every piece works on a sample plan.
 - P5 Test fit (a traced plan marked "test fit"): the user names each traced room's type and picks its contents (or a preset). Rooms from contents then gives each room a Check my size verdict: fits with spare, or too small by how much. A new design is a separate branch, not a change to a traced plan.
 - P6 The site review finds the zone (from the land title or the City zoning map) to set setbacks, height and lot coverage.
+- Tests (done when, chat-D30):
+  - I1 The sample plan's 4 outside walls, traced, give its printed outside size within the tolerance (rules table: plan trace tolerance).
+  - I2 Two points 100 px apart set to 10 ft make a 200 px wall read 20.0 ft.
+  - I3 Three matching sizes say the trace matches; one size off by more than the tolerance says "trace again" and names that size.
+  - I4 A door and a window sit on their wall in the Pascal scene, at the place and width traced.
+  - I5 A traced room becomes a Pascal room with its name and area; a wall traced on Level 1 sits on Level 1.
+  - I6 The trace is saved and survives a reload (the picture stays as chat-D27 says).
+  - I7 The site limits (zone, height, lot coverage) are saved; coverage = area under the placed rooms / lot area, flagged when over the limit.
+  - I8 The owner traces the sample plan's outside walls on a PC in 10 minutes or less.
+- Test fit tests (done when, chat-D31):
+  - F1 The sample plan's Living room (20 x 18 ft) as a Family TV room fits, spare 157.5 ft².
+  - F2 The sample's Bath (6 x 12 ft) as a home office is too small: width short 4.0 ft, depth 0; it needs 10 x 10.
+  - F3 A traced room that is not a rectangle says the check needs a rectangle.
+  - F4 R13: a living room in Rooms shows the traced living room's 20 x 18 ft as a size you know.
+  - F5 "Copy into Rooms as a new design" adds the rooms at their traced sizes; the traced plan is unchanged.
+  - F6 The test-fit choices are saved and survive a reload.
+  - F7 The owner marks the sample as a test fit on a PC, names 2 rooms and reads their verdicts in 10 minutes or less.
 
 ## 12. Feature inventory (nothing leaves this list without a decision)
 Status: Now = in a planned piece; Later = kept, its section is written before its piece starts.

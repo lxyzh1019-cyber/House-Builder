@@ -1,15 +1,25 @@
 rules_version = '2';
-// House-Designer spike. projects/{projectId} = { owner: <uid>, scene: "<scene JSON>" }.
-// Later pieces add a members list so each family member can save (not in this spike).
+// House-Designer. projects/{projectId} = { owner: <uid>, members: [<uid>], memberNames: { <uid>: label },
+// setup, rooms, rules, lot, clusters, trace, budget, scene }.
+// SPEC §9 (family sharing, chat-D33): members read and write the project; only the owner adds or removes
+// members, and only the owner deletes. A member is added by their device code (their anonymous account id).
 service cloud.firestore {
   match /databases/{database}/documents {
     match /projects/{projectId} {
-      allow read: if request.auth != null && request.auth.uid == resource.data.owner;
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.owner;
-      // chat-D19 (approved 2026-11-05): the owner cannot hand the project to another uid.
-      allow update: if request.auth != null && request.auth.uid == resource.data.owner
-                    && request.resource.data.owner == resource.data.owner;
-      allow delete: if request.auth != null && request.auth.uid == resource.data.owner;
+      function signedIn() { return request.auth != null; }
+      function isOwner() { return signedIn() && request.auth.uid == resource.data.owner; }
+      function isMember() { return signedIn() && request.auth.uid in resource.data.get('members', []); }
+      // chat-D19 (approved 2026-11-05): nobody can hand the project to another uid.
+      function ownerKept() { return request.resource.data.owner == resource.data.owner; }
+      function membersKept() {
+        return request.resource.data.get('members', []) == resource.data.get('members', [])
+            && request.resource.data.get('memberNames', {}) == resource.data.get('memberNames', {});
+      }
+
+      allow read: if isOwner() || isMember();
+      allow create: if signedIn() && request.auth.uid == request.resource.data.owner;
+      allow update: if (isOwner() && ownerKept()) || (isMember() && ownerKept() && membersKept());
+      allow delete: if isOwner();
     }
   }
 }

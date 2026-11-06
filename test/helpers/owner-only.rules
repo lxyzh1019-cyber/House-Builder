@@ -1,0 +1,15 @@
+rules_version = '2';
+// House-Designer spike. projects/{projectId} = { owner: <uid>, scene: "<scene JSON>" }.
+// Later pieces add a members list so each family member can save (not in this spike).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /projects/{projectId} {
+      allow read: if request.auth != null && request.auth.uid == resource.data.owner;
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.owner;
+      // chat-D19 (approved 2026-11-05): the owner cannot hand the project to another uid.
+      allow update: if request.auth != null && request.auth.uid == resource.data.owner
+                    && request.resource.data.owner == resource.data.owner;
+      allow delete: if request.auth != null && request.auth.uid == resource.data.owner;
+    }
+  }
+}

@@ -1,9 +1,10 @@
 // Runs in the Firestore emulator: npm run test:rules
+import { sampleFit } from './helpers/sample-fit.js'
 import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebase/rules-unit-testing'
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
-import { createProject, findProject, saveProject } from '../src/projects.js'
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { createProject, deleteProject, findProject, listProjects, openProject, saveProject, setMembers } from '../src/projects.js'
 import { newRoom } from '../src/rooms/types.js'
 import { checkSize } from '../src/rooms/engine.js'
 import { ftToM, mToFt, sizeFt } from '../src/units.js'
@@ -46,6 +47,75 @@ describe('projects rules', () => {
   })
 })
 
+// SPEC §9 family sharing, tests S1–S4 (chat-D33): members by device code (their anonymous account id).
+describe('family sharing rules (SPEC §9)', () => {
+  const shared = async () => env.withSecurityRulesDisabled((ctx) => setDoc(doc(ctx.firestore(), 'projects/s1'), { owner: 'alice', members: ['phone', 'bob'], memberNames: { phone: 'My phone', bob: 'Bob' }, scene: SCENE, rooms: [] }))
+  it('S1 a member reads and writes the project, and finds it in "shared with me"', async () => {
+    await shared()
+    await assertSucceeds(getDoc(doc(db('bob'), 'projects/s1')))
+    await assertSucceeds(updateDoc(doc(db('bob'), 'projects/s1'), { rooms: [{ id: 'r1', type: 'office' }] }))
+    const list = await assertSucceeds(listProjects(db('bob'), 'bob'))
+    expect(list.map((p) => [p.id, p.role])).toEqual([['s1', 'member']])
+  })
+  it('S2 a non-member is denied, and finds nothing', async () => {
+    await shared()
+    await assertFails(getDoc(doc(db('carl'), 'projects/s1')))
+    await assertFails(updateDoc(doc(db('carl'), 'projects/s1'), { rooms: [] }))
+    expect(await listProjects(db('carl'), 'carl')).toEqual([])
+  })
+  it('S3 a member cannot add or remove members, rename them, change the owner or delete', async () => {
+    await shared()
+    await assertFails(updateDoc(doc(db('bob'), 'projects/s1'), { members: ['phone', 'bob', 'carl'] }))
+    await assertFails(updateDoc(doc(db('bob'), 'projects/s1'), { members: ['bob'] }))
+    await assertFails(updateDoc(doc(db('bob'), 'projects/s1'), { memberNames: { phone: 'x', bob: 'Bob' } }))
+    await assertFails(updateDoc(doc(db('bob'), 'projects/s1'), { owner: 'bob' }))
+    await assertFails(deleteDoc(doc(db('bob'), 'projects/s1')))
+  })
+  it('S4 the owner adds and removes members and is the only one who deletes', async () => {
+    await shared()
+    await assertSucceeds(setMembers(db('alice'), 's1', ['phone', 'bob', 'carl'], { phone: 'My phone', bob: 'Bob', carl: 'Carl' }))
+    await assertSucceeds(getDoc(doc(db('carl'), 'projects/s1')))
+    await assertSucceeds(setMembers(db('alice'), 's1', ['phone'], { phone: 'My phone' }))
+    await assertFails(getDoc(doc(db('bob'), 'projects/s1')))
+    await assertSucceeds(deleteProject(db('alice'), 's1'))
+  })
+  it('S5 two projects per owner: the list has both, and saving one leaves the other as it was', async () => {
+    await env.clearFirestore()
+    const a = await createProject(db('dana'), 'dana', { setup: { name: 'Lake house' }, rooms: [{ id: 'x' }] })
+    const b = await createProject(db('dana'), 'dana', { setup: { name: 'Town house' }, rooms: [{ id: 'y' }] })
+    await saveProject(db('dana'), 'dana', b, { rooms: [{ id: 'y2' }] })
+    const list = await listProjects(db('dana'), 'dana')
+    expect(list.map((p) => p.name).sort()).toEqual(['Lake house', 'Town house'])
+    expect((await openProject(db('dana'), a)).rooms).toEqual([{ id: 'x' }])
+    expect((await openProject(db('dana'), b)).rooms).toEqual([{ id: 'y2' }])
+  })
+  it('S6 project setup (name, new or renovation, city, household) survives a reload', async () => {
+    await env.clearFirestore()
+    const setup = { name: 'Test house', type: 'renovation', city: 'Test City', household: [{ id: 'h1', label: 'Adult 1', group: 'adult' }, { id: 'h2', label: 'Child 1', group: 'child' }] }
+    const id = await createProject(db('emma'), 'emma', { setup, rooms: [] })
+    expect((await openProject(db('emma'), id)).setup).toEqual(setup)
+  })
+  it('with the old owner-only rules still published, the app still lists and opens its own projects', async () => {
+    const [host, port] = (process.env.FIRESTORE_EMULATOR_HOST || '127.0.0.1:8080').split(':')
+    const old = await initializeTestEnvironment({ projectId: 'demo-old-rules', firestore: { rules: readFileSync('test/helpers/owner-only.rules', 'utf8'), host, port: Number(port) } })
+    try {
+      const d = old.authenticatedContext('fay').firestore()
+      const id = await createProject(d, 'fay', { setup: { name: 'Mine' }, rooms: [{ id: 'z' }] })
+      const list = await listProjects(d, 'fay')
+      expect(list.map((p) => [p.id, p.role])).toEqual([[id, 'owner']])
+      await saveProject(d, 'fay', id, { rooms: [{ id: 'z2' }] })
+      expect((await openProject(d, id)).rooms).toEqual([{ id: 'z2' }])
+    } finally { await old.cleanup() }
+  })
+
+  it("a member's save keeps the owner and the members list", async () => {
+    await shared()
+    await saveProject(db('bob'), 'bob', 's1', { rooms: [{ id: 'r9' }], scene: SCENE })
+    const p = await openProject(db('alice'), 's1')
+    expect(p).toMatchObject({ owner: 'alice', members: ['phone', 'bob'], rooms: [{ id: 'r9' }] })
+  })
+})
+
 describe('project save and load round trip (emulator)', () => {
   it('create -> save -> find returns the saved scene and rooms', async () => {
     await env.clearFirestore()
@@ -72,6 +142,48 @@ describe('project save and load round trip (emulator)', () => {
     expect(p.rooms[0].place).toEqual(living.place)
     expect(p.rooms[0].ports).toEqual(living.ports)
     expect(p.rooms[1].place).toEqual(dining.place)
+  })
+
+  it('I6: a traced plan (scale, levels, walls, doors, windows, rooms, size checks) and the site limits survive a reload', async () => {
+    await env.clearFirestore()
+    const d = db('gina')
+    const trace = {
+      image: { kind: 'local', name: 'plan.png', w: 920, h: 740 },
+      scale: { a: { x: 60, y: 40 }, b: { x: 860, y: 40 }, ft: 40 },
+      levels: [
+        { id: 'lv0', name: 'Level 0', walls: [{ id: 'w0', a: { x: 60, y: 80 }, b: { x: 860, y: 80 }, openings: [{ id: 'o1', kind: 'door', t: 0.175, width: 0.9144 }, { id: 'o2', kind: 'window', t: 0.6, width: 1.2192 }] }],
+          rooms: [{ id: 'r1', name: 'Living', pts: [{ x: 60, y: 80 }, { x: 460, y: 80 }, { x: 460, y: 440 }, { x: 60, y: 440 }] }] },
+        { id: 'lv1', name: 'Level 1', walls: [], rooms: [] },
+      ],
+      checks: [{ id: 'c1', wallId: 'w0', ft: 40 }],
+      opacity: 45,
+    }
+    const lot = { w: ftToM(60), d: ftToM(100), setbacks: { front: 0, rear: 0, left: 0, right: 0 }, site: { zone: 'RS', maxHeightFt: 30, maxCoveragePct: 40 } }
+    await createProject(d, 'gina', { scene: '{}', rooms: [], lot, trace })
+    const p = await findProject(db('gina'), 'gina')
+    expect(p.trace).toEqual(trace)
+    expect(p.lot.site).toEqual(lot.site)
+  })
+
+  it('F6: test-fit choices (room types, presets, contents) survive a reload', async () => {
+    await env.clearFirestore()
+    const d = db('hana')
+    const trace = sampleFit()
+    await createProject(d, 'hana', { scene: '{}', rooms: [], trace })
+    const p = await findProject(db('hana'), 'hana')
+    expect(p.trace.fit).toEqual(trace.fit)
+    expect(p.trace.fit.rooms.liv.items.length).toBeGreaterThan(0)
+  })
+
+  it('B1 + B6: every budget line (goal, lot, lot in goal, soft costs, contingency, both rates) is saved and survives a reload', async () => {
+    await env.clearFirestore()
+    const d = db('ivan')
+    const budget = { goal: 800000, lotPrice: 200000, lotInGoal: false, contingencyPct: 10, soft: [{ id: 's1', name: 'Permits', amount: 12000 }, { id: 's2', name: 'Design', amount: 18000 }] }
+    const rules = { rateLow: 180, rateHigh: 290 }
+    await createProject(d, 'ivan', { scene: '{}', rooms: [], rules, budget })
+    const p = await findProject(db('ivan'), 'ivan')
+    expect(p.budget).toEqual(budget)
+    expect(p.rules).toEqual(rules)
   })
 
   it('T4: the T1 living room set to 20 x 20 ft is saved and still 20 x 20 after a reload', async () => {

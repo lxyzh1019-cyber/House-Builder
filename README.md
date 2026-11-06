@@ -3,17 +3,27 @@
 Design a family home in Alberta from how the family lives. The spec is [SPEC.md](SPEC.md); results and
 measurements are in [WORKING_RECORD.md](WORKING_RECORD.md).
 
-## Now: rooms from contents (SPEC §6)
+## What it does now
 
-Pick a room type, answer plain questions, adjust real furniture items, and get the minimum size where the
-items fit with their clearances. Set your own size and press **Check my size**. The **Spec tests** tab runs
-T1–T6 in the browser.
+- **Project** (SPEC §9, §12): project setup (name, new build or renovation, city, household), many
+  projects, and sharing by device code: open a project on your phone or a family member's device.
+- **Rooms** (SPEC §6): pick a room type, answer plain questions, adjust real furniture items, and get the
+  minimum size where the items fit with their clearances. Set your own size and press **Check my size**.
+- **Plan intake** (SPEC §11): put the sample plan, or your own picture or PDF, under the model; set the
+  scale; trace walls, doors, windows, rooms and levels; check 3 sizes against the drawing. Your picture
+  stays in your browser only.
+- **Test fit** (SPEC §11 P5): name each traced room's type and contents and see whether it fits at its
+  traced size; copy the rooms into Rooms as a new design. Rooms shows traced sizes as sizes you know (R13).
+- **Lot board** (SPEC §7): place rooms on the lot, setbacks and a site review (zone, height, coverage).
+- **Budget** (SPEC §8): your goal, lot price, soft costs, contingency and build rates against the rooms on
+  the lot; shows what is left of the goal. Your numbers stay in your project, never in this repo.
+- **Spec tests** runs T1–T6 and L1–L6 in the browser. Every screen is in English and 简体中文.
 
 ```bash
 npm ci
 npm run dev          # local app (saves to the House-Designer Firestore project)
-npm test             # unit tests: size engine T1–T6, Pascal scene, spike room
-npm run test:rules   # all tests, including Firestore rules and T4 save/reload, in the emulator (Java 21)
+npm test             # unit tests: size engine T1–T6, lot L1–L6, plan intake I1–I5 and I7, test fit F1–F5, budget B2–B5, opening a project, languages, Pascal scene
+npm run test:rules   # all tests, including Firestore rules and the save/reload tests T4, L7, I6, F6, B1/B6, sharing S1–S6, in the emulator (Java 21)
 npm run build        # production build into dist/
 npm run build:local  # build that saves in browser storage instead of Firestore
 ```

@@ -4,14 +4,23 @@ import { ROOM_TYPES, TYPE_ORDER, newRoom } from '../rooms/types.js'
 import { readLot, readRoom, sceneJson, syncScene } from '../scene/sync.js'
 import { lotState, newLot } from '../lot/lot.js'
 import LotBoard from './LotBoard.jsx'
-import { sizeFt } from '../units.js'
+import { ftToM, sizeFt } from '../units.js'
 import RoomEditor from './RoomEditor.jsx'
 import RulesTable from './RulesTable.jsx'
 import SpecTests from './SpecTests.jsx'
 import { LANGS, setLang, t, tlist, tx, useLang } from '../i18n.js'
+import TraceBoard from './TraceBoard.jsx'
+import Budget from './Budget.jsx'
+import { newBudget } from '../budget/budget.js'
+import { pickProject, startFrom } from '../load.js'
+import ProjectTab from './ProjectTab.jsx'
+import { newTrace, traceFrame } from '../trace/trace.js'
+import { copyToRooms, knownSizes } from '../trace/fit.js'
+import { SAMPLE, sampleUrl } from '../trace/sample.js'
+import { fileToPicture, loadPicture, pictureSize, savePicture } from '../trace/picture.js'
 
 const View3D = lazy(() => import('./View3D.jsx'))
-const TABS = [['rooms', 'tab.rooms'], ['lot', 'tab.lot'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
+const TABS = [['project', 'tab.project'], ['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['budget', 'tab.budget'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
 const tabFromHash = () => (TABS.some(([id]) => `#${id}` === location.hash) ? location.hash.slice(1) : 'rooms')
 // ?fx=0 (or #fx0) turns off Pascal's post-effects in the 3D view.
 const postFx = new URLSearchParams(location.search).get('fx') !== '0'
@@ -22,6 +31,14 @@ export default function App({ store, pluginReady }) {
   const [rules, setRules] = useState({})
   const [lot, setLot] = useState(() => newLot())
   const [clusters, setClusters] = useState([])
+  const [trace, setTrace] = useState(() => newTrace())
+  const [budget, setBudget] = useState(() => newBudget())
+  const [setup, setSetup] = useState(null)
+  const [projects, setProjects] = useState([])
+  const [meta, setMeta] = useState({ role: 'owner', members: [], memberNames: {} })
+  const [pictureUrl, setPictureUrl] = useState(null)
+  const [pictureNote, setPictureNote] = useState(null)
+  const [aim, setAim] = useState('room')
   const [selId, setSelId] = useState(null)
   const [tab, setTab] = useState(tabFromHash())
   const lang = useLang()
@@ -38,10 +55,17 @@ export default function App({ store, pluginReady }) {
     ;(async () => {
       try {
         await pluginReady
-        const data = await store.load()
+        const me = await store.init()
+        const list = await store.list()
+        const pick = pickProject(list, lastProject())
+        const data = pick ? await store.open(pick.id) : null
         if (!alive) return
-        if (data?.rooms?.length) { setRooms(data.rooms); setRules(data.rules || {}); setLot(data.lot || newLot(data.rules)); setClusters(data.clusters || []); setSelId(data.rooms[0].id); setSaveState('loaded') }
-        else { const start = [newRoom('living', 'Family TV room'), newRoom('office', 'Home office')]; setRooms(start); setSelId(start[0].id); setSaveState('new') }
+        const p = startFrom(data)
+        setRooms(p.rooms); setRules(p.rules); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget); setSetup(p.setup)
+        setProjects(list)
+        if (data) { rememberProject(data.id); setMeta({ id: data.id, owner: data.owner, members: data.members || [], memberNames: data.memberNames || {}, role: data.owner === me.uid || store.name !== 'Firestore' ? 'owner' : 'member' }) }
+        setSelId(p.rooms[0].id); setSaveState(p.isNew ? 'new' : 'loaded')
+        if (data?.trace) await showPicture(data.trace.image)
         setReady(true)
       } catch (e) { console.error(e); setError(String(e?.message || e)); setSaveState('error') }
     })()
@@ -52,24 +76,55 @@ export default function App({ store, pluginReady }) {
   const st = useMemo(() => lotState(rooms, lot, rules), [rooms, lot, rules])
   useEffect(() => {
     if (!ready) return
-    try { syncScene(rooms, rules, { lot, state: st }) } catch (e) { console.error(e); setError(t('err.scene', { msg: e?.message || e })) }
+    try { syncScene(rooms, rules, { lot, state: st }, { trace, guideUrl: pictureUrl }) } catch (e) { console.error(e); setError(t('err.scene', { msg: e?.message || e })) }
     clearTimeout(saveTimer.current)
     setSaveState('saving')
     saveTimer.current = setTimeout(async () => {
-      try { await store.save({ scene: sceneJson(), rooms, rules, lot, clusters }); setSaveState('saved') }
+      try {
+        const wasNew = !store.currentId()
+        await store.save({ scene: sceneJson(), rooms, rules, lot, clusters, trace, budget, setup })
+        if (wasNew && store.currentId()) { rememberProject(store.currentId()); setMeta((m) => ({ ...m, id: store.currentId() })); setProjects(await store.list()) }
+        setSaveState('saved')
+      }
       catch (e) { console.error(e); setError(t('err.save', { msg: e?.message || e })); setSaveState('error') }
     }, 600)
-  }, [ready, rooms, rules, lot, clusters, st, store])
+  }, [ready, rooms, rules, lot, clusters, trace, budget, setup, pictureUrl, st, store])
 
   const room = rooms.find((r) => r.id === selId)
   const geo = useMemo(() => (room ? readRoom(nodes, room.id) : null), [nodes, room])
   const fps = useMemo(() => readLot(nodes), [nodes])
+  const traceAim = useMemo(() => { const f = traceFrame(trace, ftToM(5)); return f ? [f.ox + f.wM / 2, f.oz + f.hM / 2, Math.hypot(f.wM, f.hM)] : null }, [trace])
   const target = useMemo(() => {
+    if (aim === 'trace' && traceAim) return traceAim
     const z = room && Object.values(nodes).find((n) => n.type === 'zone' && n.metadata?.roomId === room.id)
     if (!z) return null
     const xs = z.polygon.map((p) => p[0]), zs = z.polygon.map((p) => p[1])
     return [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...zs) + Math.max(...zs)) / 2, Math.hypot(Math.max(...xs) - Math.min(...xs), Math.max(...zs) - Math.min(...zs))]
-  }, [nodes, room])
+  }, [nodes, room, aim, traceAim])
+
+  // The plan picture (DN6 A): the sample is built in; an upload lives only in this browser.
+  async function showPicture(image) {
+    setPictureNote(null)
+    if (!image) { setPictureUrl(null); return }
+    if (image.kind === 'sample') { setPictureUrl(sampleUrl()); return }
+    const blob = await loadPicture()
+    if (blob) setPictureUrl(URL.createObjectURL(blob))
+    else { setPictureUrl(null); setPictureNote('tr.noPicture') }
+  }
+  const pickSample = () => {
+    const sameSize = trace.image?.w === SAMPLE.w && trace.image?.h === SAMPLE.h
+    setTrace({ ...trace, image: { kind: 'sample', name: SAMPLE.name, w: SAMPLE.w, h: SAMPLE.h }, scale: sameSize ? trace.scale : null })
+    setPictureUrl(sampleUrl()); setPictureNote(null)
+  }
+  const upload = async (file) => {
+    try {
+      const blob = await fileToPicture(file), url = URL.createObjectURL(blob), size = await pictureSize(url)
+      const kept = await savePicture(blob)
+      const sameSize = trace.image?.w === size.w && trace.image?.h === size.h
+      setTrace({ ...trace, image: { kind: 'local', name: file.name, w: size.w, h: size.h }, scale: sameSize ? trace.scale : null })
+      setPictureUrl(url); setPictureNote(kept ? null : 'tr.notKept')
+    } catch (e) { console.error(e); setPictureNote('tr.badFile') }
+  }
 
   const changeRoom = (r) => setRooms(rooms.map((x) => (x.id === r.id ? r : x)))
   const addRoom = (type) => { const r = newRoom(type); setRooms([...rooms, r]); setSelId(r.id); location.hash = 'rooms' }
@@ -78,7 +133,7 @@ export default function App({ store, pluginReady }) {
   return (
     <div className="app">
       <header className="top">
-        <div className="brand">{t('app.brand')} <span className="muted">· {t('app.sub')}</span></div>
+        <div className="brand">{t('app.brand')} <span className="muted" data-testid="project-name">· {tx(setup?.name) || t('proj.unnamed')}{meta.role === 'member' ? ` · ${t('proj.shared')}` : ''}</span></div>
         <div className="top-right">
           <div className="save" data-testid="save-state">{t('app.savedIn', { store: t(`store.${store.name}`), state: t(`save.${saveState}`) })}</div>
           <div className="lang" role="group" aria-label={t('app.lang')}>{LANGS.map(([id, label]) => <button key={id} lang={id === 'zh' ? 'zh-Hans' : 'en'} className={`chip ${lang === id ? 'on' : ''}`} aria-pressed={lang === id} data-testid={`lang-${id}`} onClick={() => setLang(id)}>{label}</button>)}</div>
@@ -88,6 +143,11 @@ export default function App({ store, pluginReady }) {
       {error && <div className="error" role="alert">{error}</div>}
       {!ready && !error && <div className="panel muted">{t('app.loading')}</div>}
 
+      {ready && tab === 'project' && <ProjectTab store={store} setup={setup} onSetup={setSetup} projects={projects} current={meta.id || store.currentId()} meta={meta}
+        onOpen={(id) => { rememberProject(id); location.reload() }}
+        onNew={async () => { const p = startFrom(null); const id = await store.create({ rooms: p.rooms, rules: p.rules, lot: p.lot, clusters: p.clusters, trace: p.trace, budget: p.budget, setup: p.setup, scene: '{}' }); rememberProject(id); location.reload() }}
+        onDelete={async (id) => { await store.remove(id); if (id === (meta.id || store.currentId())) { rememberProject(null); location.reload() } else setProjects(await store.list()) }}
+        onShare={async (members, memberNames) => { await store.share(members, memberNames); setMeta((m) => ({ ...m, members, memberNames })) }} />}
       {ready && tab === 'rooms' && (
         <main className="rooms">
           <aside className="room-list">
@@ -108,15 +168,18 @@ export default function App({ store, pluginReady }) {
               <div className="chips">{TYPE_ORDER.map((ty) => <button key={ty} className="chip" onClick={() => addRoom(ty)}>+ {tx(ROOM_TYPES[ty].label)}</button>)}</div>
             </div>
           </aside>
-          {room ? <RoomEditor key={room.id} room={room} rules={rules} geo={geo} ctx={st[room.id]?.ctx} lotNote={lotNote(room, st, rooms)} onChange={changeRoom} onDelete={() => deleteRoom(room.id)} /> : <div className="panel muted">{t('app.addToStart')}</div>}
+          {room ? <RoomEditor key={room.id} room={room} rules={rules} geo={geo} ctx={st[room.id]?.ctx} lotNote={lotNote(room, st, rooms)} known={knownSizes(trace, room.type)} onChange={changeRoom} onDelete={() => deleteRoom(room.id)} /> : <div className="panel muted">{t('app.addToStart')}</div>}
         </main>
       )}
+      {ready && tab === 'trace' && <TraceBoard trace={trace} rules={rules} nodes={nodes} pictureUrl={pictureUrl} pictureNote={pictureNote} onTrace={setTrace} onSample={pickSample} onUpload={upload} onCopyRooms={() => { const add = copyToRooms(trace); if (add.length) setRooms([...rooms, ...add]); return add.length }} />}
       {ready && tab === 'lot' && <LotBoard rooms={rooms} lot={lot} clusters={clusters} rules={rules} st={st} fps={fps} onRooms={setRooms} onLot={setLot} onClusters={setClusters} onOpenRoom={(id) => { setSelId(id); location.hash = 'rooms' }} />}
+      {ready && tab === 'budget' && <Budget budget={budget} rooms={rooms} st={st} rules={rules} onBudget={setBudget} onRules={setRules} />}
       {ready && tab === 'rules' && <RulesTable overrides={rules} onChange={setRules} />}
       {tab === 'tests' && <SpecTests />}
       {ready && tab === '3d' && (
         <section className="panel">
-          <div className="muted small">{t('3d.line', { room: room ? tx(room.name) : t('3d.noRoom'), gpu: backend ? t(`gpu.${backend}`) : '…' })}{postFx ? '' : t('3d.fxOff')}</div>
+          {traceAim && <div className="chips">{['room', 'trace'].map((a) => <button key={a} className={`chip ${aim === a ? 'on' : ''}`} onClick={() => setAim(a)}>{t(`3d.aim.${a}`)}</button>)}</div>}
+          <div className="muted small">{t('3d.line', { room: aim === 'trace' && traceAim ? t('3d.aim.trace') : room ? tx(room.name) : t('3d.noRoom'), gpu: backend ? t(`gpu.${backend}`) : '…' })}{postFx ? '' : t('3d.fxOff')}</div>
           <Suspense fallback={<div className="muted">{t('3d.loading')}</div>}>
             <View3D target={target} postFx={postFx && location.hash !== '#fx0'} onBackend={setBackend} />
           </Suspense>
@@ -126,6 +189,10 @@ export default function App({ store, pluginReady }) {
     </div>
   )
 }
+
+// The project this browser opened last (per browser, like the language).
+function lastProject() { try { return localStorage.getItem('hd-project') } catch { return null } }
+function rememberProject(id) { try { if (id) localStorage.setItem('hd-project', id); else localStorage.removeItem('hd-project') } catch { /* storage blocked */ } }
 
 // What the lot board means for this room's walkway (shown in Rooms).
 function lotNote(room, st, rooms) {

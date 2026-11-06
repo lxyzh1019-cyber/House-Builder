@@ -33,6 +33,7 @@ describe('i18n (SPEC §4 Language rule)', () => {
     }
     for (const i of LIBRARY) { names.add(i.name); names.add(i.category) }
     for (const r of RULES) { names.add(r.label); names.add(r.unit); names.add(r.source) }
+    names.add('Sample plan')
     ;['3-Seat Sofa Bed', 'Sofa Bed (2-seat)', 'walkway', 'chair space', 'Core route', 'front setback', 'rear setback', 'left setback', 'right setback'].forEach((n) => names.add(n))
     const missing = [...names].filter((n) => needsZh(n) && !DATA[n])
     expect(missing).toEqual([])
@@ -53,7 +54,8 @@ describe('i18n (SPEC §4 Language rule)', () => {
     // Keys built at run time: lot inputs, sides, ports, table heads, statuses, store, save state, GPU.
     const dyn = [['lot', ['w', 'd', 'front', 'rear', 'left', 'right']], ['lot.side', ['n', 'e', 's', 'w']], ['port', ['door', 'open', 'wall']],
       ['rules', ['rule', 'value', 'unit', 'tag', 'source', 'date']], ['tests', ['test', 'what', 'expected', 'got', 'result']], ['st', ['fits', 'too-small']],
-      ['store', ['Firestore', 'browser storage']], ['save', ['loading', 'loaded', 'new', 'saving', 'saved', 'error']], ['gpu', ['webgpu', 'webgl', 'unknown']]]
+      ['store', ['Firestore', 'browser storage']], ['save', ['loading', 'loaded', 'new', 'saving', 'saved', 'error']], ['gpu', ['webgpu', 'webgl', 'unknown']],
+      ['tr.tool', ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']], ['tr.how', ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']], ['3d.aim', ['room', 'trace']], ['tr', ['noPicture', 'notKept', 'badFile']], ['fit', ['contents', 'hideContents']], ['bud', ['ok', 'overHigh', 'overLow']], ['proj.type', ['new', 'renovation']], ['share', ['badCode', 'added', 'failed']]]
     for (const [pre, ks] of dyn) ks.forEach((k) => used.add(`${pre}.${k}`))
     expect(used.size).toBeGreaterThan(100)
     expect([...used].filter((k) => !UI[k])).toEqual([])
@@ -63,6 +65,7 @@ describe('i18n (SPEC §4 Language rule)', () => {
     setLang('zh')
     expect(t('chg.remove', { name: 'Loveseat' })).toBe('去掉一个双人沙发')
     expect(tx('My own sofa')).toBe('My own sofa')
+    expect(tx('Room 3')).toBe('房间 3'); expect(tx('Level 1')).toBe('第 1 层')
     setLang('en')
     expect(t('chg.remove', { name: 'Loveseat' })).toBe('Remove one Loveseat')
     expect(tx('Loveseat')).toBe('Loveseat')
