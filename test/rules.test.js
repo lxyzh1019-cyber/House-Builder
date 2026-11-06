@@ -252,4 +252,23 @@ describe('project save and load round trip (emulator)', () => {
     expect(p.plan.build.photos.r1).toMatchObject({ done: true, where: 'phone album' })
     expect(p.versions).toHaveLength(1); expect(p.versions[0].design.rooms[0].type).toBe('office')
   })
+
+  it('W1–W14 fields: steps, pains, pictures, lot items, sprints, cards, sheets, systems, packages, price, walk, Lego switches and room phase survive a reload', async () => {
+    await env.clearFirestore()
+    const plan = { ...PL.newPlan(), steps: { D4: { lead: 'A', ai: 'Claude', hours: 2, cost: 100 } }, pains: [{ id: 'p1', text: 'boots', often: 'daily', sent: true }],
+      pictures: [{ id: 'x', source: 'on this device', tags: ['warm wood'] }], lotItems: [{ id: 'lot-zone', key: 'zone', status: 'done', note: '' }],
+      sprints: { D4a: { roomIds: ['r1'], notes: 'paths' } }, itemCards: [{ id: 'ic', item: 'stair', verdict: 'fits', impactRoomIds: ['r1'], proposals: ['move it'], keep: true }],
+      sheets: [{ id: 's', criteria: [{ id: 'c', name: 'cost', weight: 2 }], options: [{ id: 'o', name: 'A' }], scores: { 'o|c': 8 }, gateFail: {} }],
+      systems: { hvac: 'HRV' }, packages: [{ id: 'w', trade: 'paint', allowance: 5000, supplier: 'owner', diy: true }], builderPrice: { price: 450000, date: '2027-03-01' },
+      walk: [{ id: 'k', roomId: 'r1', text: 'scratch', fixed: false }], lego: { off: { hall: true } } }
+    const room = { ...newRoom('office'), id: 'r1', phase: 'later' }
+    await createProject(db('lee'), 'lee', { scene: '{}', rooms: [toSaved(room, {})], plan })
+    const p = startFrom(await findProject(db('lee'), 'lee'))
+    expect(p.plan.steps.D4).toMatchObject({ lead: 'A', hours: 2 })
+    expect(p.plan.sheets[0].scores['o|c']).toBe(8)
+    expect(p.plan.lego.off.hall).toBe(true)
+    expect(p.plan.walk[0].text).toBe('scratch')
+    expect(p.plan.builderPrice.price).toBe(450000)
+    expect(p.rooms[0].phase).toBe('later')
+  })
 })

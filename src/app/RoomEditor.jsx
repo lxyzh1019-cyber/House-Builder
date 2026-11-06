@@ -67,6 +67,8 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
         <div className="q-label small">{tr('ed.level')}</div>
         <div className="chips">{LEVELS.map((lv) => <button key={lv} className={`chip ${(room.level || 'main') === lv ? 'on' : ''}`} onClick={() => update({ level: lv })}>{tr(`level.${lv}`)}</button>)}</div>
         {mainBedroomWanted(answers, rooms) && <div className="note small">{tr('ed.mainBedroom')}</div>}
+        <div className="q-label small">{tr('ed.phase')}</div>
+        <div className="chips" data-testid="room-phase">{['now', 'later'].map((ph) => <button key={ph} className={`chip ${room.phase === ph ? 'on' : ''}`} onClick={() => update({ phase: ph })}>{tr(`ed.phase.${ph}`)}</button>)}</div>
       </div>
 
       <div className="cols">

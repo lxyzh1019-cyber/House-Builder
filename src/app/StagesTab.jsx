@@ -5,11 +5,12 @@ import * as P from '../plan/plan.js'
 import { budgetState } from '../budget/budget.js'
 import { t, tx } from '../i18n.js'
 import { CodeChecklist, Money, Permits, Warranty } from './AlbertaPanels.jsx'
+import { BuilderPrice, LotChecklist, Packages, Pains, Pictures, Sprints, StageEffort, StepOwner, Systems, Walk } from './BatchD.jsx'
 
 const money = (n) => (Number.isFinite(n) ? `${n < 0 ? '−' : ''}C$${Math.round(Math.abs(n)).toLocaleString('en-CA')}` : '–')
 const num = (v) => (v === '' || v == null ? null : Number.isFinite(Number(v)) ? Number(v) : null)
 
-export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by, onGoal }) {
+export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by, onGoal, household = [], versions = [], onVersions, design }) {
   const set = (patch) => onPlan({ ...plan, ...patch })
   const build = { ...P.newBuild(), ...(plan.build || {}) }
   const setBuild = (patch) => set({ build: { ...build, ...patch } })
@@ -42,7 +43,7 @@ export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by, 
         const cost = P.stageDiff(build, stage.n)
         return (
           <section key={stage.n} className={`stage ${done ? 'done' : ''}`} data-testid={`stage-${stage.n}`}>
-            <h3>{t('stg.stage', { n: stage.n })} · {t(`stage.${stage.n}`)} {done && <span className="tag pass">{t('stg.done')}</span>}</h3>
+            <h3>{t('stg.stage', { n: stage.n })} · {t(`stage.${stage.n}`)} {done && <span className="tag pass">{t('stg.done')}</span>}<StageEffort plan={plan} gates={stage.gates} /></h3>
             {stage.gates.length === 0 && <p className="muted small">{t('stg.noGates')}</p>}
             <ul className="tray">
               {stage.gates.map((id) => {
@@ -54,13 +55,17 @@ export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by, 
                     {id === 'D5' && <div className="small" data-testid="d5-verdict">{t(`d5.${P.d5Verdict(bs)}`)}</div>}
                     {id === 'D21' && <div className="small" data-testid="d21-info">{t('d21.photos', { n: P.photoCount(build, rooms), of: rooms.length })}{P.notPhotographed(plan.hiddenWorks).length > 0 && <> · {t('d21.hidden', { list: P.notPhotographed(plan.hiddenWorks).map((h) => h.text).join(t('list.sep')) })}</>}</div>}
                     <input className="small" aria-label={t('gate.note', { id })} placeholder={t('gate.notePh')} value={g.note || ''} onChange={(e) => set({ schedule: { ...plan.schedule, gates: { ...plan.schedule.gates, [id]: { ...g, note: e.target.value } } } })} />
+                    <StepOwner plan={plan} set={set} id={id} household={household} />
                   </li>
                 )
               })}
             </ul>
+            {stage.n === 0 && <LotChecklist plan={plan} set={set} />}
+            {stage.n === 1 && <><Pains plan={plan} set={set} rooms={rooms} by={by} /><Pictures plan={plan} set={set} rooms={rooms} /></>}
+            {stage.n === 2 && <><Sprints plan={plan} set={set} rooms={rooms} st={st} versions={versions} onVersions={onVersions} design={design} by={by} /><Systems plan={plan} set={set} /></>}
             {stage.n === 3 && <CodeChecklist plan={plan} set={set} rooms={rooms} />}
-            {stage.n === 4 && <><Permits plan={plan} set={set} /><Money plan={plan} set={set} onGoal={onGoal} /></>}
-            {stage.n === 6 && <Warranty plan={plan} set={set} />}
+            {stage.n === 4 && <><Permits plan={plan} set={set} /><Money plan={plan} set={set} onGoal={onGoal} /><Packages plan={plan} set={set} /><BuilderPrice plan={plan} set={set} bs={bs} /></>}
+            {stage.n === 6 && <><Walk plan={plan} set={set} rooms={rooms} /><Warranty plan={plan} set={set} /></>}
             {stage.n === 2 && plan.checklist.length > 0 && <p className="small">{t('stg.checklist', { met: plan.checklist.filter((c) => c.status === 'met').length, n: plan.checklist.length })}</p>}
             {hidden.length > 0 && <>
               <div className="q-label small">{t('hw.inStage')}</div>

@@ -306,3 +306,38 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - a reload kept the ticks and the date;
   - no sideways scroll in English or Chinese, 0 console errors.
 - **Not checked:** the owner's own use.
+
+## Batch D: structures the family fills in (2026-11-06)
+
+- **Owner's choices:**
+  - "All 11, one PR" and "Approve all" for the sections;
+  - Lego rules become soft checks;
+  - storage "3 steps" decided later;
+  - batch E researched now.
+
+  Sections and tests are in SPEC §15 (chat-D49).
+- **Built:**
+  - **Stages tab:** step owners on each gate with stage sums; pain points (sent to the idea inbox); pictures with a style profile; a lot checklist; design sprints D4a–g with fit and code checks and a named version; a systems checklist; work packages; builder price; possession walk.
+  - **Decide tab:** design item cards; review criteria sheets.
+  - **Lot board:** the Lego soft checks.
+  - **Room card:** a now/later choice.
+- **Tests:**
+  - `npm run test:rules`: 116 of 116 pass locally.
+  - W1–W14 are in `test/more.test.js`.
+  - One emulator test saves and reloads every new field.
+  - I rewrote W2 so it tests the real send-to-inbox step. The first version only exercised the inbox, so it couldn't fail on the pain point.
+- **Headless Chromium (browser storage), PC 1280 px, made-up data:**
+  - D4's lead, AI, 3 h and C$250 showed as the Stage 2 sum;
+  - the lot checklist showed 5 items;
+  - the style profile read "warm wood (2), open (1)";
+  - a sprint showed its room's fit and the 6 open code items;
+  - the work package total read C$12,000;
+  - a 900,000 builder price was flagged above the estimate and over the goal;
+  - the possession walk counted 1 open item;
+  - a review sheet scored 8.0;
+  - the Lego checks showed the hallway share 14.7% and fill 85.3%, and listed the unmarked room;
+  - a reload kept all of it;
+  - no sideways scroll in English or Chinese, 0 console errors.
+- **Fixed during the check:** panel titles were squeezed beside their content (panels now stack), and the review total now shows 1 decimal.
+- **Batch E research:** the background run ended at a container restart with no report. It will be run again.
+- **Not checked:** the owner's own use.
