@@ -1,13 +1,13 @@
 // SPEC v1 §7 lot board tests L1–L6 (L7, save and reload, is in test/rules.test.js).
 import { describe, expect, it } from 'vitest'
-import { newRoom } from '../src/rooms/types.js'
+import { applyOptions, newRoom } from '../src/rooms/types.js'
 import { lotFt, lotState, moveRoom, newLot, rotateRoom } from '../src/lot/lot.js'
 import { ftToM, mToFt } from '../src/units.js'
 
 const at = (room, x, y, rot = 0) => ({ ...room, place: { x: ftToM(x), y: ftToM(y), rot } })
 const fx = (r) => Math.round(mToFt(r.place.x) * 1000) / 1000
 const fy = (r) => Math.round(mToFt(r.place.y) * 1000) / 1000
-const openLiving = () => { const r = newRoom('living', 'Family TV room'); return { ...r, answers: { ...r.answers, open: 'yes' } } }
+const openLiving = () => applyOptions(newRoom('living'), { open: true })
 
 describe('SPEC §7 lot board', () => {
   it('L1 a new lot is 60 x 100 ft and rooms drag on it with 2 ft snap', () => {
@@ -18,7 +18,7 @@ describe('SPEC §7 lot board', () => {
     expect([fx(moved[0]), fy(moved[0])]).toEqual([14, 24])
   })
   it('L2 a room rotates 90°', () => {
-    const r = at(newRoom('living', 'Family TV room'), 10, 10)
+    const r = at(newRoom('living'), 10, 10)
     const [t] = rotateRoom([r], r.id, {})
     expect(t.place.rot).toBe(90)
     const st = lotState([t], newLot(), {})[t.id]

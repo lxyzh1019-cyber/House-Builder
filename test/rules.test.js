@@ -6,6 +6,9 @@ import { assertFails, assertSucceeds, initializeTestEnvironment } from '@firebas
 import { deleteDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { createProject, deleteProject, findProject, listProjects, openProject, saveProject, setMembers } from '../src/projects.js'
 import { newRoom } from '../src/rooms/types.js'
+import { answer } from '../src/rooms/answers.js'
+import { toSaved } from '../src/rooms/migrate.js'
+import { startFrom } from '../src/load.js'
 import { checkSize } from '../src/rooms/engine.js'
 import { ftToM, mToFt, sizeFt } from '../src/units.js'
 
@@ -131,7 +134,7 @@ describe('project save and load round trip (emulator)', () => {
   it('L7: the lot layout (lot, places, sides, clusters) is saved and survives a reload', async () => {
     await env.clearFirestore()
     const d = db('fred')
-    const living = { ...newRoom('living', 'Family TV room'), place: { x: ftToM(10), y: ftToM(20), rot: 90 }, ports: { n: 'wall', e: 'wall', s: 'open', w: 'door' } }
+    const living = { ...newRoom('living'), place: { x: ftToM(10), y: ftToM(20), rot: 90 }, ports: { n: 'wall', e: 'wall', s: 'open', w: 'door' } }
     const dining = { ...newRoom('dining'), place: { x: ftToM(10), y: ftToM(33.5), rot: 0 } }
     const lot = { w: ftToM(60), d: ftToM(100), setbacks: { front: ftToM(20), rear: ftToM(25), left: ftToM(4), right: ftToM(4) } }
     const clusters = [{ id: 'c1', name: 'Core route', roomIds: [living.id, dining.id] }]
@@ -189,16 +192,39 @@ describe('project save and load round trip (emulator)', () => {
   it('T4: the T1 living room set to 20 x 20 ft is saved and still 20 x 20 after a reload', async () => {
     await env.clearFirestore()
     const d = db('erin')
-    const room = { ...newRoom('living', 'Family TV room'), size: { w: ftToM(20), d: ftToM(20) } }
+    const room = { ...newRoom('living'), size: { w: ftToM(20), d: ftToM(20) } }
     expect(checkSize(room, 20, 20)).toMatchObject({ status: 'fits' })
     const id = await createProject(d, 'erin', { scene: '{}', rooms: [room] })
     // "Reload": a fresh read from Firestore, nothing kept in memory.
     const loaded = (await findProject(db('erin'), 'erin')).rooms[0]
     expect(loaded.id).toBe(room.id)
-    expect(sizeFt(mToFt(loaded.size.w), mToFt(loaded.size.d))).toBe('20.0 x 20.0 ft')
+    expect(sizeFt(mToFt(loaded.size.w), mToFt(loaded.size.d))).toBe('20′ 0″ x 20′ 0″')
     const c = checkSize(loaded, mToFt(loaded.size.w), mToFt(loaded.size.d))
     expect(c.status).toBe('fits')
     expect(c.spare).toBeCloseTo(197.5, 6)
     expect(id).toBeTruthy()
+  })
+
+  it('T13: a room set to level basement still shows basement after a reload', async () => {
+    await env.clearFirestore()
+    const room = { ...newRoom('office'), level: 'basement' }
+    await createProject(db('bea'), 'bea', { scene: '{}', rooms: [toSaved(room, {})] })
+    const p = startFrom(await findProject(db('bea'), 'bea')) // "reload": a fresh read, as the app opens a project
+    expect(p.rooms[0].level).toBe('basement')
+    expect(p.rooms[0].options).toEqual(room.options)
+  })
+
+  it('T14: q4.1 for a 4-person household sets the mudroom to 4 lockers, saves answers/q4.1, and reads the same after a reload', async () => {
+    await env.clearFirestore()
+    const household = ['a', 'b', 'c', 'd'].map((id) => ({ id, label: '', group: 'adult' }))
+    const mud = { ...newRoom('mudroom'), options: { ...newRoom('mudroom').options, people: 2 } }
+    const out = answer({}, [mud], 'q4.1', 'normal', { by: 'tess', household })
+    expect(out.rooms[0].options.people).toBe(4)
+    expect(out.rooms[0].items.filter((i) => i.part === 'locker')).toHaveLength(4)
+    await createProject(db('tess'), 'tess', { scene: '{}', rooms: out.rooms.map((r) => toSaved(r, {})), answers: out.answers, setup: { household } })
+    const p = startFrom(await findProject(db('tess'), 'tess'))
+    expect(p.answers['q4.1']).toMatchObject({ value: 'normal', answeredBy: 'tess' })
+    expect(p.rooms[0].options.people).toBe(4)
+    expect(p.rooms[0].items.filter((i) => i.part === 'locker')).toHaveLength(4)
   })
 })

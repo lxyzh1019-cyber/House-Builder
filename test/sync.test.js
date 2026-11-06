@@ -9,8 +9,8 @@ beforeAll(async () => { await P.loadPlugin(builtinPlugin) })
 
 describe('rooms -> Pascal scene', () => {
   it('each room is a zone with 4 walls and its items; the drawing reads the size back from the scene', () => {
-    const living = newRoom('living', 'Family TV room')
-    const office = { ...newRoom('office', 'Home office'), size: { w: ftToM(12), d: ftToM(11) } }
+    const living = newRoom('living')
+    const office = { ...newRoom('office'), size: { w: ftToM(12), d: ftToM(11) } }
     syncScene([living, office])
     const nodes = P.useScene.getState().nodes
     const a = readRoom(nodes, living.id), b = readRoom(nodes, office.id)
@@ -27,7 +27,7 @@ describe('rooms on the lot -> Pascal scene', () => {
   it('a room placed and turned 90° on the lot becomes a turned zone; the board reads it back', async () => {
     const { lotState, newLot, rotateRoom } = await import('../src/lot/lot.js')
     const { readLot } = await import('../src/scene/sync.js')
-    let living = { ...newRoom('living', 'Family TV room'), place: { x: ftToM(10), y: ftToM(20), rot: 0 } }
+    let living = { ...newRoom('living'), place: { x: ftToM(10), y: ftToM(20), rot: 0 } }
     ;[living] = rotateRoom([living], living.id, {})
     const lot = newLot()
     syncScene([living], {}, { lot, state: lotState([living], lot, {}) })

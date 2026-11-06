@@ -8,6 +8,7 @@ import { portsOf } from '../rooms/types.js'
 import { mToFt, ftToM } from '../units.js'
 
 const EPS = 0.05 // ft: edges this close count as touching
+export const levelOf = (room) => room.level || 'main'
 
 export function newLot(overrides) {
   const R = ruleValues(overrides)
@@ -64,7 +65,7 @@ export function lotState(rooms, lot, rules) {
     const A = out[a.id].base
     if (!A) continue
     for (const b of rooms) {
-      if (a === b || !out[b.id].base) continue
+      if (a === b || !out[b.id].base || levelOf(a) !== levelOf(b)) continue
       const side = touchingSide(A, out[b.id].base)
       if (!side) continue
       const aPort = portsOf(a)[localSideOf(side, A.rot)], bPort = portsOf(b)[localSideOf(OPPOSITE[side], out[b.id].base.rot)]
@@ -92,6 +93,7 @@ export function lotState(rooms, lot, rules) {
   const placed = rooms.filter((r) => out[r.id].fp)
   for (const r of placed) { out[r.id].overlap = []; out[r.id].outside = [] }
   for (let i = 0; i < placed.length; i++) for (let j = i + 1; j < placed.length; j++) {
+    if (levelOf(placed[i]) !== levelOf(placed[j])) continue // rooms on different levels may sit over each other (chat-D38)
     const a = out[placed[i].id].fp, b = out[placed[j].id].fp
     const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), oy = Math.min(a.y + a.d, b.y + b.d) - Math.max(a.y, b.y)
     if (ox > EPS && oy > EPS) { out[placed[i].id].overlap.push(placed[j].id); out[placed[j].id].overlap.push(placed[i].id) }
@@ -126,7 +128,7 @@ export function moveRoom(rooms, clusters, id, xFt, yFt, rules) {
   const room = rooms.find((r) => r.id === id)
   const A = baseFootprint(room, rules)
   const group = clusterOf(clusters, id)?.roomIds ?? [id]
-  const others = rooms.filter((r) => !group.includes(r.id)).map((r) => baseFootprint(r, rules)).filter(Boolean)
+  const others = rooms.filter((r) => !group.includes(r.id) && levelOf(r) === levelOf(room)).map((r) => baseFootprint(r, rules)).filter(Boolean)
   const s = snapCorner(xFt, yFt, A.w, A.d, others, rules)
   const dx = s.x - A.x, dy = s.y - A.y
   return rooms.map((r) => (group.includes(r.id) && r.place ? { ...r, place: { ...r.place, x: ftToM(mToFt(r.place.x) + dx), y: ftToM(mToFt(r.place.y) + dy) } } : r))
@@ -151,7 +153,7 @@ export function placeRoom(rooms, lot, id, rules) {
   const R = ruleValues(rules), L = lotFt(lot)
   const room = rooms.find((r) => r.id === id)
   const s = baseSize(room, rules)
-  const taken = rooms.filter((r) => r.id !== id).map((r) => baseFootprint(r, rules)).filter(Boolean)
+  const taken = rooms.filter((r) => r.id !== id && levelOf(r) === levelOf(room)).map((r) => baseFootprint(r, rules)).filter(Boolean)
   const free = (x, y) => taken.every((o) => !(x < o.x + o.w - EPS && x + s.w > o.x + EPS && y < o.y + o.d - EPS && y + s.d > o.y + EPS))
   const x0 = Math.ceil(L.left / R.lotSnap) * R.lotSnap, y0 = Math.ceil(L.front / R.lotSnap) * R.lotSnap
   for (let y = y0; y + s.d <= L.d - L.rear + EPS; y += R.lotSnap) for (let x = x0; x + s.w <= L.w - L.right + EPS; x += R.lotSnap) {

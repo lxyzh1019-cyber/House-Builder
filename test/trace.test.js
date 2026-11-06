@@ -95,13 +95,13 @@ describe('Plan intake (SPEC §11)', () => {
 
   it('I7 coverage = area under the placed rooms / lot area, flagged when over the limit', () => {
     const at = (r, x, y) => ({ ...r, place: { x: ftToM(x), y: ftToM(y), rot: 0 } })
-    const office = at(newRoom('office'), 10, 10) // 10 x 10
-    const dining = at(newRoom('dining'), 15, 15) // overlaps the office by 5 x 5
+    const office = at(newRoom('office'), 10, 10) // 9 x 9.5 (T3)
+    const dining = at(newRoom('dining'), 15, 15) // 12 x 9 (T8): overlaps the office by 4 x 4.5
     const lot = { ...newLot(), site: { zone: 'RS', maxHeightFt: 30, maxCoveragePct: 40 } }
     const st = lotState([office, dining], lot, {})
     const dn = st[dining.id].fp
     const c = coverage(lot, st)
-    expect(c.area).toBeCloseTo(100 + dn.w * dn.d - 25, 6)
+    expect(c.area).toBeCloseTo(9 * 9.5 + dn.w * dn.d - 4 * 4.5, 6)
     expect(c.pct).toBeCloseTo((c.area / 6000) * 100, 6)
     expect(c.over).toBe(false)
     expect(coverage({ ...lot, site: { ...lot.site, maxCoveragePct: 2 } }, st).over).toBe(true)

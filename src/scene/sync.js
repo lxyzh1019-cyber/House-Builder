@@ -8,6 +8,8 @@ import { layoutRoom, minimumSize } from '../rooms/engine.js'
 import { traceFrame } from '../trace/trace.js'
 
 const WALL = { height: 2.7, thickness: 0.15 }
+const LEVEL_NO = { basement: -1, main: 0, upper: 1 }
+const LEVEL_NAME = { basement: 'Basement', main: 'Level 0', upper: 'Upper level' }
 const GAP_M = ftToM(5)
 const HEIGHT_M = { sofa: 0.85, armchair: 0.85, tvstand: 0.5, tv: 0.05, coffeetable: 0.45, desk: 0.75, officechair: 0.9, bookshelf: 2.0, table: 0.75, chair: 0.9, bed: 0.6, nightstand: 0.55, dresser: 0.8, cabinet: 1.6, bench: 0.45, shoecab: 0.9, wardrobe: 2.1 }
 const COLOUR = { sofa: '#8a7f72', tv: '#1d1d1f', tvstand: '#b49a7a', bed: '#9fb2c2', desk: '#b49a7a', table: '#b49a7a', bookshelf: '#c2a57f' }
@@ -29,10 +31,17 @@ export function syncScene(rooms, rules, lotInfo, traceInfo) {
   s.setScene({}, [])
   const site = P.SiteNode.parse({ name: 'Site' }); s.createNode(site)
   const building = P.BuildingNode.parse({ name: 'House' }); s.createNode(building, site.id)
-  const level = P.LevelNode.parse({ name: 'Level 0', level: 0 }); s.createNode(level, building.id)
+  // Room levels (R14, chat-D38): one Pascal level each, stacked by Pascal (basement -1, main 0, upper 1).
+  const levelIds = {}
+  const levelFor = (name) => {
+    if (!levelIds[name]) { const lv = P.LevelNode.parse({ name: LEVEL_NAME[name], level: LEVEL_NO[name], metadata: { roomLevel: name } }); s.createNode(lv, building.id); levelIds[name] = lv.id }
+    return levelIds[name]
+  }
+  levelFor('main')
   const lotW = lotInfo?.lot ? lotInfo.lot.w : 0
   let rowY = 0
   for (const room of rooms) {
+    const level = { id: levelFor(LEVEL_NO[room.level] !== undefined ? room.level : 'main') }
     const st = lotInfo?.state?.[room.id]
     const size = st?.size ?? roomSizeFt(room, rules)
     const W = ftToM(size.w), D = ftToM(size.d)

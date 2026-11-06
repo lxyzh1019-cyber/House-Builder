@@ -1,16 +1,22 @@
 import { useEffect, useState } from 'react'
 import { LIBRARY } from '../furniture/library.js'
-import { checkSize, minimumSize, roomNotes } from '../rooms/engine.js'
-import { ROOM_TYPES, applyAnswers, makeItem, newId } from '../rooms/types.js'
-import { ftIn, ftToM, ftToMm, mToFt, mmToFt, sizeFt } from '../units.js'
+import { checkSize, egressNeeded, minimumSize, roomNotes } from '../rooms/engine.js'
+import { LEVELS, ROOM_TYPES, applyOptions, makeItem, newId } from '../rooms/types.js'
+import { presetDefaults } from '../rooms/bands.js'
+import { mainBedroomWanted, offersSofaBed } from '../rooms/answers.js'
+import { ftIn, ftToM, ftToMm, mToFt, mmToFt, sizeDec, sizeFt } from '../units.js'
 import Drawing from './Drawing.jsx'
-import { t as tr, tm, tn, tx } from '../i18n.js'
+import { t as tr, tm, tn, tx, useLang } from '../i18n.js'
 
 const money = (n) => 'C$' + Math.round(n).toLocaleString('en-CA')
 const categories = [...new Set(LIBRARY.map((i) => i.category))]
 
-export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [], onChange, onDelete }) {
+// Sizes as feet and inches, nearest inch (SPEC §4).
+const sizeFtIn = (w, d) => `${ftIn(w)} x ${ftIn(d)}`
+
+export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [], answers = {}, rooms = [], onAnswer, onChange, onDelete }) {
   const t = ROOM_TYPES[room.type]
+  const lang = useLang(), L = (pair) => (Array.isArray(pair) ? pair[lang === 'zh' ? 1 : 0] : tx(pair))
   const min = minimumSize(room, rules, ctx)
   const set = room.size ? { w: mToFt(room.size.w), d: room.size.d && mToFt(room.size.d) } : null
   const [w, setW] = useState(set ? +set.w.toFixed(2) : min.w)
@@ -25,10 +31,11 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
   const sel = room.items.find((i) => i.id === selectedId)
 
   const update = (patch) => onChange({ ...room, ...patch })
-  const answer = (qid, v) => { onChange(applyAnswers(room, { ...room.answers, [qid]: v })); setResult(null) }
-  const preset = (name) => { onChange({ ...applyAnswers(room, { ...t.presets[name] }), preset: name }); setResult(null) }
+  const option = (q, v) => { onChange(applyOptions(room, { [q.key]: v }, rules)); if (q.id) onAnswer?.(q.id, v); setResult(null) }
+  const applyPatch = (patch) => { const next = applyOptions(room, patch, rules); onChange(next); const m = minimumSize(next, rules, ctx); setResult(checkSize(next, Number(w), Number(d), rules, ctx)); return m }
+  const reset = () => { onChange({ ...applyOptions({ ...room, items: [] }, presetDefaults(room.type), rules) }); setResult(null) }
   const setItems = (items) => { onChange({ ...room, items }); setResult(null) }
-  const editItem = (id, patch) => setItems(room.items.map((i) => (i.id === id ? { ...i, ...patch } : i)))
+  const editItem = (id, patch) => setItems(room.items.map((i) => (i.id === id ? { ...i, ...patch, ...('w' in patch || 'd' in patch ? { edited: true } : {}) } : i)))
 
   // R5: the user's size is saved as set (bigger is always accepted). "Check my size" explains it.
   const check = () => {
@@ -41,12 +48,12 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
 
   const addFromLibrary = () => {
     const lib = LIBRARY.find((i) => i.id === addId)
-    if (lib) setItems([...room.items, makeItem(lib, 'extra', { byHand: true })])
+    if (lib) setItems([...room.items, makeItem(lib, { byHand: true })])
   }
   const addCustom = () => {
     const cw = Number(custom.w), cd = Number(custom.d)
     if (!custom.name.trim() || !(cw > 0) || !(cd > 0)) return
-    setItems([...room.items, { id: newId(), libId: null, name: custom.name.trim(), type: 'custom', w: Math.round(ftToMm(cw)), d: Math.round(ftToMm(cd)), role: 'extra', byHand: true }])
+    setItems([...room.items, { id: newId(), libId: null, name: custom.name.trim(), type: 'custom', w: Math.round(ftToMm(cw)), d: Math.round(ftToMm(cd)), byHand: true }])
     setCustom({ name: '', w: '', d: '' })
   }
 
@@ -56,20 +63,26 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
         <input className="room-name" aria-label={tr('ed.roomName')} value={tx(room.name)} onChange={(e) => update({ name: e.target.value })} />
         <button className="btn quiet" onClick={onDelete}>{tr('ed.delete')}</button>
       </div>
+      <div className="q" data-testid="room-level">
+        <div className="q-label small">{tr('ed.level')}</div>
+        <div className="chips">{LEVELS.map((lv) => <button key={lv} className={`chip ${(room.level || 'main') === lv ? 'on' : ''}`} onClick={() => update({ level: lv })}>{tr(`level.${lv}`)}</button>)}</div>
+        {mainBedroomWanted(answers, rooms) && <div className="note small">{tr('ed.mainBedroom')}</div>}
+      </div>
 
       <div className="cols">
         <div className="col">
           {t.plain ? <p className="muted">{tr('ed.plain')}</p> : <>
           <h3>{tr('ed.startFrom')}</h3>
-          <div className="chips">{Object.keys(t.presets).map((p) => <button key={p} className={`chip ${room.preset === p ? 'on' : ''}`} onClick={() => preset(p)}>{tx(p)}</button>)}</div>
+          <div className="chips"><span className="chip on">{tx(t.presetName)}</span><button className="btn tiny" onClick={reset}>{tr('ed.reset')}</button></div>
 
           <h3>{tr('ed.questions')}</h3>
           {t.questions.map((q) => (
-            <div key={q.id} className="q">
-              <div className="q-label">{tx(q.label)}{q.section ? <span className="tag">{tr('ed.section', { n: q.section })}</span> : null}</div>
-              <div className="chips">{q.options.map(([v, label]) => <button key={v} className={`chip ${room.answers[q.id] === v ? 'on' : ''}`} onClick={() => answer(q.id, v)}>{tx(label)}</button>)}</div>
+            <div key={q.key} className="q" data-testid={`opt-${q.key}`}>
+              <div className="q-label">{L(q.label)}{q.id ? <span className="tag">{q.id}</span> : null}</div>
+              <div className="chips">{q.options.map(([v, en, zh]) => <button key={String(v)} className={`chip ${String(room.options?.[q.key]) === String(v) ? 'on' : ''}`} onClick={() => option(q, v)}>{lang === 'zh' ? zh : en}</button>)}</div>
             </div>
           ))}
+          {room.type === 'office' && !room.options?.sofa_bed && offersSofaBed(answers) && <div className="note">{tr('ed.offerSofaBed')} <button className="btn tiny" onClick={() => option(t.questions.find((q) => q.key === 'sofa_bed'), true)}>{tr('ed.addSofaBed')}</button></div>}
 
           <h3>{tr('ed.furniture')}</h3>
           <ul className="items">
@@ -77,7 +90,7 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
               <li key={it.id} className={it.id === selectedId ? 'on' : ''}>
                 <button className="item-name" onClick={() => setSelectedId(it.id)}>{tx(it.name)}</button>
                 <span className="dims">{ftIn(mmToFt(it.w))} x {ftIn(mmToFt(it.d))}</span>
-                <button className="btn tiny" aria-label={tr('ed.addAnother', { name: it.name })} onClick={() => setItems([...room.items, { ...it, id: newId(), pos: undefined, byHand: true, role: it.role === 'main' ? 'side' : it.role }])}>+1</button>
+                <button className="btn tiny" aria-label={tr('ed.addAnother', { name: it.name })} onClick={() => setItems([...room.items, { ...it, id: newId(), pos: undefined, byHand: true, slot: undefined, attach: undefined }])}>+1</button>
                 <button className="btn tiny" aria-label={tr('ed.removeItem', { name: it.name })} onClick={() => setItems(room.items.filter((x) => x.id !== it.id))}>{tr('ed.remove')}</button>
               </li>
             ))}
@@ -112,7 +125,8 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
         <div className="col">
           {lotNote && <div className="note">{lotNote}</div>}
           {t.plain ? <div className="min-line">{tn('ed.plainMin', { size: <b data-testid="min-size">{sizeFt(sizeNow.w, sizeNow.d)}</b> })}</div> :
-          <div className="min-line">{tn('ed.min', { size: <b data-testid="min-size">{sizeFt(min.w, min.d)}</b>, ftin: <span className="muted">({ftIn(min.w)} x {ftIn(min.d)})</span> })}</div>}
+          <div className="min-line">{tn(min.placed ? 'ed.minPlaced' : 'ed.min', { size: <b data-testid="min-size">{sizeFtIn(min.w, min.d)}</b>, ftin: <span className="muted">({sizeDec(min.w, min.d)})</span> })}</div>}
+          {!t.plain && egressNeeded(room) && <div className="tag warn" data-testid="egress-flag">{tr('ed.egress')}</div>}
           {known.length > 0 && <div className="known" data-testid="known-sizes">{tr('ed.known', { list: known.map((k) => tr('ed.knownOne', { name: k.name, w: ftIn(k.w), d: ftIn(k.d) })).join(tr('list.sep')) })}</div>}
           <div className="size-row">
             <label>{tr('ed.widthFt')}<input id="size-w" type="number" step="0.5" min="1" value={w} onChange={(e) => setW(e.target.value)} /></label>
@@ -120,7 +134,7 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
             <button id="check-size" className="btn" onClick={check}>{tr('ed.check')}</button>
           </div>
           <div className="muted small">{room.size ? tr('ed.yourSize', { size: sizeFt(sizeNow.w, sizeNow.d) }) : tr('ed.usingMin')}</div>
-          <Result r={result} onMake={(W, D) => useSize(W, D)} />
+          <Result r={result} onMake={(W, D) => useSize(W, D)} onApply={applyPatch} />
           {roomNotes(room, rules).map((n) => <div key={n[0]} className="note">{tm(n)}</div>)}
           <Drawing room={room} geo={geo} sizeFt={sizeNow} rules={rules} ctx={ctx} selectedId={selectedId} onSelect={setSelectedId} onMove={(id, pos) => editItem(id, { pos })} />
           <div className="legend">{tn('ed.legend', { walk: <span className="sw walk" />, bad: <span className="sw bad" /> })}</div>
@@ -130,23 +144,26 @@ export default function RoomEditor({ room, rules, geo, ctx, lotNote, known = [],
   )
 }
 
-function Result({ r, onMake }) {
+function Result({ r, onMake, onApply }) {
   if (!r) return null
   if (r.status === 'bad') return <div className="result bad">{tr('res.bad')}</div>
   if (r.status === 'fits') return (
     <div className="result ok" data-testid="check-result">
-      <div>{tn('res.fits', { size: sizeFt(r.W, r.D), turned: r.turned ? tr('res.turned') : '' })}{' '}
+      <div>{tn('res.fits', { size: sizeFtIn(r.W, r.D), turned: r.turned ? tr('res.turned') : '' })}{' '}
       {r.spare > 0.05 ? tn('res.spare', { area: <b>{r.spare.toFixed(1)} ft²</b>, low: money(r.costLow), high: money(r.costHigh) }) : tr('res.isMin')}</div>
     </div>
   )
+  const by = (side) => r.changes.filter((c) => c.side === side)
   return (
     <div className="result bad" data-testid="check-result">
       <div>{tn('res.tooSmall', { w: <b>{r.shortW.toFixed(1)} ft</b>, d: <b>{r.shortD.toFixed(1)} ft</b> })}</div>
       {r.changes.length > 0 && <>
         <div>{tr('res.changes')}</div>
-        <ul>{r.changes.map((c, i) => <li key={i}>{(c.msgs || c.changes).map(tm).join(' + ')}{c.turned ? tr('res.roomTurned') : ''}</li>)}</ul>
+        <ul data-testid="changes">{['w', 'd'].filter((s) => by(s).length).map((s) => (
+          <li key={s}>{tr(`res.side.${s}`)}: {by(s).map((c, i) => <span key={i}>{i > 0 ? tr('res.or') : ''}{tm(c.msg)} ({tr(`res.sideNew.${s}`, { ft: c.ft.toFixed(2) })}) <button className="btn tiny" onClick={() => onApply(c.patch)}>{tr('res.apply')}</button></span>)}</li>
+        ))}</ul>
       </>}
-      <button className="btn" onClick={() => onMake(r.min.w, r.min.d)}>{tr('res.makeIt', { size: sizeFt(r.min.w, r.min.d) })}</button>
+      <button className="btn" onClick={() => onMake(r.min.w, r.min.d)}>{tr('res.makeIt', { size: sizeFtIn(r.min.w, r.min.d) })}</button>
     </div>
   )
 }

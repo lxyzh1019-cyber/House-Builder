@@ -168,3 +168,52 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - Chinese fully Chinese, no sideways scroll, 0 console errors.
 - All tabs (7 + 3D), PC and phone, both languages: no sideways scroll, 0 console errors.
 - Owner, 2026-11-06, after publishing the new rules: the phone listed the PC's project as "Untitled project · shared with you" (no name typed yet). The owner opened it, and the rooms matched the PC: "Pass". **S7 passes** on real devices against the real Firestore. Device and browser not reported.
+
+## SPEC v1.3 and Rooms from contents rework (2026-11-06)
+
+- SPEC v1.3 merged onto v1.2 (chat-D39): its new decisions are chat-D35 to chat-D38. The owner also chose:
+  - chat-D40: rooms and answers are saved inside the project document;
+  - chat-D41: a room saved before v1.3 keeps its size and gets its contents reset;
+  - chat-D42: a moved item carries its clearance.
+  `src/data/presets.json` is a verbatim copy of SPEC §6.4.
+- Owner: "approve the room do not ask me for merge". Built on the same branch, so PR #8 grows. I read the message as "keep going without waiting for a merge"; I did not merge.
+- **Engine.** `src/rooms/bands.js` builds the band minimum from presets.json (chat-D36), with no 0.5 ft rounding.
+  - After you move, add or resize an item, the minimum is the bounding box of what is placed (chat-D42).
+  - Smallest changes are worked out per side, in the SPEC §6.2 order, and each has a "Use this" button.
+  - The rules table rows come from presets.json. Old rule ids carry over (`migrateRules`). The TV stand, seat gap, size step and 10 ft office side rows are gone.
+- **Rooms.**
+  - Living room and office questions use the SPEC §6.5 ids and text in both languages; each answer is also saved under answers/{id}.
+  - The other four types show their §6.4 options as chips. The labels are my wording.
+  - Every room has a level (R14).
+  - Bedroom-ready adds a closet and turns on the egress flag (R15).
+  - Each room card says "Code minimum not checked yet".
+  - Sizes show in feet and inches.
+- **Household questions (sections 4–6).** Each answer is saved with who answered and when. Effects:
+  - q4.1 sets the locker width and the locker count from the household size;
+  - q4.2 adds a boot tray;
+  - q5.1 sets the office desks;
+  - q5.2 makes the office a closed room;
+  - q5.3 sets the kid bedroom desk, or a homework spot in the dining room (the office when there is no dining room);
+  - q6.1 offers a sofa bed;
+  - q6.3 sets the dining table and the living room seats;
+  - q6.4 suggests a main-floor bedroom.
+- **My guesses, stated to the owner:**
+  - "light" gear keeps the 1.5 ft locker;
+  - q6.3 "up to 6" or "8" sets 6–8 living room seats;
+  - the wording of q4.3, q4.4 and q5.4 is mine (SPEC gives only their ids and answer types).
+- **Lot board.** A level switch shows one level at a time (chat-D38). Overlap, touching and walkway sharing only count rooms on the same level.
+- **3D.** Each room level is its own Pascal level (basement −1, main 0, upper 1).
+- **Tests.**
+  - `npm run test:rules`: 74 of 74 pass locally.
+  - New: T1–T3, T8–T12 and T15 read from presets.json; T4–T6; T12 and T15's egress flag; a moved desk; T13 and T14 in the emulator; the chat-D41 migration.
+  - Updated to the SPEC numbers: F2, B3–B5 and I7.
+- **Headless Chromium (browser storage, WebGL path), PC 1280 px and phone 390 px:**
+  - Rooms: living room 15′ 0″ x 13′ 6″; office 9′ 0″ x 9′ 6″, bedroom-ready 9′ 0″ x 11′ 6″ with the egress flag; mudroom 9′ 0″ x 4′ 8″ with 4 lockers.
+  - T5 at 14 x 13 lists "Width: 4-seat group (13.50 ft wide)" and "Depth: 65-in TV (12.33 ft deep) or sit at 1.2x the screen diagonal (12.25 ft deep)".
+  - A reload kept the basement level, the bedroom-ready office and the q4.1 answer.
+  - Lot board shows "Basement (1) Main (2) Upper (0)".
+  - Spec tests tab: 18 of 18 pass.
+  - No sideways scroll in either language (fixed during the check: the Rooms column and the library dropdown were too wide in Chinese on a phone).
+  - 0 console errors.
+  - 3D draws an upper-level office raised above the main floor. Its height was not measured.
+- **Not checked:** the owner's T7 on a phone with the new questions, and how saved real projects migrate (seen only with made-up rooms).

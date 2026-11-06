@@ -1,6 +1,9 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as P from '@pascal-app/core'
 import { ROOM_TYPES, TYPE_ORDER, newRoom } from '../rooms/types.js'
+import { answer as answerQuestion, optionsFrom } from '../rooms/answers.js'
+import { toSaved } from '../rooms/migrate.js'
+import HouseholdQuestions from './HouseholdQuestions.jsx'
 import { readLot, readRoom, sceneJson, syncScene } from '../scene/sync.js'
 import { lotState, newLot } from '../lot/lot.js'
 import LotBoard from './LotBoard.jsx'
@@ -29,6 +32,7 @@ export default function App({ store, pluginReady }) {
   const [ready, setReady] = useState(false)
   const [rooms, setRooms] = useState([])
   const [rules, setRules] = useState({})
+  const [answers, setAnswers] = useState({})
   const [lot, setLot] = useState(() => newLot())
   const [clusters, setClusters] = useState([])
   const [trace, setTrace] = useState(() => newTrace())
@@ -61,7 +65,7 @@ export default function App({ store, pluginReady }) {
         const data = pick ? await store.open(pick.id) : null
         if (!alive) return
         const p = startFrom(data)
-        setRooms(p.rooms); setRules(p.rules); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget); setSetup(p.setup)
+        setRooms(p.rooms); setRules(p.rules); setAnswers(p.answers); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget); setSetup(p.setup)
         setProjects(list)
         if (data) { rememberProject(data.id); setMeta({ id: data.id, owner: data.owner, members: data.members || [], memberNames: data.memberNames || {}, role: data.owner === me.uid || store.name !== 'Firestore' ? 'owner' : 'member' }) }
         setSelId(p.rooms[0].id); setSaveState(p.isNew ? 'new' : 'loaded')
@@ -82,13 +86,13 @@ export default function App({ store, pluginReady }) {
     saveTimer.current = setTimeout(async () => {
       try {
         const wasNew = !store.currentId()
-        await store.save({ scene: sceneJson(), rooms, rules, lot, clusters, trace, budget, setup })
+        await store.save({ scene: sceneJson(), rooms: rooms.map((r) => toSaved(r, rules)), answers, rules, lot, clusters, trace, budget, setup })
         if (wasNew && store.currentId()) { rememberProject(store.currentId()); setMeta((m) => ({ ...m, id: store.currentId() })); setProjects(await store.list()) }
         setSaveState('saved')
       }
       catch (e) { console.error(e); setError(t('err.save', { msg: e?.message || e })); setSaveState('error') }
     }, 600)
-  }, [ready, rooms, rules, lot, clusters, trace, budget, setup, pictureUrl, st, store])
+  }, [ready, rooms, answers, rules, lot, clusters, trace, budget, setup, pictureUrl, st, store])
 
   const room = rooms.find((r) => r.id === selId)
   const geo = useMemo(() => (room ? readRoom(nodes, room.id) : null), [nodes, room])
@@ -127,7 +131,12 @@ export default function App({ store, pluginReady }) {
   }
 
   const changeRoom = (r) => setRooms(rooms.map((x) => (x.id === r.id ? r : x)))
-  const addRoom = (type) => { const r = newRoom(type); setRooms([...rooms, r]); setSelId(r.id); location.hash = 'rooms' }
+  const household = setup?.household || []
+  const addRoom = (type) => { const r = newRoom(type, optionsFrom(answers, type, household), rules); setRooms([...rooms, r]); setSelId(r.id); location.hash = 'rooms' }
+  // Questionnaire sections 4–6 (R11): the answer is saved under its id and sets the rooms it sizes.
+  const onAnswer = (id, value) => { const out = answerQuestion(answers, rooms, id, value, { by: store.deviceCode?.() || 'this device', household, overrides: rules }); setAnswers(out.answers); setRooms(out.rooms) }
+  // A living room or office question is also saved under its SPEC §6.5 id.
+  const onRoomAnswer = (id, value) => setAnswers((a) => ({ ...a, [id]: { value, answeredBy: store.deviceCode?.() || 'this device', answeredAt: new Date().toISOString() } }))
   const deleteRoom = (id) => { const rest = rooms.filter((r) => r.id !== id); setRooms(rest); setClusters(clusters.map((c) => ({ ...c, roomIds: c.roomIds.filter((x) => x !== id) })).filter((c) => c.roomIds.length > 1)); setSelId(rest[0]?.id ?? null) }
 
   return (
@@ -145,7 +154,7 @@ export default function App({ store, pluginReady }) {
 
       {ready && tab === 'project' && <ProjectTab store={store} setup={setup} onSetup={setSetup} projects={projects} current={meta.id || store.currentId()} meta={meta}
         onOpen={(id) => { rememberProject(id); location.reload() }}
-        onNew={async () => { const p = startFrom(null); const id = await store.create({ rooms: p.rooms, rules: p.rules, lot: p.lot, clusters: p.clusters, trace: p.trace, budget: p.budget, setup: p.setup, scene: '{}' }); rememberProject(id); location.reload() }}
+        onNew={async () => { const p = startFrom(null); const id = await store.create({ rooms: p.rooms.map((r) => toSaved(r, p.rules)), answers: {}, rules: p.rules, lot: p.lot, clusters: p.clusters, trace: p.trace, budget: p.budget, setup: p.setup, scene: '{}' }); rememberProject(id); location.reload() }}
         onDelete={async (id) => { await store.remove(id); if (id === (meta.id || store.currentId())) { rememberProject(null); location.reload() } else setProjects(await store.list()) }}
         onShare={async (members, memberNames) => { await store.share(members, memberNames); setMeta((m) => ({ ...m, members, memberNames })) }} />}
       {ready && tab === 'rooms' && (
@@ -156,7 +165,7 @@ export default function App({ store, pluginReady }) {
               const status = r.size ? st[r.id].check?.status : 'min'
               return (
                 <button key={r.id} className={`room-card ${r.id === selId ? 'on' : ''}`} onClick={() => setSelId(r.id)}>
-                  <b>{tx(r.name)}</b>
+                  <b>{tx(r.name)}</b> <span className="tag">{t(`level.${r.level || 'main'}`)}</span>
                   <span>{sizeFt(s.w, s.d)}</span>
                   <span className={`tag ${status === 'too-small' ? 'warn' : status === 'fits' ? 'pass' : ''}`}>{status === 'too-small' ? t('card.tooSmall') : status === 'fits' ? t('card.fits') : t('card.min')}</span>{r.place && <span className="tag">{t('card.onLot')}</span>}
                   <span className="muted small">{t('card.minSize', { size: sizeFt(m.w, m.d) })}</span>
@@ -168,7 +177,10 @@ export default function App({ store, pluginReady }) {
               <div className="chips">{TYPE_ORDER.map((ty) => <button key={ty} className="chip" onClick={() => addRoom(ty)}>+ {tx(ROOM_TYPES[ty].label)}</button>)}</div>
             </div>
           </aside>
-          {room ? <RoomEditor key={room.id} room={room} rules={rules} geo={geo} ctx={st[room.id]?.ctx} lotNote={lotNote(room, st, rooms)} known={knownSizes(trace, room.type)} onChange={changeRoom} onDelete={() => deleteRoom(room.id)} /> : <div className="panel muted">{t('app.addToStart')}</div>}
+          <div className="rooms-main">
+          {room ? <RoomEditor key={room.id} room={room} rules={rules} geo={geo} ctx={st[room.id]?.ctx} lotNote={lotNote(room, st, rooms)} known={knownSizes(trace, room.type)} answers={answers} rooms={rooms} onAnswer={onRoomAnswer} onChange={changeRoom} onDelete={() => deleteRoom(room.id)} /> : <div className="panel muted">{t('app.addToStart')}</div>}
+          <HouseholdQuestions answers={answers} household={household} rooms={rooms} onAnswer={onAnswer} />
+          </div>
         </main>
       )}
       {ready && tab === 'trace' && <TraceBoard trace={trace} rules={rules} nodes={nodes} pictureUrl={pictureUrl} pictureNote={pictureNote} onTrace={setTrace} onSample={pickSample} onUpload={upload} onCopyRooms={() => { const add = copyToRooms(trace); if (add.length) setRooms([...rooms, ...add]); return add.length }} />}

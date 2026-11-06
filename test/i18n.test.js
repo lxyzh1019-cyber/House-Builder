@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync, readdirSync } from 'node:fs'
 import { DATA, UI, setLang, t, tx } from '../src/i18n.js'
 import { ROOM_TYPES } from '../src/rooms/types.js'
+import { QUESTIONS } from '../src/rooms/answers.js'
 import { LIBRARY } from '../src/furniture/library.js'
 import { RULES } from '../src/rules.js'
 
@@ -28,9 +29,12 @@ describe('i18n (SPEC §4 Language rule)', () => {
     const names = new Set()
     for (const ty of Object.values(ROOM_TYPES)) {
       names.add(ty.label)
-      Object.keys(ty.presets).forEach((p) => names.add(p))
-      for (const q of ty.questions) { names.add(q.label); q.options.forEach(([, l]) => names.add(l)) }
+      if (ty.presetName) names.add(ty.presetName)
+      if (ty.presets) Object.keys(ty.presets).forEach((p) => names.add(p))
+      // Room questions carry both languages themselves (SPEC §6.5): [value, English, 简体中文].
+      for (const q of ty.questions) { expect(hasHan(q.label[1]), q.key).toBe(true); q.options.forEach(([, en, zh]) => { if (needsZh(en)) expect(hasHan(zh), en).toBe(true) }) }
     }
+    for (const q of QUESTIONS) { expect(hasHan(q.label[1]), q.id).toBe(true); q.options.forEach(([, en, zh]) => { if (needsZh(en)) expect(hasHan(zh), `${q.id} ${en}`).toBe(true) }) }
     for (const i of LIBRARY) { names.add(i.name); names.add(i.category) }
     for (const r of RULES) { names.add(r.label); names.add(r.unit); names.add(r.source) }
     names.add('Sample plan')
@@ -64,6 +68,7 @@ describe('i18n (SPEC §4 Language rule)', () => {
   it('switches language and fills values, translating data names inside them', () => {
     setLang('zh')
     expect(t('chg.remove', { name: 'Loveseat' })).toBe('去掉一个双人沙发')
+    expect(t('chg.tv', { n: 65 })).toBe('65 英寸电视')
     expect(tx('My own sofa')).toBe('My own sofa')
     expect(tx('Room 3')).toBe('房间 3'); expect(tx('Level 1')).toBe('第 1 层')
     setLang('en')

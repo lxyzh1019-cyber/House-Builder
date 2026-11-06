@@ -1,10 +1,12 @@
 // Test fit (SPEC §11 P5): a traced plan marked "test fit". Each traced room gets a room type and contents
 // (a preset, or the type's questions), and Rooms from contents checks it at its traced size. R13: a traced
 // room's size shows next to the same room type's minimum in Rooms, as a size you know.
-// Saved in the trace: trace.fit = { on, rooms: { [tracedRoomId]: { type, preset, answers, items } } }.
+// Saved in the trace: trace.fit = { on, rooms: { [tracedRoomId]: { type, preset, options, items } } }
+// (a fit saved before SPEC v1.3 with `answers` is read through fitFromSaved, chat-D41).
 // A new design copied from it is a separate set of rooms; the traced plan never changes (P5).
 import { checkSize } from '../rooms/engine.js'
 import { newId, newRoom, ROOM_TYPES } from '../rooms/types.js'
+import { fitFromSaved } from '../rooms/migrate.js'
 import { ftToM } from '../units.js'
 import { mPerPx, pxToFt } from './trace.js'
 
@@ -22,11 +24,11 @@ export function rectFt(trace, room) {
 }
 
 export const newFit = () => ({ on: false, rooms: {} })
-export const fitOf = (trace, roomId) => trace.fit?.rooms?.[roomId] || null
-// The contents chosen for a traced room: a room of that type, from its first preset (or the one named).
-export function fitRoom(type, preset) {
-  const r = newRoom(type, preset)
-  return { type, preset: r.preset, answers: r.answers, items: r.items }
+export const fitOf = (trace, roomId) => fitFromSaved(trace.fit?.rooms?.[roomId]) || null
+// The contents chosen for a traced room: a room of that type, from its preset.
+export function fitRoom(type) {
+  const r = newRoom(type)
+  return { type, preset: r.preset, options: r.options, items: r.items }
 }
 
 // Check my size for a traced room: checkSize's result, { status: 'not-rect' } or { status: 'no-type' }.
@@ -57,7 +59,7 @@ export function copyToRooms(trace) {
   for (const lv of trace.levels) for (const r of lv.rooms) {
     const fit = fitOf(trace, r.id), s = rectFt(trace, r)
     if (!fit || !s) continue
-    out.push({ id: newId(), type: fit.type, name: r.name, preset: fit.preset, answers: structuredClone(fit.answers || {}), items: structuredClone(fit.items || []).map((i) => ({ ...i, id: newId() })), size: { w: ftToM(s.w), d: ftToM(s.d) }, source: { traceRoomId: r.id } })
+    out.push({ id: newId(), type: fit.type, name: r.name, preset: fit.preset, level: 'main', options: structuredClone(fit.options || {}), items: structuredClone(fit.items || []).map((i) => ({ ...i, id: newId() })), size: { w: ftToM(s.w), d: ftToM(s.d) }, source: { traceRoomId: r.id } })
   }
   return out
 }
