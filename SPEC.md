@@ -237,7 +237,7 @@ Office:
 From questionnaire section 4, Coming in + storage (进门与收纳):
 - q4.1 — Winter coats, boots and sports bags per person. 每人冬衣、靴子、运动包数量 Pick: light · normal · heavy sports gear → locker width; household size → locker count.
 - q4.2 — What gear comes home wet? 哪些装备回家是湿的？ Pick (multi): boots · skates · swim bags · none → a boot tray or drain item in the locker band.
-- q4.3 Garage (Rank) and q4.4 seasonal storage (Pick): saved now, used by later pieces (garage, storage by use).
+- q4.3 Garage (Rank: cars · bikes · tools · sports gear · storage) and q4.4 seasonal storage (Pick: a little · some · a lot): saved now, used by later pieces (garage, storage by use).
 
 From questionnaire section 5, Work, study + hobbies (工作、学习与爱好):
 - q5.1 — Who works from home, and how many days? 谁在家办公、几天？ Pick per person: 0 · 1–2 · 3–5 days → office.desks default = people with 1+ days.
@@ -395,7 +395,7 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Schedule view, stage by stage | canvas Main | Now (§13.1) |
 | Who leads, which AI, time and cost shown on every step | canvas Main | Now (§15.1) |
 | Current-house video tour instructions and pain-point list | canvas 1a | Pain-point list now (§15.2); tour page proposed (§17.7, DN19) |
-| Wish-list questionnaire: 11 sections, 6 answer types, each person answers, ideas you may not know, play back and approve | canvas Questionnaire | Proposed (§17.1, DN13); sections 4–6 feed Rooms from contents now (R11); section 3 sizes the kitchen type later |
+| Wish-list questionnaire: 11 sections, 6 answer types (7 with Weights, §17.1), each person answers, ideas you may not know, play back and approve | canvas Questionnaire | Proposed (§17.1, DN13); sections 4–6 feed Rooms from contents now (R11); section 3 sizes the kitchen type later |
 | Pictures we like: Pinterest and Houzz scan, house style profile | canvas 1c | Now without scanning (§15.3) |
 | Liked floor plans with "why I like it", turned into a plan checklist | handoff 7-step process | Now (§13.2) |
 | Cheap wins list, kept when the budget is tight | canvas 1c | Now (§13.3) |
@@ -431,7 +431,7 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Permit checklist and City steps | canvas Stage 4 | Now for Red Deer (§14.2) |
 | Builder checks, contract and money checks, myth library | canvas Site Walks | Proposed (§17.5, DN17, DN21, DN23) |
 | Build tracking: change orders re-checked, stage cost against budget, photo and video record before drywall | canvas Stage 5 | Now (§13.8) |
-| Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Now (§14.6, §15.11) |
+| Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Now (§14.6, §15.11); changes proposed in §17.5 (DN21, DN23) |
 | Furniture placement: Pascal scene with Furnish2 parts (was: export each level from Pascal to Furnish) | chat-D17 (build base) | Now (changed by chat-D17) |
 | Lego rules proposed, not decided: wet rooms together, hallways about 12%, simple outer shape, each room marked now or later | handoff 2026-10-29 (chat-D5 proposal) | Now as soft checks (§15.12, chat-D49) |
 
@@ -543,7 +543,7 @@ Tests (done when):
 The owner types the content; the app keeps it, adds it up and links it. Nothing here invents a number or a rule. Saved in the project's `plan` field (and `phase` on each room).
 
 - 15.1 Step owners: on every gate, who leads (a household person or typed), which AI (typed), time in hours and cost; each stage shows the sums.
-- 15.2 Pain points (Stage 1): room, what bothers us, how often (daily, weekly, rarely), who. One can be sent to the idea inbox, once, as captured. The video-tour instructions wait for the canvas text.
+- 15.2 Pain points (Stage 1): room, what bothers us, how often (daily, weekly, rarely), who. One can be sent to the idea inbox, once, as captured. The video-tour instructions are proposed in section 17.7 (DN19).
 - 15.3 Pictures we like (Stage 1): a link or "on this device", a room, tags. The style profile is the tags counted, highest first. No Pinterest or Houzz scanning (no AI or outside service in the app).
 - 15.4 Lot checklist (Stage 0): starts with the checked Red Deer items (the lot's zone on the City map, certificate of title within 30 days, soils report for City lots, the zone's setbacks, height and coverage, building grade certificate) plus the owner's own; each open, done or not needed with a note.
 - 15.5 Design sprints D4a–D4g (Stage 2): layout and daily paths, kitchen and mudroom, hidden works, exterior, windows and energy, finishes, furniture fit. Each picks its rooms and shows their Check my size status (fit check) and the 14.1 code items still open (live rules check), and saves a version named after the sprint.
@@ -579,7 +579,8 @@ Tests (done when): Y1 the tier tables are as the code states (tier 3 over 300 m�
 
 - The owner's labels stay: parts B1–B7; questions q0.1–q10.6; feng shui lines FS1–FS8 and FD1–FD5; site-walk lines LA1–LE8; myths M1–M16.
 - Two of them clash with older test labels: budget tests B1–B7 (section 8) and Red Deer tests M1–M8 (section 14). Proposed: outside section 17, write "part B4" or "myth M6". A bare B1 or M1 outside section 17 keeps its old meaning.
-- Batch B tests are H1–H47 (H is not used anywhere else). Open items are OB1–OB9.
+- Batch B tests are H1–H48 (H is not used anywhere else; H48 sits with the 17.3 tests). Open items are OB1–OB9.
+- Wording fix, same meaning: the canvas Chinese terms 生活需求摘要, 隐藏工程, 小投入高满意 and 小确幸, 交房检查, 保修期检查, 关卡, 封板前 and 阿省 are written as the built app's terms 生活需求简报, 隐蔽工程, 省钱小招, 收房巡查, 保修巡查, 关口, 封墙前 and 阿尔伯塔, so one thing has one name (Chinese to check by owner).
 - Wording fix, same meaning: the source says "chat-D21" for the kitchen room type. That is the v1.3 draft number of chat-D37, so this section writes chat-D37.
 
 ### 17.1 Part B1. Wish-list questionnaire (Stage 1b) · 愿望清单问卷 (DN13)
@@ -589,28 +590,29 @@ Purpose: 11 sections that walk the family from today's house to the future house
 Rules:
 
 - One section per sitting, 15–20 minutes (a guide on screen, not a timer). Every answer is saved at once to `answers/{questionId}` (value, answeredBy, answeredAt; section 4). Stop any time; next time the section opens at the first question that person has not answered. 每次一节，15–20 分钟。每个回答都存到 Firestore，随时可停，下次从停下的地方继续。
-- One question at a time, choices first. An optional "Add a note" box follows the choices. 一次只显示一个问题，先做选择。
+- One question at a time, choices first. An optional "Add a note" box follows the choices. 一次只显示一个问题，先做选择，之后可选“加一条说明”。
 - Who answers 由谁回答: each section shows All, Each person, Whoever cooks or Parents. 每人回答自己的部分，小节注明由谁回答。
-  - Proposed: **All**, **Whoever cooks** and **Parents** give one answer for the household. **Each person** gives one answer per household person, keyed by the person's id from setup (the q5.1 shape that is built). "Parents" and "Whoever cooks" are a guide only; the app does not check who taps. Each answer also saves `person` (the household person who answered).
+  - Proposed: **All**, **Whoever cooks** and **Parents** give one answer for the household. **Each person** gives one answer per household person: the value holds one entry per person id from setup (the built q5.1 shape), and a new `people` map saves when each person answered (`people[personId] = answeredAt`); `answeredBy` and `answeredAt` stay the last change, as built. A question marked "per person" inside an All section (q5.1) works the same way. "Parents" and "Whoever cooks" are a guide only; the app does not check who taps.
+  - A person is **done** with a section when they have answered every question of it that is theirs to answer (the per-person ones, plus the household ones in a section they answer).
 - Play back, then approve: each section ends with "What did we miss?" (a short note) and a playback list of every question and answer. The family types or pastes a short summary and taps Approve; the app saves who and when. If an answer in that section changes later, the summary shows "Changed since approval · 批准后已更改". 每节结束问“还漏了什么？”，再确认摘要。
-- Ideas you may not know: after each section the family pastes ideas from the AI tool, one per line, each with a short why. Each idea is Keep or Delete. A kept idea can go to the idea inbox (section 13.5) once, as captured. 每节结束给出建议并说明原因，由你保留或删除。
+- Ideas you may not know: after each section the family pastes ideas from the AI tool, one per line, each with a short why. Each idea is Keep or Delete. A kept idea can go to the idea inbox (section 13.5) once, as captured. 每节结束，把 AI 工具给的建议逐行贴进来，并写明原因；每条可保留或删除。
 - Export: "Copy answers for the AI tool · 复制答案给 AI 工具" puts the section's questions and answers on the clipboard as plain text, in the screen language, one "question: answer" per line, "not answered · 未回答" for blanks. The AI tool reads it and asks a follow-up "why?"; the family puts the reply in the question's note or in "What did we miss?".
 - Answer types 答题方式: Pick 选择 (one, or several where marked "multi") · Rank 排序 (order a list) · Scale 1–5 打分 (1 to 5 only) · Timeline 时间线 (steps, each with what and a start time HH:MM; saved in time order) · Short note 简短说明 (Proposed: up to 500 characters) · Sort 分类 (each item into exactly one of must-have, nice-to-have, no-go). Proposed new type for q10.5 only: **Weights 权重** (numbers), because its answer is numbers, not an order.
 - Pasted text (ideas, summaries): Proposed limit 20,000 characters per paste, so the project document stays well under Firestore's 1 MiB limit (assumed, as in section 13.4).
-- Result 结果 — the **Living Brief** 生活需求摘要 (new `plan.brief`: summaries, missed notes, ideas, lines):
+- Result 结果 — the **Living Brief** 生活需求简报 (new `plan.brief`: summaries, missed notes, ideas, lines):
   - **Brief lines**: text, kind (Must-have 必须 · Nice-to-have 想要 · No-go 不要), from (a question id, a feng shui line or a sound target), rooms (optional).
   - q10.1's sort makes the lines. A feng shui flag marked "follow" (17.4) and a Must-have sound target (17.2) each add a Must-have line.
-  - Each line is one row of the **Fit check at Gate D4** 适配检查（关卡 D4）: met · not met · n.a. Gate D4 shows "Must-haves met: n of m". The owner still ticks the gate (as section 13.1).
-  - Cheap wins picked in q10.3 go to the section 13.3 list with status keep, once each. 小投入高满意清单单独保留。
+  - Each line is one row of the **Fit check at Gate D4** 适配检查（关口 D4）: met · not met · n.a. Gate D4 shows "Must-haves met: n of m". The owner still ticks the gate (as section 13.1).
+  - Cheap wins picked in q10.3 go to the section 13.3 list with status keep, once each. 省钱小招清单单独保留。
 
 Questions. Sections 4–6 keep their ids and the choices that are built (section 6.5 and `src/rooms/answers.js`). **OB1** (choices for sections 0–3 and 7–10 are not in the canvas): every choice list below marked "Proposed" is Claude's proposal.
 
 SECTION 0 · All · after the video tour · Our home today · 现在的家
 
 - q0.1 From the pain-point list, which 5 pain points bother you most? 最困扰的 5 个痛点？ Pick, up to 5. Choices: the project's pain points (section 15.2, filled from the tour in part B7). With fewer than 5 pain points, pick from those there are.
-- q0.2 Which 3 things must the new house keep? 新家必须保留的 3 样？ Rank, top 3. Proposed choices: the "what we love" lines the family typed from the tour (part B7, point 2), plus lines added here.
+- q0.2 Which 3 things must the new house keep? 新家必须保留的 3 样？ Rank, top 3. Proposed choices: the "love" lines saved from the tour (part B7, point 2, the "love" button), plus lines added here.
 - q0.3 Where do things pile up? 东西堆在哪里？ Pick, multi. Proposed: entry and mudroom 门口和玄关 · kitchen counter 厨房台面 · dining table 餐桌 · stairs 楼梯 · bedroom floors 卧室地上 · garage 车库 · basement 地下室 · other (note) 其他（说明）.
-- q0.4 Which room do you never use, and why? 从不用的房间？ Short note.
+- q0.4 Which room do you never use, and why? 从来不用的房间是哪间？为什么？ Short note.
 
 SECTION 1 · Each person · A day in our life · 一天的生活
 
@@ -621,26 +623,26 @@ SECTION 1 · Each person · A day in our life · 一天的生活
 
 SECTION 2 · Each person · My own space · 我的空间
 
-- q2.1 What do you do in your room besides sleep? 除了睡觉还做什么？ Pick, multi. Proposed: homework or study 作业或学习 · work 工作 · hobbies 爱好 · TV or games 看电视或玩游戏 · reading 看书 · exercise 运动 · getting dressed 换衣服 · nothing else 别的不做.
+- q2.1 What do you do in your room besides sleep? 除了睡觉还做什么？ Pick, multi. Proposed: homework or study 作业或学习 · work 工作 · hobbies 爱好 · TV or games 看电视或玩游戏 · reading 看书 · exercise 运动 · getting dressed 换衣服 · nothing else 没有别的.
 - q2.2 How much do light and quiet matter? 光线和安静有多重要？ Scale 1–5 (1 = not at all 不重要, 5 = very much 非常重要).
 - q2.3 Bathroom: own or shared? 独立还是共用卫生间？ Pick. Proposed: own 独立 · shared is fine 共用也可以 · no preference 无所谓.
 - q2.4 In 5–10 years, how will you use this room? 5–10 年后怎么用？ Short note.
 
 SECTION 3 · Whoever cooks · Cooking + eating · 做饭与吃饭 (saved now; sizes the kitchen when the kitchen room type comes, chat-D37)
 
-- q3.1 How often do you stir-fry with high heat? 多常大火爆炒？ Pick. Proposed: most days 几乎每天 · weekly 每周 · rarely 很少 · never 从不.
+- q3.1 How often do you stir-fry with high heat? 多久大火爆炒一次？ Pick. Proposed: most days 几乎每天 · weekly 每周 · rarely 很少 · never 从不.
 - q3.2 How many people cook at the same time? 几个人同时做饭？ Pick. Proposed: 1 · 2 · 3 or more 3 人以上.
 - q3.3 How much bulk food do you store? 囤货多少？ Scale 1–5 (1 = a few days of food 几天的量, 5 = a full pantry and a freezer 满储藏室加冰柜).
 - q3.4 Which appliances must have a home on the counter? 哪些电器要常放台面？ Pick, multi. Proposed: kettle 电水壶 · rice cooker 电饭煲 · coffee maker 咖啡机 · toaster 烤面包机 · air fryer 空气炸锅 · microwave 微波炉 · stand mixer 厨师机 · blender 搅拌机 · pressure cooker 电压力锅 · other (note) 其他（说明）.
 - q3.5 Where do we eat most meals? 平时在哪吃饭？ Pick. Proposed: kitchen island 厨房岛台 · dining table 餐桌 · eat-in nook 早餐角 · living room 客厅 · it varies 不一定.
 
-SECTION 4 · All · Coming in + storage · 进门与收纳 — as built (section 6.5): q4.1 Pick light · normal · heavy sports gear; q4.2 Pick multi boots · skates · swim bags · none; q4.3 Rank cars · bikes · tools · sports gear · storage; q4.4 Pick a little · some · a lot. (SPEC fix: section 6.5 did not list the q4.3 and q4.4 choices that are built.)
+SECTION 4 · All · Coming in + storage · 进门与收纳 — as built (section 6.5): q4.1 Pick light · normal · heavy sports gear; q4.2 Pick multi boots · skates · swim bags · none; q4.3 Rank cars · bikes · tools · sports gear · storage; q4.4 Pick a little · some · a lot. (Section 6.5 is updated in this PR to list the q4.3 and q4.4 choices that are built.)
 
-SECTION 5 · All · Work, study + hobbies · 工作、学习与爱好 — as built (section 6.5): q5.1 per person 0 · 1–2 · 3–5 days; q5.2 yes · no; q5.3 near parents · own room; q5.4 Short note.
+SECTION 5 · All (q5.1: each person) · Work, study + hobbies · 工作、学习与爱好 — as built (section 6.5): q5.1 per person 0 · 1–2 · 3–5 days; q5.2 yes · no; q5.3 near parents · own room; q5.4 Short note.
 
 SECTION 6 · Parents · Guests + family · 客人与家人 — as built (section 6.5): q6.1 never · a few nights a year · weeks at a time; q6.2 yes · no; q6.3 up to 6 · 8 · 10+; q6.4 yes · no.
 
-SECTION 7 · All · feeds Hidden works · Comfort + hidden works · 舒适与隐藏工程
+SECTION 7 · All · feeds Hidden works · Comfort + hidden works · 舒适与隐蔽工程
 
 - q7.1 Which rooms feel too hot or too cold now? 哪些房间太热或太冷？ Pick, multi. Proposed: each room typed in the tour (part B7) or the current plan, each as too hot 太热 or too cold 太冷, plus none 没有.
 - q7.2 Where do you want floor heating? 哪里要地暖？ Pick, multi. Proposed: basement 地下室 · bathrooms 卫生间 · entry and mudroom 门口和玄关 · kitchen 厨房 · garage 车库 · whole main floor 整个一楼 · none 不要.
@@ -648,7 +650,7 @@ SECTION 7 · All · feeds Hidden works · Comfort + hidden works · 舒适与隐
 - q7.4 Smells and sounds: like, neutral or dislike? Wood smoke, cooking, a crackling fire, rain on the roof. 气味与声音：喜欢、无所谓、不喜欢？ Pick, one per item: wood smoke 木柴烟味 · cooking 做饭的味道 · a crackling fire 壁炉噼啪声 · rain on the roof 雨打屋顶 → like 喜欢 · neutral 无所谓 · dislike 不喜欢.
 - q7.5 How much do cooking and garage smells bother you? 油烟和车库气味 Scale 1–5 (1 = not at all 不在意, 5 = a lot 很在意).
 - q7.6 Where do you miss outlets, chargers or Wi-Fi? 哪里缺插座、充电或 Wi-Fi？ Pick, multi. Proposed: the same room list as q7.1, plus garage 车库 · outside 室外 · none 没有.
-- q7.7 Which home automation do you want? 想要哪些智能家居？ Pick, multi: climate control 温控 · auto doors 自动门 · auto windows or blinds 自动窗或窗帘 · smart locks 智能锁 · lighting scenes 灯光场景 · solar 太阳能 · heat pump 热泵 · EV charging 电动车充电 · none 不要. Proposed: the picks show on the section 15.8 systems checklist lines (smart home, efficiency, EV ready, solar ready).
+- q7.7 Which home automation do you want? 想要哪些智能家居？ Pick, multi: climate control 温控 · auto doors 自动门 · auto windows or blinds 自动窗或窗帘 · smart locks 智能锁 · lighting scenes 灯光场景 · solar 太阳能 · heat pump 热泵 · EV charging 电动车充电 · none 不要. Proposed: the picks show on the section 15.8 systems checklist lines: climate control, auto doors, auto windows or blinds, smart locks and lighting scenes → smart home; heat pump → HVAC and HRV; solar → solar ready; EV charging → EV ready.
 
 SECTION 8 · All · Outdoor · 户外
 
@@ -661,17 +663,17 @@ SECTION 9 · Parents · The future · 未来
 
 - q9.1 How long will we live here? 打算住多久？ Pick. Proposed: under 5 years 5 年以内 · 5–10 years 5–10 年 · 10–20 years 10–20 年 · over 20 years 20 年以上.
 - q9.2 When the kids leave, what happens to their rooms? 孩子离家后房间怎么用？ Short note.
-- q9.3 Living on one floor when we are older? 老了能否只住一层？ Pick. Proposed: yes 要 · maybe 可能 · no 不要.
+- q9.3 Living on one floor when we are older? 老了能否只住一层？ Pick. Proposed: yes 能 · maybe 可能 · no 不需要.
 - q9.4 Will an older relative live with us, now or later? 将来会有长辈同住吗？ Pick. Proposed: no 不会 · maybe later 以后可能 · yes, later 以后会 · yes, now 现在就会.
 - q9.5 Does anyone need step-free or walker access (no-step entry, wider doors, main-floor bath)? 需要无障碍设计吗？ Pick. Proposed: no 不需要 · maybe later 以后可能 · yes, now 现在需要.
 - q9.6 How much does resale value matter? 转售价值有多重要？ Scale 1–5 (1 = not at all 不重要, 5 = very much 非常重要).
 
-SECTION 10 · Parents (cheap wins: all) · Priorities + cheap wins · 优先级与小确幸
+SECTION 10 · Parents (cheap wins: all) · Priorities + cheap wins · 优先级与省钱小招
 
-- q10.1 Sort every wish: must-have, nice-to-have, no-go. 必须 / 想要 / 不要 Sort. Proposed list to sort: each "one wish for the new house" from the tour (part B7, point 9), each kept idea (17.1), each liked-plan reason (section 13.2), and wishes the family adds here.
+- q10.1 Sort every wish: must-have, nice-to-have, no-go. 必须 / 想要 / 不要 Sort. Proposed list to sort: each "wish" line saved from the tour (part B7, point 9, the "wish" button), each kept idea (17.1), each liked-plan reason (section 13.2), and wishes the family adds here.
 - q10.2 Where to spend more, where to save. 哪里多花、哪里省 Rank (top = spend more 多花, bottom = save 省). Proposed list: kitchen 厨房 · mudroom and entry 玄关 · primary suite 主卧套间 · living and dining 客餐厅 · bathrooms 卫生间 · office 书房 · basement 地下室 · garage 车库 · outdoor 户外 · energy and systems 节能与设备 · finishes 饰面.
-- q10.3 Cheap wins: pick from the list and add your own. 小投入高满意：选择并补充 Pick, multi (All). Proposed list: the canvas examples (a boot drying spot 烘靴处 · an outlet inside a drawer 抽屉里的插座 · a hallway night light 走廊夜灯), the cheap fixes from the tour (part B7) and the section 13.3 cheap wins already saved.
-- q10.4 Feng shui: must follow · nice to have · ignore? 风水：必须遵循 · 有更好 · 不考虑 Pick (sets how strictly part B4 is applied, 17.4).
+- q10.3 Cheap wins: pick from the list and add your own. 省钱小招：选择并补充 Pick, multi (All). Proposed list: the canvas examples (a boot drying spot 烘靴处 · an outlet inside a drawer 抽屉里的插座 · a hallway night light 走廊夜灯), the cheap fixes from the tour (part B7) and the section 13.3 cheap wins already saved.
+- q10.4 Feng shui: must follow · nice to have · ignore? 风水：必须遵循 · 有则更好 · 不考虑 Pick (sets how strictly part B4 is applied, 17.4).
 - q10.5 Set your weights for the 7 review weights (Use, Cost, Comfort, Durability, Future, Look, Risk) for each decision type. 分别调整布局类、产品类、系统类与饰面类决定的 7 个权重 Weights. Whole numbers 0–100; each profile adds to 100, or Save is refused and the sum shows. Starting weights:
   - Layout 布局类: Use 35 · Cost 15 · Comfort 15 · Durability 10 · Future 10 · Look 10 · Risk 5.
   - Product 产品类: Cost 35 · Use 15 · Comfort 15 · Durability 10 · Future 10 · Look 10 · Risk 5.
@@ -687,15 +689,15 @@ Tests (done when):
 
 - H1 The questionnaire has 11 sections, 0 to 10, with 52 questions q0.1 to q10.6 in the counts above; each has English, Chinese, an answer type and who answers; q4.1–q6.4 keep the built ids and choices.
 - H2 One person answers q1.1 and q1.2; after a reload, section 1 opens at q1.3 for that person and at q1.1 for a second person.
-- H3 In a made-up 2-person household, both answer q2.2 (4 and 2): `answers/q2.2` holds both values keyed by person; after the first answer section 2 shows "1 of 2 people done".
+- H3 In a made-up 2-person household, both answer q2.2 (4 and 2): `answers/q2.2` holds both values keyed by person, and `people` holds both times. After person 1 answers all 4 questions of section 2, the section shows "1 of 2 people done"; after 3 of the 4 it shows "0 of 2".
 - H4 Answer types: Scale refuses 0 and 6; Rank saves the order; Timeline steps typed 07:30 then 06:45 are saved as 06:45, 07:30; a Short note over 500 characters is refused; Sort puts each item in exactly one group.
 - H5 A section's summary is approved (who and when saved); changing one answer in that section then shows "Changed since approval".
 - H6 Two pasted ideas, one kept and one deleted: after a reload only the kept one shows; sending it to the idea inbox twice adds it once.
 - H7 Section 4's export has one line per question (q4.1 to q4.4), each with the question text and its answer, and "not answered" for a blank.
 - H8 The 4 starting profiles each add to 100; changing Layout Use to 40 alone refuses Save and shows 105.
-- H9 q10.3 picks "a boot drying spot" and adds "an outlet in the bench": both are section 13.3 cheap wins with status keep; picking again adds no copy.
-- H10 q10.1 sorts 3 made-up wishes (must-have, nice-to-have, no-go): the D4 Fit check shows 3 rows with those kinds and "Must-haves met: 0 of 1"; marking the must-have met shows "1 of 1".
-- H11 A review sheet started from the Systems profile has the 7 criteria with weights 30, 25, 20, 10, 10, 0, 5; scores Durability 10, Cost 6 and all others 0 give 4.5.
+- H9 q7.7 picks heat pump and EV charging: the section 15.8 HVAC and HRV line and the EV ready line show them. q10.3 picks "a boot drying spot" and adds "an outlet in the bench": both are section 13.3 cheap wins with status keep; picking again adds no copy.
+- H10 A liked-plan reason (section 13.2) shows in the q10.1 list. q10.1 sorts 3 made-up wishes (must-have, nice-to-have, no-go): the D4 Fit check shows 3 rows with those kinds and "Must-haves met: 0 of 1"; marking the must-have met shows "1 of 1".
+- H11 A review sheet started from the Systems profile has the 7 criteria with weights Use 10 · Cost 25 · Comfort 20 · Durability 30 · Future 10 · Look 0 · Risk 5; scores Durability 10, Cost 6 and all others 0 give 4.5.
 
 ### 17.2 Part B2. Room review path (Stage 2) · 平面审核路径与房间审核 (DN14)
 
@@ -713,7 +715,7 @@ Review the plan from the outside in. 由外到内审核：场地 → 整体 → 
 | 6 Finishes by zone 饰面 | walls, floors, ceilings | last, easiest to change | D4f |
 | 7 Walk-through 漫游 | walk each daily path in the 3D model, room to room | catches gaps between rooms | D4g → Gate D4 |
 
-- The sprints are the section 15.5 sprints; each level shows its sprint and links to it. Level 3's 3D view and level 7's walk-through use the 3D piece, which comes last (chat-D46); until then those parts say "3D view not built yet · 3D 视图尚未完成" and the family checks on the plan drawing.
+- Levels 2–7 link to their section 15.5 sprints; level 1 links to the Lot board site review (section 11 P6, section 14.3). Level 3's 3D view and level 7's walk-through use the 3D piece, which comes last (chat-D46); until then those parts say "3D view not built yet · 3D 视图尚未完成" and the family checks on the plan drawing.
 - Why both lenses: picture boards are by room, so each board feeds one room card (level 3). The questionnaire is by daily life, so it feeds the whole house (level 2) and the walk-through (level 7).
 - Each level: not started · in progress · done, with who and when (new `plan.review.levels`).
 
@@ -733,14 +735,14 @@ Room Review card · 房间审核卡 (the same 11 parts for every room):
 4. Size and furniture fit 尺寸与家具 · Check my size (section 6) now; the 3D view later. E1 sizes for this room type show first (part B6).
 5. Light, windows and sound 采光、窗与声音 · daylight, glare, the room's sound target.
 6. Storage 收纳.
-7. Hidden works in this room 本房间的隐藏工程 · outlets, data, vents, plumbing, gas. "Send to hidden works · 送到隐藏工程" adds each line to section 13.7 with this room, decided in Stage 2 (sprint D4c), once.
+7. Hidden works in this room 本房间的隐蔽工程 · outlets, data, vents, plumbing, gas. "Send to hidden works · 送到隐蔽工程" adds each line to section 13.7 with this room, decided in Stage 2 (sprint D4c), once.
 8. Finishes 饰面.
-9. Open cards for this room 本房间未决卡片 · design item cards (15.6) and decision cards (13.6) that name this room.
+9. Open cards for this room 本房间未决卡片 · design item cards (15.6) whose impact chain names this room, and decision cards (13.6) linked to this room. Proposed: decision cards get an optional `roomIds` list (new field; cards saved before have none).
 10. Verdict 结论 · fits the brief? Keep or change · approved by whom, when.
 11. Feng shui detail 风水细节 · pass / flag per line of the detail check (17.4).
 
 - Card header: verdict · open cards · rooms it touches · decide-by date · status.
-- When something changes later: a decided design item card is applied to the plan and saved as a new version (section 13.4, named after the card). Its impact chain names the rooms it touches; only those room cards go back to Draft. The others stay Approved. If 20 versions exist, the apply is refused with the section 13.4 message and nothing changes.
+- When something changes later: a design item card marked Keep is applied to the plan and saved as a new version (section 13.4, named after the card). Its impact chain names the rooms it touches; only those room cards go back to Draft. The others stay Approved. If 20 versions exist, the apply is refused with the section 13.4 message and nothing changes.
 
 Worked example: the kitchen card prompts (generic; all sizes E3, common guidelines, not code). Proposed: these lines show as prompts in a kitchen or back kitchen card. 厨房卡提示（通用；尺寸为 E3 常用参考，不是规范）。
 
@@ -749,11 +751,11 @@ Worked example: the kitchen card prompts (generic; all sizes E3, common guidelin
 - Part 4: work aisle about 42–48 in (1.07–1.22 m) E3 · island seats at about 24 in (0.6 m) each E3.
 - Part 5: a window over the sink needs its sill above counter + backsplash · hood noise and cooking smells into an open plan (myths M6, M7) · low-angle light shows wall flaws, so choose the wall finish with it.
 - Part 6: pantry size against bulk food · tall cabinets against windows · recycling and compost.
-- Part 7 (5 lines for "Send to hidden works"): hood duct route to outside, and make-up air if the hood is large (myth M6; threshold: confirm with the HVAC designer) · gas line to the range · counter and island circuits · sink, dishwasher and fridge water line · floor level under cabinets (找平).
+- Part 7 (5 lines for "Send to hidden works"): hood duct route to outside, and make-up air if the hood is over 300 cfm (myth M6; confirm with the HVAC designer and the project city) · gas line to the range · counter and island circuits · sink, dishwasher and fridge water line · floor level under cabinets (找平).
 - Part 8: walls in a washable sheen · countertop · backsplash · floor.
-- Part 11: cook faces the room entrance (an island cooktop passes) · water kept away from the stove · stove not visible from the front door · each flag: follow / ignore.
+- Part 11: cook faces the room entrance (an island cooktop passes) · water kept away from the stove (both FD3) · stove not visible from the front door (FS6, a whole-house line, shown here for reference and not in the room score) · each flag: follow / ignore.
 
-Chinese for these prompts: 第 1 部分：谁做饭（q3.x）· 几人同时做饭（q3.2）· 工作日早高峰（q1.1）· 孩子在岛台写作业或用电脑？（q5.3）。第 2 部分：大火爆炒 → 油烟机尺寸 · 囤货 → 储藏室大小 · 台面电器 → 台面长度和插座。第 4 部分：操作通道约 42–48 英寸（1.07–1.22 米）E3 · 岛台每个座位约 24 英寸（0.6 米）E3。第 5 部分：水槽上方的窗台要高于台面加挡水板 · 开放式布局中油烟机噪音和油烟扩散（误区 M6、M7）· 低角度光线会显出墙面瑕疵，墙面饰面要一起选。第 6 部分：储藏室大小与囤货量 · 高柜与窗户 · 垃圾分类和厨余。第 7 部分：油烟机排风管通到室外，大功率油烟机要补风（误区 M6；门槛值请与暖通设计师确认）· 灶台燃气管 · 台面和岛台电路 · 水槽、洗碗机和冰箱进水 · 橱柜下地面找平。第 8 部分：墙面用可擦洗的光泽度 · 台面 · 挡水板 · 地面。第 11 部分：做饭的人面向房间入口（岛台灶台算通过）· 水远离灶台 · 从前门看不到灶台 · 每个标记：遵循 / 不考虑。
+Chinese for these prompts: 第 1 部分：谁做饭（q3.x）· 几人同时做饭（q3.2）· 工作日早高峰（q1.1）· 岛台上写作业或用电脑？（q5.3）。第 2 部分：大火爆炒 → 油烟机尺寸 · 囤货 → 储藏室大小 · 台面电器 → 台面长度和插座。第 4 部分：操作通道约 42–48 英寸（1.07–1.22 米）E3 · 岛台每个座位约 24 英寸（0.6 米）E3。第 5 部分：水槽上方的窗台要高于台面加挡水板 · 开放式布局中油烟机噪音和油烟扩散（误区 M6、M7）· 低角度光线会显出墙面瑕疵，墙面饰面要一起选。第 6 部分：储藏室大小与囤货量 · 高柜与窗户 · 垃圾分类和厨余。第 7 部分：油烟机排风管通到室外，油烟机超过 300 cfm 要补风（误区 M6；请与暖通设计师和项目所在城市确认）· 灶台燃气管 · 台面和岛台电路 · 水槽、洗碗机和冰箱进水 · 橱柜下地面找平。第 8 部分：墙面选耐擦洗的漆面光泽 · 台面 · 挡水板 · 地面。第 11 部分：做饭的人面向房间入口（岛台灶台算通过）· 水远离灶台 · 从前门看不到灶台（FS6，全屋项，仅作参考，不计入房间分）· 每个标记：遵循 / 不考虑。
 
 Sound targets · 隔音目标 (Must-have). Quiet is a requirement, so each room gets a target before the plan locks. Answers come from q7.3 and the video tour. Higher numbers are quieter. STC = sound between rooms 房间之间的隔声; OITC = sound from outside 室外传入的噪音. Targets are E3 starting points; confirm with the builder. 目标为 E3 起点，请与建筑商确认。
 
@@ -770,16 +772,16 @@ Sound targets · 隔音目标 (Must-have). Quiet is a requirement, so each room 
 - Saved per room (new `plan.review.sound`): noises, target text, Must-have yes/no, status (not yet · met · not met).
 - Proposed defaults: the target text comes from the row for the room type (bedrooms = primary and kid bedrooms; office/flex = office; kitchen + open plan = kitchen, back kitchen and an open living room; garage = garage). A room card has a "faces a road or lane · 临街或临巷" tick, which adds that row's window target. Mechanical room and laundry are not room types yet; their row shows as a note on the level 2 check until they are. Must-have is on by default for bedrooms and the office, off for the others; the family can change it.
 - A Must-have target adds a Must-have brief line (17.1), checked at Gate D4.
-- q7.3 picks tick the matching noises on rooms whose row lists them (traffic → bedrooms and road-facing rooms; TV and music → bedrooms and office; plumbing and drains, furnace and fans → bedrooms; kitchen hood → kitchen; kids playing → office; garage and tools → garage).
+- q7.3 picks tick the matching noises on rooms whose row lists them (traffic → bedrooms and road-facing rooms; TV and music → bedrooms and office; plumbing and drains, furnace and fans → bedrooms; kitchen hood → kitchen; kids playing → office; garage and tools → garage). "Neighbours" ticks road-facing rooms; "washer and dryer" is saved for the laundry room type (a note until it exists).
 
 Tests (done when):
 
-- H12 A made-up project with 3 room blocks gives 3 room cards; switching the review to a traced plan with 2 rooms gives 2 cards.
+- H12 A made-up project with 3 room blocks gives 3 room cards; switching the review to a traced plan marked test fit with 2 rooms gives 2 cards.
 - H13 Default order: a kitchen comes before an office; moving the office up saves the new order after a reload.
-- H14 Every card has the 11 parts in order and the header shows verdict, open cards, rooms it touches, decide-by date and status.
+- H14 Every card has the 11 parts in order and the header shows verdict, open cards, rooms it touches, decide-by date and status; part 3 shows the style tags of this room's pictures only, highest count first; level 1 links to the site review and levels 2–7 to sprints D4a–D4g as the table says.
 - H15 3 rooms with 1 approved: Gate D4 shows "1 of 3 rooms approved".
 - H16 The T1 living room (15 x 13.5) with target 200 ft² shows plan 202.5 ft², +2.5; with the T3 office (9 x 9.5, target 80) the totals are plan 288 and target 280; the target estimate is 49,000 to 77,000 at 175 and 275 per ft²; the D5 verdict does not change.
-- H17 Rooms A, B and C approved; a decided design item card that touches B is applied: a version named after the card is saved, B is Draft, A and C stay Approved.
+- H17 Rooms A, B and C approved; a design item card marked Keep that touches B is applied: a version named after the card is saved, B is Draft, A and C stay Approved.
 - H18 A kid bedroom gets the target "walls STC 50+; road-side windows OITC 30+" with Must-have on; Gate D4 lists it as an open Must-have until it is marked met.
 - H19 q7.3 "traffic" ticks traffic on a bedroom and on a room marked "faces a road or lane", and not on an office that is not marked.
 - H20 A kitchen card's "Send to hidden works" adds the 5 part-7 lines to section 13.7 with room kitchen, decided in Stage 2; a second tap adds none.
@@ -800,7 +802,7 @@ Source: 2026-10-29 handoff (not on the canvas). Names: Flow 动线 · Storage �
 | Storage 收纳 | each storage-by-use line has a place; every room's part 6 is filled | rooms whose part 6 is empty | all 4 lines placed and no room with part 6 empty |
 | Housework 家务 | laundry route, cleaning, garbage and recycling route, wet gear (q4.2) | the section 15.12 wet-rooms warning | family marks each route ok |
 | Light & space 采光与空间 | every room's part 5 (daylight, glare) and no room that feels shut in | rooms whose part 5 is empty | no room with part 5 empty and none marked "dark" |
-| Sound & comfort 隔音与舒适 | every Must-have sound target, and q7.1 hot or cold rooms | "n of m Must-have targets met" | all Must-have targets met |
+| Sound & comfort 隔音与舒适 | every Must-have sound target, and q7.1 hot or cold rooms | "n of m met" (Must-have sound targets) | all Must-have targets met |
 | Safety & age 安全与适老 | the section 14.1 code items, and q9.3, q9.4, q9.5 and q6.4 answers | a "yes" or "maybe" in q9.3, q9.5 or q6.4 with no bedroom on level main | no open code item, and the hint is clear |
 | Feel 感受 | the family's own sense of the house, room by room | the room energy score's feeling part (17.4) | family marks pass |
 
@@ -811,6 +813,7 @@ Tests (done when):
 - H21 The 7 checks show with these names in both languages; no screen text calls them "review weights" (i18n test).
 - H22 2 Must-have sound targets, 1 met: the Sound & comfort hint reads "1 of 2 met".
 - H23 q9.3 "yes" and no bedroom on level main: the Safety & age hint shows "no main-floor bedroom"; moving a bedroom to level main clears it.
+- H48 With the hint clear and one section 14.1 code item still "not yet", the Safety & age check shows the open code item and cannot be marked pass.
 - H24 A room with an empty part 6 is listed in the Storage hint; filling it clears it.
 - H25 A check ticked at level 2 and a different result at level 7 both survive a reload, with who and when.
 
@@ -820,7 +823,7 @@ Feng shui check: traditional guidance, not code. Each line gets pass · flag · 
 
 - How strictly it is applied comes from q10.4. Proposed:
   - must follow 必须遵循: a new flag starts as "follow" (the family can still change it);
-  - nice to have 有更好: a new flag asks follow or ignore;
+  - nice to have 有则更好: a new flag asks follow or ignore;
   - ignore 不考虑: the lines are hidden and the room energy score leaves out its feng shui part.
   - Not answered: as nice to have.
 - A flag marked "follow" becomes a Must-have line in the Living Brief (17.1), checked at Gate D4.
@@ -874,15 +877,16 @@ Tests (done when):
 
 ### 17.5 Part B5. Builder checks and myth library · 建筑商检查与常见误区 (DN17, DN21, DN23)
 
-Five lists from the canvas Site Walks board, checked against free Canadian sources on 2026-10-09 (by the canvas work, not re-opened in this session). Each line names its source. Ticks save in the app (`plan.siteWalks`).
+Five lists from the canvas Site Walks board, checked against free sources on 2026-10-09 (mostly Canadian; InterNACHI and the Build Show are US) (by the canvas work, not re-opened in this session). Each line names its source. Ticks save in the app (`plan.siteWalks`).
 
 - R12 rule: a row older than 2 years shows "check again" (the section 6 rule, the same date sum as the Rules table).
 - The owner's rule: re-check every source before the piece ships. Proposed: the build session re-opens each source. The House-Builder environment allows alberta.ca and cmhc-schl.gc.ca; the CHBA, InterNACHI, Build Show, Tarion, ANHWP, Travelers and myth sources are on other hosts, so the build session asks the owner to allow those hosts first. A row it still cannot open ships with "checked 2026-10-09 (canvas), not re-checked · 未复核" and goes in the PR's Gaps list.
+- Lines whose source is part of this app (Myth library, Sound targets, House-Designer flow) show no checked date; R12 does not apply to them.
 - Each list shows "n of m ticked" on its gate: A on D18; B on D18 and D19; C on D21; D in Stage 6; E with the warranty walks (section 14.6). The owner still ticks the gates.
 
 A · Builder check (Gate D18, builder signed) · 选建筑商
 
-- LA1 The builder holds an active Alberta licence: look it up in the Builder Registry (status, class, directors, enforcement actions, homes built). Source: Alberta (2024–2025). 建筑商持有有效的阿省执照：在建筑商登记处查（状态、类别、董事、执法记录、已建房屋）。
+- LA1 The builder holds an active Alberta licence: look it up in the Builder Registry (status, class, directors, enforcement actions, homes built). Source: Alberta (2024–2025). 建筑商持有有效的阿尔伯塔执照：在建筑商登记处查（状态、类别、董事、执法记录、已建房屋）。
 - LA2 Their past homes show a warranty in the Property Registry; know which of the 7 warranty providers they use, and what it covers and leaves out. Alberta (2024–2025). 他们建过的房子在房产登记处有保修记录；知道他们用 7 家保修商中的哪一家、保什么、不保什么。
 - LA3 Years in business, homes built per year, builders' association member. CHBA (2026). 经营年数、每年建房数量、是否为建筑商协会会员。
 - LA4 Better Business Bureau complaints, and how each ended. CHBA (2026). 商业改进局（BBB）的投诉，以及每件的结果。
@@ -895,11 +899,11 @@ A · Builder check (Gate D18, builder signed) · 选建筑商
 B · Contract + money (Gates D18 builder signed, D19 money ready) · 合同与资金
 
 - LB1 A detailed written contract, with the drawings and specs attached. CHBA (2026). 详细的书面合同，附图纸和规格。
-- LB2 Payment milestones match the bank's draw schedule (Gate D19). CHBA (2026). 付款节点与银行放款计划一致（关卡 D19）。
+- LB2 Payment milestones match the bank's draw schedule (Gate D19). CHBA (2026). 付款节点与银行放款计划一致（关口 D19）。
 - LB3 Deposits are held in trust. CMHC guide (Jul 2026). 定金由信托托管。
 - LB4 Allowances are listed item by item and checked against the rate table (myth M9). Myth library. 预留款逐项列出，并对照价格表核对（误区 M9）。
-- LB5 Change orders: in writing, priced and signed before work starts; each one saved as a new version (Gate D14). House-Designer flow. 变更单：开工前书面写明、报价并签字；每张存为一个新版本（关卡 D14）。
-- LB6 Site visits, the pre-drywall walk and the possession walk are written into the contract. CHBA (2026). 合同写明工地参观、封板前检查和交房检查。
+- LB5 Change orders: in writing, priced and signed before work starts; each one listed as a change order (section 13.8). House-Designer flow. 变更单：开工前书面写明、报价并签字；每张都记为变更单（第 13.8 节）。
+- LB6 Site visits, the pre-drywall walk and the possession walk are written into the contract. CHBA (2026). 合同写明工地参观、封墙前检查和收房巡查。
 - LB7 A late move-in: what it costs you, and what the contract says. CMHC guide (Jul 2026). 延期入住：你要花多少，合同怎么写。
 - LB8 The home is enrolled in warranty before the Building permit; you get the Home Registration Certificate. Alberta (2024–2025). 申请建筑许可前房子已登记保修；你拿到房屋登记证书。
 - LB9 GST applies to a new home; ask about the GST/HST New Housing Rebate (check eligibility). CMHC guide (Jul 2026). 新房要交 GST；询问 GST/HST 新房退税（核对资格）。
@@ -907,23 +911,23 @@ B · Contract + money (Gates D18 builder signed, D19 money ready) · 合同与�
 - LB11 DIY items: materials, labour or design you supply are not under warranty (myth M13). Owner-builder authorization costs C$750. Travelers Canada · Alberta (2024–2025). 自己做的部分：你提供的材料、人工或设计不在保修内（误区 M13）。业主自建授权费 750 加元。
 - LB12 Closing costs are about 1.5–4% of the price. CMHC guide (Jul 2026). 过户费用约为房价的 1.5–4%。
 
-C · Pre-drywall walk (Gate D21, photo record before drywall) · 封板前检查. Walk with the builder after the rough-ins pass and before insulation. Bring the plan, the sound targets and the hidden-works list (D4c). 粗装验收通过后、做保温前，与建筑商一起走一遍。带上平面图、隔音目标和隐藏工程清单。
+C · Pre-drywall walk (Gate D21, photo record before drywall) · 封墙前检查. Walk with the builder after the rough-ins pass and before insulation. Bring the plan, the sound targets and the hidden-works list (D4c). 粗装验收通过后、做保温前，与建筑商一起走一遍。带上平面图、隔音目标和隐蔽工程清单。
 
 - LC1 Framing: no badly cut, notched or bored joists or studs; no wood touching soil; no signs of movement. InterNACHI pre-drywall SOP (Mar 2025). 框架：搁栅和立柱没有乱切、乱开槽或乱钻孔；木料不接触泥土；没有变形迹象。
 - LC2 Outside wall: weather barrier laps shed water downward; window and door flashing in place; every hole through the wall sealed. Build Show video · InterNACHI (Mar 2025). 外墙：防水层上压下搭接，水往下流；门窗泛水板到位；穿墙孔全部密封。
 - LC3 Windows and doors: the models chosen (OITC on the road side, myth M1); sealed to the wall. Sound targets. 门窗：是选定的型号（临街一侧看 OITC，误区 M1）；与墙密封。
 - LC4 Air sealing: top plates, rim joists, pipe and wire holes, electrical boxes on outside walls (myths M4, M5). Myth library. 气密：顶梁板、边搁栅、管线孔、外墙上的电盒（误区 M4、M5）。
 - LC5 Blocking in the walls for cabinets, grab bars, TV mounts, heavy shelves and wall boards. Build Show. 墙内为橱柜、扶手、电视支架、重型搁板和墙板预埋木方。
-- LC6 Radon: a pipe from under the slab, capped and marked, ready for a fan later. Build Show · Alberta Performance Guide (2015) 17.22. 氡气：地板下引出一根管，封帽并标记，以后可加风机。
+- LC6 Radon: a pipe from under the slab, capped and marked, ready for a fan later. Build Show · Alberta Performance Guide (2015) 17.22. 氡气：地坪下引出一根管，封帽并标记，以后可加风机。
 - LC7 Sound: insulation and the wall build for each sound target; drain pipes not beside bedrooms; mechanical room away from bedrooms. Sound targets. 隔音：每个隔音目标对应的保温和墙体做法；下水管不在卧室旁；设备间远离卧室。
 - LC8 Electrical: outlets, switches, data and lights match the plan (count them); smoke and CO alarm locations; a spare conduit from attic to basement (E3). InterNACHI (Mar 2025). 电：插座、开关、网线和灯与图纸一致（数一数）；烟雾和一氧化碳报警器位置；从阁楼到地下室留一根备用管（E3）。
 - LC9 Plumbing: shutoffs where you can reach them; no leaks; water heater venting and relief valve. InterNACHI (Mar 2025). 水管：阀门在够得着的地方；无渗漏；热水器排气和泄压阀。
-- LC10 HVAC: duct runs match the plan; HRV and furnace sized from the heat-loss number (myth M3); hood make-up air if over 300 cfm (myth M6). Energy model · Myth library. 暖通：风管走向与图纸一致；HRV 和炉子按热损失计算选型（误区 M3）；油烟机超过 300 cfm 要补风（误区 M6）。
+- LC10 HVAC: duct runs match the plan; HRV and furnace sized from the heat-loss number (myth M3); hood make-up air if over 300 cfm (myth M6). Myth library (the heat-loss number comes from the CSA F280 calculation, section 14.2). 暖通：风管走向与图纸一致；HRV 和炉子按热损失计算选型（误区 M3）；油烟机超过 300 cfm 要补风（误区 M6）。
 - LC11 Fireplace (if any): chase framed, clearances kept. InterNACHI (Mar 2025). 壁炉（如有）：烟道框架做好，安全间距保留。
 - LC12 Attic: insulation at the depth specified; vents not blocked. InterNACHI (Mar 2025). 阁楼：保温厚度达到规定；通风口没有堵。
-- LC13 Photograph and film every wall, floor and ceiling (Gate D21). House-Designer flow. 每面墙、地面和天花板都拍照录像（关卡 D21）。
+- LC13 Photograph and film every wall, floor and ceiling (Gate D21). House-Designer flow. 每面墙、地面和天花板都拍照录像（关口 D21）。
 
-D · Possession walk (Stage 6) · 交房检查
+D · Possession walk (Stage 6) · 收房巡查
 
 - LD1 Every finish, fixture and appliance matches what you ordered. Contract mistakes are not under warranty. ANHWP (May 2026). 每项饰面、灯具洁具和电器都与订单一致。合同上的错误不在保修内。
 - LD2 Floors: dents, scratches, paint drips. ANHWP (May 2026). 地面：凹痕、划痕、油漆滴落。
@@ -941,27 +945,28 @@ D · Possession walk (Stage 6) · 交房检查
 
 DN23 (possession walk, overlap with section 15.11). Proposed: the LD lines show above the section 15.11 per-room items as ticks. Each section 15.11 item gets a kind: "to fix · 要修" (as now) or "can't judge today · 今天无法判断" (LD10); the open count stays the to-fix items, and the can't-judge items are counted apart. Section 15.11 items saved before this keep kind "to fix".
 
-E · Warranty walks + claims · 保修期检查
+E · Warranty walks + claims · 保修巡查
 
-- LE1 Coverage starts at the earliest of: move-in, occupancy permit, or title transfer. The project saves that date. 保修从入住、入住许可或产权过户中最早的那天开始。项目保存这个日期。
-- LE2 Walk before each coverage ends (timing est.): month 11 (finishes, 1 year) · month 23 (systems, 2 years) · year 4½ (envelope, 5 years) · year 9½ (structure, 10 years). Alberta (2024–2025). 在每项保修到期前检查（时间为估计）：第 11 个月（饰面，1 年）· 第 23 个月（系统，2 年）· 第 4 年半（外围护，5 年）· 第 9 年半（结构，10 年）。
-- LE3 Judge defects with the Alberta Performance Guide. Look from 1.5 m inside and 6 m outside (pp. 25–26). Alberta Performance Guide (2015). 用阿省施工性能指南判断缺陷。室内站在 1.5 米处、室外站在 6 米处看（第 25–26 页）。
+- LE1 Coverage starts at the earliest of: move-in, occupancy permit, or title transfer. The project saves that date. Alberta (2024–2025). 保修从入住、入住许可或产权过户中最早的那天开始。项目保存这个日期。
+- LE2 Walk before each coverage ends (timing est.): month 11 (labour and materials, 1 year) · month 23 (systems, 2 years) · year 4½ (envelope, 5 years) · year 9½ (structure, 10 years). Alberta (2024–2025). 在每项保修到期前检查（时间为估计）：第 11 个月（人工与材料，1 年）· 第 23 个月（系统，2 年）· 第 4 年半（外围护，5 年）· 第 9 年半（结构，10 年）。
+- LE3 Judge defects with the Alberta Performance Guide. Look from 1.5 m inside and 6 m outside (pp. 25–26). Alberta Performance Guide (2015). 用阿尔伯塔施工性能指南判断缺陷。室内在 1.5 米外观察，室外在 6 米外观察（第 25–26 页）。
 - LE4 Concrete: foundation wall crack wider than 3 mm (p. 48); basement slab crack wider than 3 mm or edges offset more than 3 mm (p. 50); slab heave or sinking over 25 mm in 3 m in year 1 (p. 52); garage slab crack over 3 mm or offset over 6 mm (p. 55). Alberta Performance Guide (2015). 混凝土：基础墙裂缝宽于 3 毫米（第 48 页）；地下室地坪裂缝宽于 3 毫米或两边错位超过 3 毫米（第 50 页）；第一年地坪在 3 米内隆起或下沉超过 25 毫米（第 52 页）；车库地坪裂缝超过 3 毫米或错位超过 6 毫米（第 55 页）。
 - LE5 Floors: slope over 25 mm in 3 m (p. 82); dip or hump over 6 mm in 0.8 m (p. 83); squeaks that repeat and are easy to hear (p. 85). Alberta Performance Guide (2015). 地板：3 米内坡度超过 25 毫米（第 82 页）；0.8 米内凹凸超过 6 毫米（第 83 页）；反复出现、容易听到的吱吱声（第 85 页）。
 - LE6 Outside: deck pond bigger than 0.37 m², at least 3 mm deep, still there 30 min after rain (p. 39); brick or mortar crack over 3 mm (p. 68); front step pulling away more than 19 mm (p. 61). Alberta Performance Guide (2015). 室外：露台积水大于 0.37 平方米、至少 3 毫米深、雨后 30 分钟仍在（第 39 页）；砖或砂浆裂缝超过 3 毫米（第 68 页）；前门台阶脱开超过 19 毫米（第 61 页）。
 - LE7 Drywall, doors, windows, roof, flooring, room temperatures and radon: **OB6** — the guide's pages 129–327 were not read. Proposed: the list shows LE7 as "not read yet · 尚未阅读" with no thresholds. The build session tries to read those pages on alberta.ca; rows it finds go in the build PR as proposed rows with page numbers, for the owner to approve before they count.
-- LE8 To claim: file with your warranty provider, not the government, inside the coverage period. Disputes: Alberta guideline 05-2022. Alberta (2024–2025). 索赔：在保修期内向保修商提出，不是向政府。争议：阿省指引 05-2022。
+- LE8 To claim: file with your warranty provider, not the government, inside the coverage period. Disputes: Alberta guideline 05-2022. Alberta (2024–2025). 索赔：在保修期内向保修商提出，不是向政府。争议：阿尔伯塔指引 05-2022。
 
 DN21 (warranty walk dates, a conflict with section 14.6 and test M8). LE1 and LE2 change when the walks fall. Before → after, for the owner's decision:
 
-- Before (section 14.6, built): walks on the 1, 2, 5 and 10-year anniversaries of the possession date. M8: possession 2028-06-01 gives 2029-06-01, 2030-06-01, 2033-06-01, 2038-06-01.
-- After (Proposed): the project saves move-in (the existing possession date), occupancy permit and title transfer dates. Coverage starts on the earliest one given. Each walk falls at month 11, month 23, month 54 and month 114 from that start; each coverage end (month 12, 24, 60, 120) shows beside it. A day that does not exist in the walk's month becomes that month's last day. M8 then reads: possession 2028-06-01 alone gives walks 2029-05-01, 2030-05-01, 2032-12-01 and 2037-12-01, ending 2029-06-01, 2030-06-01, 2033-06-01 and 2038-06-01.
+- Before (section 14.6, built): walks on the 1, 2, 5 and 10-year anniversaries of the possession date. Red Deer test M8 (section 14): possession 2028-06-01 gives 2029-06-01, 2030-06-01, 2033-06-01, 2038-06-01.
+- After (Proposed): the project saves move-in (the existing possession date), occupancy permit and title transfer dates. Coverage starts on the earliest one given. Each walk falls at month 11, month 23, month 54 and month 114 from that start; each coverage end (month 12, 24, 60, 120) shows beside it. A day that does not exist in the walk's month becomes that month's last day. Red Deer test M8 then reads: possession 2028-06-01 alone gives walks 2029-05-01, 2030-05-01, 2032-12-01 and 2037-12-01, ending 2029-06-01, 2030-06-01, 2033-06-01 and 2038-06-01.
 - Why: LE2 says walk before each coverage ends; a walk on the end day is too late to file.
 
 Myth library · 常见误区: beliefs that sound right but cost money. 听起来对、却会花冤枉钱的想法。
 
 - Every new decision card (section 13.6) and design item card (section 15.6) gets a myth check: tick the myths that apply, or "none apply · 都不适用"; saved with the card.
 - A family's own costly mistakes go first, tagged E1. They are stored per project (`plan.myths`), never in the repo.
+- The date in each row is the source's own date. Each row's checked date is 2026-10-09 (the canvas check), and R12 reads that checked date.
 - Add a row whenever one is found; a row counts only after it is checked against a source. Rows marked "check again" or "not checked yet" show "not counted yet · 暂不计入".
 
 | # | Wrong belief | What is true · evidence | Where it matters |
@@ -971,15 +976,15 @@ Myth library · 常见误区: beliefs that sound right but cost money. 听起来
 | M3 | A bigger furnace is better. 炉子越大越好。 | An oversized furnace cycles often, heats unevenly and fails sooner; size it from a heat-loss calculation (CSA F280). 炉子过大会频繁启停、加热不均、更早坏；要按热损失计算（CSA F280）选型。 E2 no date · BC regional HomeSmart sheet · checked | energy model; heating |
 | M4 | A house must breathe through leaks. 房子要靠缝隙“呼吸”。 | "Build tight, ventilate right": leaks bring drafts and push moist air into walls; use an airtight shell plus an HRV. “建得严，通风对”：漏风带来冷风，并把潮气推进墙里；用气密外壳加 HRV。 E2 2015 · BC Housing HRV guide · checked | energy model |
 | M5 | More insulation always pays. 保温越多越划算。 | Each extra layer saves less; air sealing pays back faster (about 1 year vs 5–10). 每多一层省得越少；气密回本更快（约 1 年，对比 5–10 年）。 E2 May 2026 · US Dept. of Energy · checked | energy model |
-| M6 | A bigger range hood is better for high-heat cooking. 大火爆炒就要更大的油烟机。 | Capture depends on hood design, size and using the back burners, not only fan power. Over 300 cfm needs make-up air (NBC-AE 9.32.3.8; confirm with the project city). 吸烟效果取决于烟机设计、尺寸和用后排灶眼，不只是风量。超过 300 cfm 要补风（NBC-AE 9.32.3.8；与项目所在城市确认）。 E2 Oct 2024 · Rocky View County, AB · checked | kitchen part 7 |
+| M6 | A bigger range hood is better for high-heat cooking. 大火爆炒就要更大的油烟机。 | Capture depends on hood design, size and using the back burners, not only fan power. Over 300 cfm needs make-up air (NBC-AE 9.32.3.8; confirm with the project city). 抽油烟效果取决于烟机设计、尺寸和用后排灶眼，不只是风量。超过 300 cfm 要补风（NBC-AE 9.32.3.8；与项目所在城市确认）。 E2 Oct 2024 · Rocky View County, AB · checked | kitchen part 7 |
 | M7 | Open concept is always better. 开放式总是更好。 | Noise, privacy and cooking smells spread; a closed kitchen can have its own heating zone. 噪音、隐私和油烟都会扩散；封闭厨房可以有自己的供暖分区。 E2 Jul 2019 · Fine Homebuilding · checked | layout; sound targets |
 | M8 | Price per ft² compares builders. 每平方英尺价格能比较建筑商。 | Only when drawings, specs, inclusions and allowances are the same. 只有图纸、规格、包含项和预留款都相同时才能比。 E2 Jan 2026 · Builders Ontario · checked | team + permits (stage 4) |
 | M9 | Builder allowances cover the finishes. 建筑商的预留款够买饰面。 | Allowances are often set low to make a quote look cheaper; upgrades follow. 预留款常被压低让报价显得便宜，之后就是加价升级。 E2 no date · US source, check again | Gate D5; rate table |
-| M10 | A cheap lot saves money. 便宜的地块省钱。 | Expansive clay adds C$5,000–20,000 in Alberta; slope and service hook-ups add more. 在阿省，膨胀土会多花 5,000–20,000 加元；坡地和接通市政管线还要更多。 E2 Aug 2026 · HomeStars Alberta · checked | level 1 site |
+| M10 | A cheap lot saves money. 便宜的地块省钱。 | Expansive clay adds C$5,000–20,000 in Alberta; slope and service hook-ups add more. 在阿尔伯塔，膨胀土会多花 5,000–20,000 加元；坡地和接通市政管线还要更多。 E2 Aug 2026 · HomeStars Alberta · checked | level 1 site |
 | M11 | The basement can be planned later. 地下室以后再规划。 | Bedroom windows need an opening of at least 0.35 m² with no side under 380 mm; the foundation wall is fully insulated. Plan rough-ins and ceiling height now. 卧室窗开口至少 0.35 平方米、任何一边不小于 380 毫米；基础墙要全保温。现在就规划预埋和层高。 E2 May 2017 · Alberta Municipal Affairs · checked | hidden works D4c |
-| M12 | A new home needs no upkeep for 10 years. 新房 10 年不用维护。 | Warranty: 1 year finishes, 2 years systems, 5 years envelope, 10 years structure; it covers defects, not upkeep. 保修：饰面 1 年、系统 2 年、外围护 5 年、结构 10 年；保的是缺陷，不是维护。 E2 May 2025 · AREA · checked | lifecycle cost |
+| M12 | A new home needs no upkeep for 10 years. 新房 10 年不用维护。 | Warranty: 1 year labour and materials, 2 years systems, 5 years envelope, 10 years structure; it covers defects, not upkeep. 保修：人工与材料 1 年、系统 2 年、外围护 5 年、结构 10 年；保的是缺陷，不是维护。 E2 May 2025 · AREA · checked | lifecycle cost |
 | M13 | DIY work is still under the warranty. 自己做的部分也在保修内。 | Materials, labour or design supplied by the owner are excluded; an owner-built home's warranty helps only a later buyer. 业主提供的材料、人工或设计不保；业主自建房的保修只对以后的买家有用。 E2 no date · Travelers Canada (AB warranty provider) · checked · E2 May 2025 · AREA · checked | every DIY condition |
-| M14 | Heat pumps don't work in Alberta cold. 热泵在阿省的冷天不管用。 | Cold-climate heat pumps are built for about −30 °C; below −25 to −30 °C they need backup heat. 寒冷气候热泵按约 −30 °C 设计；低于 −25 到 −30 °C 需要辅助供暖。 E2 Mar 2022 · BC Hydro · checked | heating |
+| M14 | Heat pumps don't work in Alberta cold. 热泵在阿尔伯塔的冷天不管用。 | Cold-climate heat pumps are built for about −30 °C; below −25 to −30 °C they need backup heat. 寒冷气候热泵按约 −30 °C 设计；低于 −25 到 −30 °C 需要辅助供暖。 E2 Mar 2022 · BC Hydro · checked | heating |
 | M15 | Big windows are always good. 窗越大越好。 | Overhangs shade high summer sun on south windows but not low west sun; east and west glass lets in the most heat. 挑檐能挡住南窗夏天的高角度阳光，挡不住西边的低角度阳光；东西向玻璃进热最多。 E2 2008 · hobby site, check again | energy model, sun check |
 | M16 | If I can't feel air from the HRV, it isn't working. 感觉不到 HRV 出风就是坏了。 | An HRV moves air slowly, all day; you should feel almost nothing at a grille. Whether it works shows in clean filters and core, open outside hoods, and flows measured and balanced at handover. HRV 全天慢慢换气，在风口几乎感觉不到。是否正常看滤网和芯体是否干净、室外风罩是否通畅，以及交房时风量是否测量并平衡。 E3 NRCan HRV guide · not checked yet | energy model; possession walk LD8 |
 
@@ -987,12 +992,12 @@ Sources (read 2026-10-09 by the canvas work): Alberta Builder and Property Regis
 
 Tests (done when):
 
-- H32 The lists have A 9, B 12, C 13, D 13 and E 8 lines, each with its source and checked date, in both languages; LE7 shows "not read yet" with no thresholds.
-- H33 Ticks survive a reload; with 3 of the A lines ticked, gate D18 shows "A: 3 of 9".
-- H34 A row checked 2026-10-09 shows "check again" on 2028-10-11 and not on 2028-10-08.
+- H32 The lists have A 9, B 12, C 13, D 13 and E 8 lines, in both languages; each outside source shows its checked date 2026-10-09 and each app-internal source shows none; LE7 shows "not read yet" with no thresholds.
+- H33 Ticks survive a reload; with 3 of the A lines ticked, gate D18 shows "A: 3 of 9"; with 1 B line ticked, D18 and D19 show "B: 1 of 12"; with 2 C lines ticked, D21 shows "C: 2 of 13".
+- H34 A row checked 2026-10-09 shows "check again" on 2028-10-11 and not on 2028-10-08 (the built R12 rule counts 365.25-day years, so the switch falls on 2028-10-09; the test keeps clear of that day).
 - H35 The myth library has 16 rows; M9, M15 and M16 show "not counted yet"; an E1 row added to the project lists before M1, tagged E1, and is not in the repo data.
 - H36 A new decision card saves its myth check (M6 ticked) and shows it after a reload; "none apply" saves too.
-- H37 (DN21) Move-in 2028-06-01 and occupancy permit 2028-05-20, no title date: coverage starts 2028-05-20; walks 2029-04-20, 2030-04-20, 2032-11-20, 2037-11-20; ends 2029-05-20, 2030-05-20, 2033-05-20, 2038-05-20. A start of 2028-03-31 gives a first walk on 2029-02-28. M8 changes as DN21 says.
+- H37 (DN21) Move-in 2028-06-01 and occupancy permit 2028-05-20, no title date: coverage starts 2028-05-20; walks 2029-04-20, 2030-04-20, 2032-11-20, 2037-11-20; ends 2029-05-20, 2030-05-20, 2033-05-20, 2038-05-20. A start of 2028-03-31 gives a first walk on 2029-02-28. Red Deer test M8 (section 14) changes as DN21 says.
 - H38 (DN23) A possession walk with 1 item to fix and 1 item "can't judge today" counts 1 open and 1 to judge later.
 
 ### 17.6 Part B6. Element library and E1 library · 构件模板库与家庭经验库 (DN18, DN22)
@@ -1014,9 +1019,9 @@ Element library (automatic cards) · 构件模板库: when an element shows up i
 
 - Wording change for the owner: the source says "home automation (review item 35)". "Review item 35" is not defined anywhere in the records. Proposed: point to q7.7 (home automation) instead.
 - Proposed: Windows starts with the 3 frame materials as options and adds "Also compare: double vs triple pane · 另比较：双层还是三层玻璃" as a second card the family can start.
-- Proposed "shows up": an idea (section 13.5) or a design item card (section 15.6) whose text holds an element's name, in English or Chinese, any case, shows "Start a card from the element library: Windows · 从构件模板开始：窗". Nothing is made until the family taps it. "+ New comparison" on the Decide tab also offers the library.
-- A card from a template: options from the template; criteria = the 7 review weights with the q10.5 weights of the template's profile (the starting weights if q10.5 is not answered); the known gates as rules limits; the impact chain as notes (rooms are added by the family).
-- **OB8** "then runs the frame check": the frame check is not defined in the records. Proposed: it is the section 15.7 context step (what this decision is really about, and what is fixed), shown first on the new card.
+- Proposed "shows up": an idea (section 13.5) or a design item card (section 15.6) whose text holds one of an element's match words shows "Start a card from the element library: Windows · 从构件模板开始：窗". Match words (any case): the English name and its singular (window, windows) and the Chinese name; the single-character names 窗 and 门 do not match when part of 窗帘 or 门铃. Nothing is made until the family taps it. "+ New comparison" on the Decide tab also offers the library.
+- A card from a template makes two linked things (Proposed, DN18): a decision card (13.6) with the template's options and its built criteria, and a review criteria sheet (15.7) with the same options, the 7 review weights at the q10.5 weights of the template's profile (the starting weights if q10.5 is not answered), the known gates as gates, and the impact chain as notes in the context step. Proposed: decision cards get an optional `sheetId` link (new field; cards saved before have none).
+- **OB8** "then runs the frame check": the frame check is not defined in the records. Proposed: it is the section 15.7 context step (what this decision is really about, and what is fixed), shown first on the new sheet.
 - Proposed: a project made before this copies the library the first time it opens. Editing the project's copy never changes the app's library.
 
 E1 library · 家庭经验库: what a family knows from its own life. 家庭自己的生活经验。
@@ -1024,39 +1029,39 @@ E1 library · 家庭经验库: what a family knows from its own life. 家庭自�
 - Every new card checks this list first: a new decision card or design item card shows the E1 rows above the myth check. E1 beats E2 and E3.
 - Kept current by the project owner after each decision.
 - Row: what we know (E1) 我们知道的 · first used in (card or room) 首次用于. A size row also has a name, a value, a unit and a room type; sizes the family likes in its current house are measured during the video tour (part B7) and saved here; Room Review part 4 shows the size rows for that room type first.
-- It belongs to the household: project data in Firestore (`plan.e1`), never in the repo, and it carries to every project of the same household.
+- It belongs to the household: project data in Firestore (`plan.e1`), never in the repo. It can be copied to the household's other projects (DN22).
 - DN22 (how it carries across projects). The data model has no household record that spans projects (chat-D34: data per project). Proposed: no new collection and no Firestore rules change. On a project's E1 page, "Copy from another of my projects · 从我的其他项目复制" lists the projects this device can open and copies their E1 rows that are not already there (same text, or same name and type for a size). The source project does not change.
 
 Tests (done when):
 
 - H39 The element library has the 10 elements above; a new project holds a copy; an existing project gets one on its first open; editing the project's copy leaves the app's library as it was.
-- H40 A card from Windows has the 3 options, the 7 criteria with the Systems weights (30, 25, 20, 10, 10, 0, 5 unless q10.5 changed them), the gate "Energy Code 9.36 window values (check)" and 4 impact notes; it opens on the context step.
-- H41 An idea "better 窗 for the yard" shows the Windows suggestion; ignoring it saves nothing new.
+- H40 Starting from Windows makes a decision card with the 3 options and a linked review sheet with the 3 options, the Systems weights (Use 10 · Cost 25 · Comfort 20 · Durability 30 · Future 10 · Look 0 · Risk 5, unless q10.5 changed them), the gate "Energy Code 9.36 window values (check)" and 4 impact notes; the sheet opens on the context step.
+- H41 An idea "a bigger window for the yard" and one "院子那边的窗" each show the Windows suggestion; an idea "new 窗帘" does not; ignoring a suggestion saves nothing new.
 - H42 An E1 size row (kitchen aisle 44 in, kitchen) shows first in a kitchen card's part 4; a new decision card lists the E1 rows above the myth check.
 - H43 Copying E1 from a second made-up project adds its 2 rows once; copying again adds none; the second project is unchanged.
 
 ### 17.7 Part B7. Current-house video tour (Stage 1a) · 现房视频巡查 (DN19)
 
-Film each room for 1–5 minutes, in good light, moving slowly. Say out loud what annoys you and what you love. A video-capable AI tool lists the pain points and cheap fixes. Second opinion: run 1–2 rooms (kitchen, mudroom) through a second AI tool and compare the two lists. While filming, measure what you like (kitchen run, island gap, hallway width, mudroom bench depth): these become E1 sizes in the E1 library. 每个房间拍 1–5 分钟，边拍边说哪里不方便、哪里喜欢。AI 工具列出痛点和低成本改进。
+Film each room for 1–5 minutes, in good light, moving slowly. Say out loud what annoys you and what you love. A video-capable AI tool lists the pain points and cheap fixes. Second opinion: run 1–2 rooms (kitchen, mudroom) through a second AI tool and compare the two lists. While filming, measure what you like (kitchen run, island gap, hallway width, mudroom bench depth): these become E1 sizes in the E1 library. 每个房间拍 1–5 分钟，光线要好，慢慢移动。边拍边说哪里不方便、哪里喜欢。能看视频的 AI 工具列出痛点和低成本改进。第二意见：把 1–2 个房间（厨房、玄关）交给第二个 AI 工具，比较两份清单。边拍边量喜欢的尺寸（厨房台面长度、岛台间距、走廊宽度、玄关长凳深度），这些成为家庭经验库里的 E1 尺寸。
 
 - One copy of the tour steps, with no tool or product names (canvas fix O1). The tour page is the only place they are written. 只有一份巡查步骤，不写工具或产品名称。
 - Before 拍之前 (6 items): daylight, all lights on, blinds open 白天，开所有灯，拉开窗帘 · clean lens 擦干净镜头 · phone flat (landscape) 手机横拍 · tape measure in hand 手拿卷尺 · one clip per room, 1–5 min (check the AI tool's video length limit) 每个房间一段 1–5 分钟（查一下 AI 工具的视频长度上限） · name each clip room_date, e.g. kitchen_2026-10-12 每段命名为 房间_日期，例如 kitchen_2026-10-12.
-- Order (a daily path) 顺序（按日常动线, 12 stops): car 车 → garage 车库 → mudroom 玄关 → kitchen 厨房 → dining 餐厅 → living 客厅 → sun room 阳光房 → bedrooms 卧室 → bathrooms 卫生间 → laundry 洗衣房 → basement 地下室 → yard 院子. Each stop has a "we don't have this · 我们没有" switch.
-- In each room, say out loud 在每个房间说出 (9 points): 1 room name and who uses it most 房间名和谁最常用 · 2 what we love (keep) 喜欢什么（保留）· 3 what annoys us, shown on camera 哪里不方便，对着镜头拍出来 · 4 what piles up here 这里堆什么 · 5 open 2–3 cabinets or closets 打开 2–3 个柜子或衣柜 · 6 light, glare, dark corners, time of day 光线、眩光、暗角、几点钟 · 7 cold, drafts, noise, smells 冷、漏风、噪音、气味 · 8 measure 1–2 sizes you like or dislike, read the tape on camera 量 1–2 个喜欢或不喜欢的尺寸，对着镜头读卷尺 · 9 one wish for the new house 一个对新家的愿望.
+- Order (a daily path) 顺序（按日常动线，12 站）: car 车 → garage 车库 → mudroom 玄关 → kitchen 厨房 → dining 餐厅 → living 客厅 → sun room 阳光房 → bedrooms 卧室 → bathrooms 卫生间 → laundry 洗衣房 → basement 地下室 → yard 院子. Each stop has a "we don't have this · 我们没有" switch.
+- In each room, say out loud 在每个房间说出 (9 points): 1 room name and who uses it most 房间名和谁最常用 · 2 what we love (keep) 喜欢什么（保留）· 3 what annoys us, shown on camera 哪里不方便，对着镜头拍出来 · 4 what piles up here 这里堆什么 · 5 open 2–3 cabinets or closets 打开 2–3 个柜子或衣柜 · 6 light, glare, dark corners, time of day 光线、眩光、暗角、拍摄时间 · 7 cold, drafts, noise, smells 冷、漏风、噪音、气味 · 8 measure 1–2 sizes you like or dislike, read the tape on camera 量 1–2 个喜欢或不喜欢的尺寸，对着镜头读卷尺 · 9 one wish for the new house 一个对新家的愿望.
 - Extra clips 加拍 (4): entry in winter mode (boots, coats, bags) 冬天的入口（靴子、外套、包）· kitchen while cooking (high heat, hood, smoke) 做饭时的厨房（大火、油烟机、油烟）· morning rush spots 早高峰拥挤处 · each person: 2 min "my space" 每人 2 分钟“我的空间”.
-- After 拍完后: give the clips and the tour prompt to the AI tool · run the second tool on kitchen + mudroom with the same prompt · paste both answers into the app's tour page; they fill questionnaire section 0 (the pain-point list), the cheap wins and the E1 library sizes. 把视频和巡查提示交给 AI 工具 · 用第二个工具以同样提示看厨房和玄关 · 把两份回答贴到 App 的巡查页；它们填入问卷第 0 节（痛点清单）、小投入高满意清单和家庭经验库尺寸。
+- After 拍完后: give the clips and the tour prompt to the AI tool · run the second tool on kitchen + mudroom with the same prompt · paste both answers into the app's tour page; they fill questionnaire section 0 (the pain-point list), the cheap wins and the E1 library sizes. 把视频和巡查提示交给 AI 工具 · 用第二个工具以同样提示看厨房和玄关 · 把两份回答贴到 App 的巡查页；它们填入问卷第 0 节（痛点清单）、省钱小招清单和家庭经验库尺寸。
 - Who: the family · time 1–2 weeks · cost none. 谁：全家 · 时间 1–2 周 · 费用 无。
-- On the tour page (`plan.tour`): a clip list per stop (name filled as room_date from the stop and the date typed; a done tick; the length in minutes, with a note outside 1–5 but never refused) and two paste boxes (main answer, second opinion). Each line of a pasted answer has 3 buttons: "pain point · 痛点" (adds a section 15.2 pain point), "cheap win · 小确幸" (adds a section 13.3 cheap win, status idea) and "E1 size · 经验尺寸" (opens a size row to fill in). Each button adds a line once. The app does not read the pasted text by itself (no AI in the app).
+- On the tour page (`plan.tour`): a clip list per stop (name filled as room_date from the stop and the date typed; a done tick; the length in minutes, with a note outside 1–5 but never refused) and two paste boxes (main answer, second opinion). Each line of a pasted answer has 5 buttons: "pain point · 痛点" (adds a section 15.2 pain point), "cheap win · 省钱小招" (adds a section 13.3 cheap win, status idea), "E1 size · 经验尺寸" (opens an E1 size row to fill in), "love · 喜欢" (a q0.2 choice) and "wish · 愿望" (a q10.1 item). Each button adds a line once. Saved in `plan.tour` (loves, wishes). The app does not read the pasted text by itself (no AI in the app).
 - **OB7** (the tour prompt text, the "video-tour-instructions" prompt with the 40/30/30 room analysis, is not on the canvas). Proposed: the app shows the steps above only. If the owner pastes the prompt text, it goes in a later PR as one more box on the tour page with a "Copy prompt · 复制提示" button.
 
 Tests (done when):
 
-- H44 The tour page shows 6 Before items, 12 stops in the order above, 9 say-out-loud points, 4 extra clips and the After steps, in both languages; no tour text names an AI product.
+- H44 The tour page shows 6 Before items, 12 stops in the order above, 9 say-out-loud points, 4 extra clips and the After steps, in both languages; no tour text names an AI product (the test checks a list of product names kept in the test file, not in the app).
 - H45 A clip at stop kitchen dated 2026-10-12 is named kitchen_2026-10-12; a 7-minute clip is saved with a note; a stop switched to "we don't have this" leaves the clip list.
-- H46 A pasted answer of 3 lines shows 3 rows; "pain point" on row 1 adds one section 15.2 pain point, and a second tap adds none; the pasted text survives a reload.
-- H47 Pain points added from the tour are the choices of q0.1.
+- H46 A pasted answer of 3 lines shows 3 rows; "pain point" on row 1 adds one section 15.2 pain point, and a second tap adds none; "cheap win" on row 2 adds one section 13.3 cheap win with status idea; "E1 size" on row 3 opens a size row and, once filled, adds one E1 row; the pasted text survives a reload.
+- H47 Pain points added from the tour are the choices of q0.1; a "love" line is a q0.2 choice and a "wish" line is a q10.1 item.
 
-### 17.8 Feature audit: what batch B touches in sections 6–16
+### 17.8 Feature audit: what batch B touches in sections 4–16
 
 Marks: Covered (already does it) · Overlap (batch B adds to it) · Conflict (batch B changes what is built; a DN decides) · Untouched.
 
@@ -1068,11 +1073,11 @@ Marks: Covered (already does it) · Overlap (batch B adds to it) · Conflict (ba
 | Liked plan reasons | 13.2 | Overlap | feed q10.1 | K4 |
 | Plan versions, 20 at most | 13.4 | Overlap | an applied card saves a version | K6–K8, H17 |
 | Idea inbox | 13.5 | Overlap | kept ideas go there once; element suggestions | K9–K10, H6, H41 |
-| Decision cards | 13.6 | Overlap | myth check, E1 rows, element templates | K11–K12, H36, H40 |
+| Decision cards | 13.6 | **Conflict** (small) | new optional `roomIds` and `sheetId` fields; myth check, E1 rows; element templates (DN18) | K11–K12, H36, H40 |
 | Hidden works | 13.7 | Overlap | Room Review part 7 sends items | K13–K14, H20 |
 | Schedule and gates | 13.1 | Overlap | D4, D18, D19, D21 show batch B counts; the owner still ticks | K1–K3, H10, H15, H33 |
-| Code checklist | 14.1 | Overlap | Safety & age reads it | M1, M2, H23 |
-| Warranty walks | 14.6 | **Conflict** | LE1–LE2 change the dates (DN21) | M8 (changes), H37 |
+| Code checklist | 14.1 | Overlap | Safety & age reads it | Red Deer tests M1, M2 (section 14); H23, H48 |
+| Warranty walks | 14.6 | **Conflict** | LE1–LE2 change the dates (DN21) | Red Deer test M8 (section 14, changes), H37 |
 | Pain points | 15.2 | Overlap | filled from the tour; q0.1 choices | W2, H46, H47 |
 | Pictures and style profile | 15.3 | Overlap | Room Review part 3 per room | W3 |
 | Design sprints D4a–D4g | 15.5 | Overlap | Room Review levels link to them | W5 |
@@ -1081,9 +1086,14 @@ Marks: Covered (already does it) · Overlap (batch B adds to it) · Conflict (ba
 | Systems checklist | 15.8 | Overlap | shows the q7.7 picks | W8 |
 | Possession walk | 15.11 | **Conflict** (small) | LD lines and a "can't judge today" kind (DN23) | W11, H38 |
 | Wet rooms soft check | 15.12 | Overlap | Housework hint | W12 |
-| Budget meter, Gate D5 verdict | 8, 13.1 | Untouched | the target estimate shows beside it; the verdict stays | B3–B5, K3, H16 |
+| Budget meter, Gate D5 verdict | 8, 13.1 | Overlap | a target estimate shows beside it; the verdict stays | budget tests B3–B5 (section 8), K3, H16 |
 | Rules table "check again" | 6.1 R12 | Covered | site-walk rows use the same rule | H34 |
 | Firestore rules | 9 | Untouched | no new collection (DN22) | S1–S4 |
+| Change orders | 13.8 | Covered | LB5 points to them | K15 |
+| Money, draw schedule | 14.5 | Overlap | LB2 ticks show on D19 | Red Deer test M7 (section 14), H33 |
+| Test fit traced plans | 11 | Overlap | a traced plan marked test fit can be reviewed | F5, H12 |
+| Daily core route cluster | 7 | Overlap | sets the default room order (OB9) | L6, H13 |
+| Design item cards | 15.6 | Overlap | myth check, E1 rows, element suggestions, Keep re-opens rooms | W6, H17, H41 |
 
 ### 17.9 DN list and open items
 
@@ -1091,13 +1101,13 @@ Marks: Covered (already does it) · Overlap (batch B adds to it) · Conflict (ba
 |---|---|---|
 | DN13 | Part B1, the questionnaire: rules, who answers, answer types (with Weights), the Living Brief, the Fit check at D4, tests H1–H11 | 17.1 |
 | DN14 | Part B2, the room review path: 7 levels, room cards, area program, re-open rule, kitchen prompts, sound targets, tests H12–H20 | 17.2 |
-| DN15 | Part B3, the 7 plan checks, tests H21–H25 | 17.3 |
+| DN15 | Part B3, the 7 plan checks, tests H21–H25 and H48 | 17.3 |
 | DN16 | Part B4, the feng shui check and the room energy score, tests H26–H31 | 17.4 |
 | DN17 | Part B5, the 5 site-walk lists, the myth library and the source re-check at build, tests H32–H36 | 17.5 |
 | DN18 | Part B6, the element library and the E1 library, tests H39–H42 | 17.6 |
 | DN19 | Part B7, the video tour page, tests H44–H47 | 17.7 |
 | DN20 | The labels: "part B4" and "myth M6" outside section 17; tests H; chat-D21 written as chat-D37 | 17.0 |
-| DN21 | Warranty walk dates from LE1 and LE2; M8 changes (before → after in 17.5); test H37 | 17.5 |
+| DN21 | Warranty walk dates from LE1 and LE2; Red Deer test M8 (section 14) changes (before → after in 17.5); test H37 | 17.5 |
 | DN22 | The E1 library carries across projects by "Copy from another of my projects"; no new collection; test H43 | 17.6 |
 | DN23 | The possession walk gets the LD lines and a "can't judge today" kind; test H38 | 17.5 |
 
