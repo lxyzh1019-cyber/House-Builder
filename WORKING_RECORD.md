@@ -141,3 +141,30 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - Chinese fully Chinese, no sideways scroll, 0 console errors.
 - Fixed during the check: soft-cost inputs overlapped their Remove button; the goal mark sat on the bar's edge.
 - Not checked: the owner's B7, with real numbers (those stay in Firestore only).
+
+## Bug found and fixed (2026-11-06)
+
+- Opening a saved project that had rooms but no trace or no budget replaced its rooms with the two starting rooms, which were then saved over its own. Cause: when trace and budget loading were added (commits daeddf4 and f662dae), the "starting rooms" line ended up attached to the wrong `if`. It was on the working branch and its Pages deploys from 2026-11-05 21:30 UTC, not on main.
+- Fix (c42b1ac): opening goes through one tested function (`src/load.js`, `test/load.test.js`). Browser check: a saved garage + kitchen project opened as living room + office on the old build, and keeps its rooms on the fixed build, also after a reload.
+- The owner's own project on that device may have been reset to the two starting rooms if it was opened in that window. This was not checked; it cannot be seen from here.
+
+## Piece 8: Projects and sharing without sign-in (2026-11-06)
+
+- Owner: "All three, one PR" (chat-D33 device codes, chat-D34 projects and setup).
+- New first tab "Project / 项目":
+  - setup: name, new build or renovation, city, household;
+  - your projects (mine and shared with me): open, new, delete;
+  - sharing: this device's code, and the owner adds or removes members by device code with a label.
+  The header shows the project name. The browser remembers which project it opened last.
+- Firestore rules: owner or member reads and updates; a member cannot change owner or members; only the owner deletes. Saves now write the design fields only, so a member's save keeps the owner and the members list.
+- Under the old owner-only rules, the new app still lists, opens and saves its own projects (tested). Sharing starts working once the owner publishes the new `firestore.rules` in the Firebase console.
+- Tests: `npm run test:rules` 61 of 61 pass locally (S1–S6 and the old-rules case in the emulator).
+- Two-device run (S7, Firebase Auth + Firestore emulators, PC 1280 px and phone 390 px browsers):
+  - the PC added the phone's device code;
+  - the phone found "Test house · shared with you", opened it, saw the setup and renamed a room;
+  - the PC saw the rename after a reload;
+  - after the PC removed the phone, the phone no longer found it;
+  - a second PC project kept its own data when switching back;
+  - Chinese fully Chinese, no sideways scroll, 0 console errors.
+- All tabs (7 + 3D), PC and phone, both languages: no sideways scroll, 0 console errors.
+- Not checked: real devices against the real Firestore (needs the new rules published), S7 by the owner.

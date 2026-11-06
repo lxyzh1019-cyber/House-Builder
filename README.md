@@ -5,6 +5,8 @@ measurements are in [WORKING_RECORD.md](WORKING_RECORD.md).
 
 ## What it does now
 
+- **Project** (SPEC §9, §12): project setup (name, new build or renovation, city, household), many
+  projects, and sharing by device code: open a project on your phone or a family member's device.
 - **Rooms** (SPEC §6): pick a room type, answer plain questions, adjust real furniture items, and get the
   minimum size where the items fit with their clearances. Set your own size and press **Check my size**.
 - **Plan intake** (SPEC §11): put the sample plan, or your own picture or PDF, under the model; set the
@@ -20,8 +22,8 @@ measurements are in [WORKING_RECORD.md](WORKING_RECORD.md).
 ```bash
 npm ci
 npm run dev          # local app (saves to the House-Designer Firestore project)
-npm test             # unit tests: size engine T1–T6, lot L1–L6, plan intake I1–I5 and I7, test fit F1–F5, budget B2–B5, languages, Pascal scene
-npm run test:rules   # all tests, including Firestore rules and the save/reload tests T4, L7, I6, F6, B1/B6, in the emulator (Java 21)
+npm test             # unit tests: size engine T1–T6, lot L1–L6, plan intake I1–I5 and I7, test fit F1–F5, budget B2–B5, opening a project, languages, Pascal scene
+npm run test:rules   # all tests, including Firestore rules and the save/reload tests T4, L7, I6, F6, B1/B6, sharing S1–S6, in the emulator (Java 21)
 npm run build        # production build into dist/
 npm run build:local  # build that saves in browser storage instead of Firestore
 ```

@@ -12,14 +12,15 @@ import { LANGS, setLang, t, tlist, tx, useLang } from '../i18n.js'
 import TraceBoard from './TraceBoard.jsx'
 import Budget from './Budget.jsx'
 import { newBudget } from '../budget/budget.js'
-import { startFrom } from '../load.js'
+import { pickProject, startFrom } from '../load.js'
+import ProjectTab from './ProjectTab.jsx'
 import { newTrace, traceFrame } from '../trace/trace.js'
 import { copyToRooms, knownSizes } from '../trace/fit.js'
 import { SAMPLE, sampleUrl } from '../trace/sample.js'
 import { fileToPicture, loadPicture, pictureSize, savePicture } from '../trace/picture.js'
 
 const View3D = lazy(() => import('./View3D.jsx'))
-const TABS = [['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['budget', 'tab.budget'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
+const TABS = [['project', 'tab.project'], ['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['budget', 'tab.budget'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
 const tabFromHash = () => (TABS.some(([id]) => `#${id}` === location.hash) ? location.hash.slice(1) : 'rooms')
 // ?fx=0 (or #fx0) turns off Pascal's post-effects in the 3D view.
 const postFx = new URLSearchParams(location.search).get('fx') !== '0'
@@ -32,6 +33,9 @@ export default function App({ store, pluginReady }) {
   const [clusters, setClusters] = useState([])
   const [trace, setTrace] = useState(() => newTrace())
   const [budget, setBudget] = useState(() => newBudget())
+  const [setup, setSetup] = useState(null)
+  const [projects, setProjects] = useState([])
+  const [meta, setMeta] = useState({ role: 'owner', members: [], memberNames: {} })
   const [pictureUrl, setPictureUrl] = useState(null)
   const [pictureNote, setPictureNote] = useState(null)
   const [aim, setAim] = useState('room')
@@ -51,10 +55,15 @@ export default function App({ store, pluginReady }) {
     ;(async () => {
       try {
         await pluginReady
-        const data = await store.load()
+        const me = await store.init()
+        const list = await store.list()
+        const pick = pickProject(list, lastProject())
+        const data = pick ? await store.open(pick.id) : null
         if (!alive) return
         const p = startFrom(data)
-        setRooms(p.rooms); setRules(p.rules); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget)
+        setRooms(p.rooms); setRules(p.rules); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget); setSetup(p.setup)
+        setProjects(list)
+        if (data) { rememberProject(data.id); setMeta({ id: data.id, owner: data.owner, members: data.members || [], memberNames: data.memberNames || {}, role: data.owner === me.uid || store.name !== 'Firestore' ? 'owner' : 'member' }) }
         setSelId(p.rooms[0].id); setSaveState(p.isNew ? 'new' : 'loaded')
         if (data?.trace) await showPicture(data.trace.image)
         setReady(true)
@@ -71,10 +80,15 @@ export default function App({ store, pluginReady }) {
     clearTimeout(saveTimer.current)
     setSaveState('saving')
     saveTimer.current = setTimeout(async () => {
-      try { await store.save({ scene: sceneJson(), rooms, rules, lot, clusters, trace, budget }); setSaveState('saved') }
+      try {
+        const wasNew = !store.currentId()
+        await store.save({ scene: sceneJson(), rooms, rules, lot, clusters, trace, budget, setup })
+        if (wasNew && store.currentId()) { rememberProject(store.currentId()); setMeta((m) => ({ ...m, id: store.currentId() })); setProjects(await store.list()) }
+        setSaveState('saved')
+      }
       catch (e) { console.error(e); setError(t('err.save', { msg: e?.message || e })); setSaveState('error') }
     }, 600)
-  }, [ready, rooms, rules, lot, clusters, trace, budget, pictureUrl, st, store])
+  }, [ready, rooms, rules, lot, clusters, trace, budget, setup, pictureUrl, st, store])
 
   const room = rooms.find((r) => r.id === selId)
   const geo = useMemo(() => (room ? readRoom(nodes, room.id) : null), [nodes, room])
@@ -119,7 +133,7 @@ export default function App({ store, pluginReady }) {
   return (
     <div className="app">
       <header className="top">
-        <div className="brand">{t('app.brand')} <span className="muted">· {t('app.sub')}</span></div>
+        <div className="brand">{t('app.brand')} <span className="muted" data-testid="project-name">· {tx(setup?.name) || t('proj.unnamed')}{meta.role === 'member' ? ` · ${t('proj.shared')}` : ''}</span></div>
         <div className="top-right">
           <div className="save" data-testid="save-state">{t('app.savedIn', { store: t(`store.${store.name}`), state: t(`save.${saveState}`) })}</div>
           <div className="lang" role="group" aria-label={t('app.lang')}>{LANGS.map(([id, label]) => <button key={id} lang={id === 'zh' ? 'zh-Hans' : 'en'} className={`chip ${lang === id ? 'on' : ''}`} aria-pressed={lang === id} data-testid={`lang-${id}`} onClick={() => setLang(id)}>{label}</button>)}</div>
@@ -129,6 +143,11 @@ export default function App({ store, pluginReady }) {
       {error && <div className="error" role="alert">{error}</div>}
       {!ready && !error && <div className="panel muted">{t('app.loading')}</div>}
 
+      {ready && tab === 'project' && <ProjectTab store={store} setup={setup} onSetup={setSetup} projects={projects} current={meta.id || store.currentId()} meta={meta}
+        onOpen={(id) => { rememberProject(id); location.reload() }}
+        onNew={async () => { const p = startFrom(null); const id = await store.create({ rooms: p.rooms, rules: p.rules, lot: p.lot, clusters: p.clusters, trace: p.trace, budget: p.budget, setup: p.setup, scene: '{}' }); rememberProject(id); location.reload() }}
+        onDelete={async (id) => { await store.remove(id); if (id === (meta.id || store.currentId())) { rememberProject(null); location.reload() } else setProjects(await store.list()) }}
+        onShare={async (members, memberNames) => { await store.share(members, memberNames); setMeta((m) => ({ ...m, members, memberNames })) }} />}
       {ready && tab === 'rooms' && (
         <main className="rooms">
           <aside className="room-list">
@@ -170,6 +189,10 @@ export default function App({ store, pluginReady }) {
     </div>
   )
 }
+
+// The project this browser opened last (per browser, like the language).
+function lastProject() { try { return localStorage.getItem('hd-project') } catch { return null } }
+function rememberProject(id) { try { if (id) localStorage.setItem('hd-project', id); else localStorage.removeItem('hd-project') } catch { /* storage blocked */ } }
 
 // What the lot board means for this room's walkway (shown in Rooms).
 function lotNote(room, st, rooms) {

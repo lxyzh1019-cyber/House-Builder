@@ -49,6 +49,8 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D30 (plan intake done-when) | I1–I8 in section 11. | 2026-11-05 |
 | chat-D31 (test fit done-when) | F1–F7 in section 11. Only a traced room with 4 square corners gets a verdict, because the size check is a plain rectangle (chat-D16). A new design is a copy into Rooms; the traced plan never changes. | 2026-11-05 |
 | chat-D32 (budget meter) | Contingency is a share of the build cost only, not of soft costs or the lot (was DN8). Build rates are the Rules table rows. Area = rooms placed on the Lot board. Done-when B1–B7 in section 8. | 2026-11-05 |
+| chat-D33 (members without sign-in) | Each device's anonymous account id is its device code; the owner adds a member by pasting their code. Members read and write; only the owner adds or removes members and deletes. A later sign-in that links the anonymous account keeps the same id. Was DN9. | 2026-11-06 |
+| chat-D34 (projects and setup) | Many projects per person, each with its own data; Stage 0 setup holds name, new build or renovation, city and household (the budget goal stays on the Budget tab). Done-when S1–S7 in section 9. | 2026-11-06 |
 
 ## 4. Architecture
 - Vite + React. Pascal packages @pascal-app/core, viewer, nodes, editor at 1.0.6 (MIT). Deploy to GitHub Pages with GitHub Actions.
@@ -140,11 +142,20 @@ Tests (done when):
 ## 9. Family sharing
 - projects/{id} holds a members list. Members read and write; only the owner adds members or deletes.
 - Firestore emulator tests: a member writes, a non-member is denied.
+- Members are added by device code (chat-D33); one project per device is gone (chat-D34).
+- Tests (done when, chat-D34):
+  - S1 A member reads and writes the project and finds it under "shared with me".
+  - S2 A non-member is denied and finds nothing.
+  - S3 A member cannot add or remove members, rename them, change the owner or delete.
+  - S4 The owner adds and removes members and is the only one who deletes.
+  - S5 Two projects per owner: both are listed, and saving one leaves the other as it was.
+  - S6 Project setup (name, new build or renovation, city, household) survives a reload.
+  - S7 The owner adds their phone by its device code and sees the same project on the phone.
 
 ## 10. Open items
 - 12 canvas fixes from the canvas v54 review, to apply when the matching piece starts: C1 ledger, L2 sun room, L3 feng shui roles, G1 new-design branch, L5 study bedroom-ready, L6 homework, O1 tour copy, C3 back-kitchen make-up air, O2 feng shui list, C2 sizes from questionnaire counts, K1 date old items, L4 rename the two 7 lists.
 - Later pieces' sections (section 12 rows marked Later) are written here before each starts.
-- Seeing a traced plan on another device needs real sign-in (chat-D28); decide it with family sharing (section 9). The plan picture would then also need a shared home (chat-D27 "for now").
+- Seeing a traced plan on another device: done by device code (chat-D33). The plan picture still stays on the device that uploaded it (chat-D27 "for now"). Real sign-in (chat-D28) is still open; linking keeps each device's id.
 
 ## 11. Plan intake (trace a plan)
 Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovation's current house, a builder's plan, or a plan the family likes. This is a design method of its own, parallel to room blocks (chat-D18), not a step before or after it.

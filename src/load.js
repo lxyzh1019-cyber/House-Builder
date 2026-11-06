@@ -5,6 +5,9 @@ import { newLot } from './lot/lot.js'
 import { newTrace } from './trace/trace.js'
 import { newBudget } from './budget/budget.js'
 
+// Stage 0 setup (SPEC §12): name, new build or renovation, city, household. Blank until typed.
+export const newSetup = () => ({ name: '', type: 'new', city: '', household: [] })
+
 export function startFrom(data) {
   const saved = !!data?.rooms?.length
   const rooms = saved ? data.rooms : [newRoom('living', 'Family TV room'), newRoom('office', 'Home office')]
@@ -16,5 +19,11 @@ export function startFrom(data) {
     clusters: data?.clusters || [],
     trace: data?.trace || newTrace(),
     budget: data?.budget || newBudget(),
+    setup: { ...newSetup(), ...(data?.setup || {}) },
   }
+}
+
+// Which project to open: the one this browser opened last, else my first own project, else none (new).
+export function pickProject(list, lastId) {
+  return list.find((p) => p.id === lastId) || list.find((p) => p.role === 'owner') || null
 }
