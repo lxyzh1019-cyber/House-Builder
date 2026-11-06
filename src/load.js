@@ -6,6 +6,7 @@ import { migrateRules } from './rules.js'
 import { newLot } from './lot/lot.js'
 import { newTrace } from './trace/trace.js'
 import { newBudget } from './budget/budget.js'
+import { newPlan } from './plan/plan.js'
 
 // Stage 0 setup (SPEC §12): name, new build or renovation, city, household. Blank until typed.
 export const newSetup = () => ({ name: '', type: 'new', city: '', household: [] })
@@ -23,6 +24,8 @@ export function startFrom(data) {
     trace: data?.trace || newTrace(),
     budget: data?.budget || newBudget(),
     setup: { ...newSetup(), ...(data?.setup || {}) },
+    plan: { ...newPlan(), ...(data?.plan || {}) },
+    versions: data?.versions || [],
   }
 }
 

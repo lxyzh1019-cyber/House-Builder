@@ -4,6 +4,10 @@ import { ROOM_TYPES, TYPE_ORDER, newRoom } from '../rooms/types.js'
 import { answer as answerQuestion, optionsFrom } from '../rooms/answers.js'
 import { toSaved } from '../rooms/migrate.js'
 import HouseholdQuestions from './HouseholdQuestions.jsx'
+import StagesTab from './StagesTab.jsx'
+import DecideTab from './DecideTab.jsx'
+import LikedPlans from './LikedPlans.jsx'
+import { newPlan } from '../plan/plan.js'
 import { readLot, readRoom, sceneJson, syncScene } from '../scene/sync.js'
 import { lotState, newLot } from '../lot/lot.js'
 import LotBoard from './LotBoard.jsx'
@@ -23,7 +27,7 @@ import { SAMPLE, sampleUrl } from '../trace/sample.js'
 import { fileToPicture, loadPicture, pictureSize, savePicture } from '../trace/picture.js'
 
 const View3D = lazy(() => import('./View3D.jsx'))
-const TABS = [['project', 'tab.project'], ['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['budget', 'tab.budget'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
+const TABS = [['project', 'tab.project'], ['rooms', 'tab.rooms'], ['trace', 'tab.trace'], ['lot', 'tab.lot'], ['budget', 'tab.budget'], ['stages', 'tab.stages'], ['decide', 'tab.decide'], ['rules', 'tab.rules'], ['tests', 'tab.tests'], ['3d', 'tab.3d']]
 const tabFromHash = () => (TABS.some(([id]) => `#${id}` === location.hash) ? location.hash.slice(1) : 'rooms')
 // ?fx=0 (or #fx0) turns off Pascal's post-effects in the 3D view.
 const postFx = new URLSearchParams(location.search).get('fx') !== '0'
@@ -33,6 +37,8 @@ export default function App({ store, pluginReady }) {
   const [rooms, setRooms] = useState([])
   const [rules, setRules] = useState({})
   const [answers, setAnswers] = useState({})
+  const [plan, setPlan] = useState(() => newPlan())
+  const [versions, setVersions] = useState([])
   const [lot, setLot] = useState(() => newLot())
   const [clusters, setClusters] = useState([])
   const [trace, setTrace] = useState(() => newTrace())
@@ -65,7 +71,7 @@ export default function App({ store, pluginReady }) {
         const data = pick ? await store.open(pick.id) : null
         if (!alive) return
         const p = startFrom(data)
-        setRooms(p.rooms); setRules(p.rules); setAnswers(p.answers); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget); setSetup(p.setup)
+        setRooms(p.rooms); setRules(p.rules); setAnswers(p.answers); setPlan(p.plan); setVersions(p.versions); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget); setSetup(p.setup)
         setProjects(list)
         if (data) { rememberProject(data.id); setMeta({ id: data.id, owner: data.owner, members: data.members || [], memberNames: data.memberNames || {}, role: data.owner === me.uid || store.name !== 'Firestore' ? 'owner' : 'member' }) }
         setSelId(p.rooms[0].id); setSaveState(p.isNew ? 'new' : 'loaded')
@@ -86,13 +92,13 @@ export default function App({ store, pluginReady }) {
     saveTimer.current = setTimeout(async () => {
       try {
         const wasNew = !store.currentId()
-        await store.save({ scene: sceneJson(), rooms: rooms.map((r) => toSaved(r, rules)), answers, rules, lot, clusters, trace, budget, setup })
+        await store.save({ scene: sceneJson(), rooms: rooms.map((r) => toSaved(r, rules)), answers, rules, lot, clusters, trace, budget, setup, plan, versions })
         if (wasNew && store.currentId()) { rememberProject(store.currentId()); setMeta((m) => ({ ...m, id: store.currentId() })); setProjects(await store.list()) }
         setSaveState('saved')
       }
       catch (e) { console.error(e); setError(t('err.save', { msg: e?.message || e })); setSaveState('error') }
     }, 600)
-  }, [ready, rooms, answers, rules, lot, clusters, trace, budget, setup, pictureUrl, st, store])
+  }, [ready, rooms, answers, rules, lot, clusters, trace, budget, setup, plan, versions, pictureUrl, st, store])
 
   const room = rooms.find((r) => r.id === selId)
   const geo = useMemo(() => (room ? readRoom(nodes, room.id) : null), [nodes, room])
@@ -132,6 +138,7 @@ export default function App({ store, pluginReady }) {
 
   const changeRoom = (r) => setRooms(rooms.map((x) => (x.id === r.id ? r : x)))
   const household = setup?.household || []
+  const who = () => store.deviceCode?.() || 'this device'
   const addRoom = (type) => { const r = newRoom(type, optionsFrom(answers, type, household), rules); setRooms([...rooms, r]); setSelId(r.id); location.hash = 'rooms' }
   // Questionnaire sections 4–6 (R11): the answer is saved under its id and sets the rooms it sizes.
   const onAnswer = (id, value) => { const out = answerQuestion(answers, rooms, id, value, { by: store.deviceCode?.() || 'this device', household, overrides: rules }); setAnswers(out.answers); setRooms(out.rooms) }
@@ -184,8 +191,11 @@ export default function App({ store, pluginReady }) {
         </main>
       )}
       {ready && tab === 'trace' && <TraceBoard trace={trace} rules={rules} nodes={nodes} pictureUrl={pictureUrl} pictureNote={pictureNote} onTrace={setTrace} onSample={pickSample} onUpload={upload} onCopyRooms={() => { const add = copyToRooms(trace); if (add.length) setRooms([...rooms, ...add]); return add.length }} />}
+      {ready && tab === 'trace' && <LikedPlans plan={plan} onPlan={setPlan} rooms={rooms} />}
       {ready && tab === 'lot' && <LotBoard rooms={rooms} lot={lot} clusters={clusters} rules={rules} st={st} fps={fps} onRooms={setRooms} onLot={setLot} onClusters={setClusters} onOpenRoom={(id) => { setSelId(id); location.hash = 'rooms' }} />}
-      {ready && tab === 'budget' && <Budget budget={budget} rooms={rooms} st={st} rules={rules} onBudget={setBudget} onRules={setRules} />}
+      {ready && tab === 'budget' && <Budget budget={budget} rooms={rooms} st={st} rules={rules} plan={plan} onPlan={setPlan} onBudget={setBudget} onRules={setRules} />}
+      {ready && tab === 'stages' && <StagesTab plan={plan} onPlan={setPlan} rooms={rooms} budget={budget} st={st} rules={rules} by={who()} />}
+      {ready && tab === 'decide' && <DecideTab plan={plan} onPlan={setPlan} versions={versions} onVersions={setVersions} design={{ rooms, answers, lot, clusters, budget }} onRestore={(d) => { setRooms(d.rooms || []); setAnswers(d.answers || {}); setLot(d.lot || newLot()); setClusters(d.clusters || []); setBudget(d.budget || newBudget()) }} rules={rules} by={who()} />}
       {ready && tab === 'rules' && <RulesTable overrides={rules} onChange={setRules} />}
       {tab === 'tests' && <SpecTests />}
       {ready && tab === '3d' && (

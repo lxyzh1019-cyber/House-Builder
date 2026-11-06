@@ -9,6 +9,7 @@ import { newRoom } from '../src/rooms/types.js'
 import { answer } from '../src/rooms/answers.js'
 import { toSaved } from '../src/rooms/migrate.js'
 import { startFrom } from '../src/load.js'
+import * as PL from '../src/plan/plan.js'
 import { checkSize } from '../src/rooms/engine.js'
 import { ftToM, mToFt, sizeFt } from '../src/units.js'
 
@@ -226,5 +227,29 @@ describe('project save and load round trip (emulator)', () => {
     expect(p.answers['q4.1']).toMatchObject({ value: 'normal', answeredBy: 'tess' })
     expect(p.rooms[0].options.people).toBe(4)
     expect(p.rooms[0].items.filter((i) => i.part === 'locker')).toHaveLength(4)
+  })
+
+  it('K2 K4 K5 K8 K10 K12 K16: the plan and versions fields are saved and read back after a reload', async () => {
+    await env.clearFirestore()
+    let plan = PL.newPlan()
+    plan.schedule = PL.setGate(plan.schedule, 'D1', 'passed', 'kim')
+    const lp = PL.addReason(PL.newLikedPlan('Bungalow A'), 'mudroom off the garage')
+    plan = { ...plan, ...PL.sendToChecklist([lp], [], lp.id, lp.reasons[0].id) }
+    plan.checklist[0].status = 'met'
+    plan.cheapWins = [{ ...PL.newWin(), name: 'Paint later', status: 'keep' }]
+    plan.ideas = [PL.moveIdea(PL.newIdea('Window seat', 'kim'), 'kim')]
+    plan.decisions = [PL.decideCard(PL.addOption(PL.addOption(PL.newCard('Heat pump?'), 'Yes'), 'No'), null, '')]
+    plan.build = { ...PL.newBuild(), stageCost: { 5: { planned: 100000, actual: 112000 } }, photos: { r1: { done: true, date: '2026-11-06', where: 'phone album' } } }
+    const versions = PL.saveVersion([], { rooms: [newRoom('office')], answers: {}, lot: null, clusters: [], budget: null }, 'v1', 'kim').versions
+    await createProject(db('kim'), 'kim', { scene: '{}', rooms: [], plan, versions })
+    const p = startFrom(await findProject(db('kim'), 'kim'))
+    expect(p.plan.schedule.gates.D1).toMatchObject({ status: 'passed', by: 'kim' })
+    expect(p.plan.checklist[0]).toMatchObject({ text: 'mudroom off the garage', status: 'met' })
+    expect(p.plan.cheapWins[0]).toMatchObject({ name: 'Paint later', status: 'keep' })
+    expect(p.plan.ideas[0].history.map((h) => h.status)).toEqual(['captured', 'sorted'])
+    expect(p.plan.decisions[0].options.map((o) => o.name)).toEqual(['Yes', 'No'])
+    expect(PL.stageDiff(p.plan.build, 5).diff).toBe(12000)
+    expect(p.plan.build.photos.r1).toMatchObject({ done: true, where: 'phone album' })
+    expect(p.versions).toHaveLength(1); expect(p.versions[0].design.rooms[0].type).toBe('office')
   })
 })

@@ -3,15 +3,19 @@
 import { budgetState, bid, newBudget } from '../budget/budget.js'
 import { RULES } from '../rules.js'
 import { t, tlist, tx } from '../i18n.js'
+import { WIN_STATUS, keptWins, newWin } from '../plan/plan.js'
 
 const money = (n) => (Number.isFinite(n) ? `${n < 0 ? '−' : ''}C$${Math.round(Math.abs(n)).toLocaleString('en-CA')}` : '–')
 const range = (r) => (Math.round(r.lo) === Math.round(r.hi) ? money(r.lo) : `${money(r.lo)} – ${money(r.hi)}`)
 const parse = (v) => (v === '' || v === null ? null : Number.isFinite(Number(v)) ? Number(v) : null)
 const RATE = Object.fromEntries(RULES.filter((r) => r.id === 'rateLow' || r.id === 'rateHigh').map((r) => [r.id, r.value]))
 
-export default function Budget({ budget, rooms, st, rules, onBudget, onRules }) {
+export default function Budget({ budget, rooms, st, rules, plan, onPlan, onBudget, onRules }) {
   const b = { ...newBudget(), ...(budget || {}) }
-  const s = budgetState(b, rooms, st, rules)
+  const s = budgetState(b, rooms, st, rules, plan?.build?.changeOrders)
+  const wins = plan?.cheapWins || [], kept = keptWins(wins, s)
+  const setWins = (list) => onPlan({ ...plan, cheapWins: list })
+  const setWin = (id, patch) => setWins(wins.map((w) => (w.id === id ? { ...w, ...patch } : w)))
   const set = (patch) => onBudget({ ...b, ...patch })
   const setSoft = (id, patch) => set({ soft: b.soft.map((x) => (x.id === id ? { ...x, ...patch } : x)) })
   const setRate = (id, v) => { const next = { ...rules }; const n = parse(v); if (n === null) delete next[id]; else next[id] = n; onRules(next) }
@@ -52,16 +56,29 @@ export default function Budget({ budget, rooms, st, rules, onBudget, onRules }) 
           <label>{t('bud.rateHigh')}<input id="bud-rate-hi" type="number" step="5" min="0" value={rules.rateHigh ?? RATE.rateHigh} onChange={(e) => setRate('rateHigh', e.target.value)} /></label>
         </div>
         <p className="muted small">{t('bud.rateHelp')}</p>
+
+        <h3>{t('win.h')}</h3>
+        <p className="muted small">{t('win.help')}</p>
+        <ul className="tray soft" data-testid="cheap-wins">{wins.map((w) => (
+          <li key={w.id}>
+            <input aria-label={t('win.name')} placeholder={t('win.name')} value={w.name} onChange={(e) => setWin(w.id, { name: e.target.value })} />
+            <input aria-label={t('win.cost')} type="number" step="100" min="0" value={w.cost ?? ''} onChange={(e) => setWin(w.id, { cost: parse(e.target.value) })} />
+            <select aria-label={t('win.status')} value={w.status} onChange={(e) => setWin(w.id, { status: e.target.value })}>{WIN_STATUS.map((k) => <option key={k} value={k}>{t(`win.st.${k}`)}</option>)}</select>
+            <button className="btn tiny" onClick={() => setWins(wins.filter((x) => x.id !== w.id))}>{t('ed.remove')}</button>
+          </li>))}</ul>
+        <button className="btn quiet" id="win-add" onClick={() => setWins([...wins, newWin()])}>+ {t('win.add')}</button>
       </section>
 
       <section className="panel lot-board">
         <h2>{t('bud.sumH')}</h2>
+        {kept.length > 0 && <div className="note" data-testid="kept-wins"><b>{t('win.keptH')}</b> {kept.map((w) => `${w.name}${Number.isFinite(w.cost) ? ` (${money(w.cost)})` : ''}`).join(t('list.sep'))}</div>}
         <table className="rules bud-table" data-testid="bud-table">
           <tbody>
             <tr><td>{t('bud.area', { n: s.counted.length })}</td><td data-testid="bud-area">{s.area.toFixed(1)} ft²</td></tr>
             <tr><td>{t('bud.build', { lo: s.rates.lo, hi: s.rates.hi })}</td><td data-testid="bud-build">{range(s.build)}</td></tr>
             <tr><td>{t('bud.contRow', { pct: b.contingencyPct ?? 0 })}</td><td>{range(s.cont)}</td></tr>
             <tr><td>{t('bud.softRow', { n: b.soft.length })}</td><td>{money(s.soft)}</td></tr>
+            {s.co !== 0 && <tr><td>{t('bud.coRow')}</td><td data-testid="bud-co">{money(s.co)}</td></tr>}
             <tr><td>{b.lotInGoal !== false ? t('bud.lotRow') : t('bud.lotOut')}</td><td>{b.lotInGoal !== false ? money(s.lot) : '–'}</td></tr>
             <tr className="sum"><td><b>{t('bud.total')}</b></td><td data-testid="bud-total"><b>{range(s.total)}</b></td></tr>
             <tr className="sum"><td><b>{t('bud.goalRow')}</b></td><td>{money(b.goal)}</td></tr>

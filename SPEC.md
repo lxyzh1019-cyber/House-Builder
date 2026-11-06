@@ -72,6 +72,7 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D44 (PC first) | The owner uses the app on a PC; the phone screen is too small. T7 runs on a PC. The phone layout stays readable but is no longer a done-when gate. Was DN11. | 2026-11-06 |
 | chat-D45 (trace instructions) | Plan intake has a "How to trace" box: one straight line per wall, corner to corner, traced straight through doors and windows (they are placed on the wall afterwards); rooms are traced on their own because walls make the building (3D, size check) and rooms are the named spaces (Test fit, Rooms). | 2026-11-06 |
 | chat-D46 (how pieces are delivered) | No more small PRs: the remaining features are built together and handed over in as few PRs as possible; 3D work (furniture fit, 3D walk-through) comes last. | 2026-11-06 |
+| chat-D47 (batch A sections) | Section 13 written and approved as one batch: schedule view, liked floor plans, cheap wins, plan versions (at most 20), idea inbox, decision cards, hidden works, build tracking; done-when K1–K16. The schedule shows the 19 gates section 1 lists (no D2 or D3). | 2026-11-06 |
 
 ## 4. Architecture
 
@@ -387,13 +388,13 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Rate rows rated against the city (near, national average) | canvas Main | Later |
 | Element library (E1 templates that cards start from) | canvas Main | Later |
 | Many projects: method shared, data per project | canvas Main | Now (data model) |
-| Schedule view, stage by stage | canvas Main | Later |
+| Schedule view, stage by stage | canvas Main | Now (§13.1) |
 | Who leads, which AI, time and cost shown on every step | canvas Main | Later |
 | Current-house video tour instructions and pain-point list | canvas 1a | Later |
 | Wish-list questionnaire: 11 sections, 6 answer types, each person answers, ideas you may not know, play back and approve | canvas Questionnaire | Later (sections 4–6 feed Rooms from contents now, R11; section 3 with the kitchen type) |
 | Pictures we like: Pinterest and Houzz scan, house style profile | canvas 1c | Later |
-| Liked floor plans with "why I like it", turned into a plan checklist | handoff 7-step process | Later |
-| Cheap wins list, kept when the budget is tight | canvas 1c | Later |
+| Liked floor plans with "why I like it", turned into a plan checklist | handoff 7-step process | Now (§13.2) |
+| Cheap wins list, kept when the budget is tight | canvas 1c | Now (§13.3) |
 | Lot checklist for buying the lot | handoff 7-step process | Later |
 | Mortgage pre-approval sets the budget | handoff 7-step process | Later (budget meter input) |
 | Plan intake: trace once, 3 sizes match, overlay check, sample plan | canvas 2a, technical flow | Now (parallel method, chat-D18) |
@@ -405,16 +406,16 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Budget meter with editable lines | chat | Now |
 | Family sharing with members | chat | Now |
 | Design sprints D4a–D4g, each with a fit check, a live rules check and a saved version | canvas 2b | Later |
-| Plan versions; a decision re-opens only the rooms its impact chain names | canvas 2d | Later |
+| Plan versions; a decision re-opens only the rooms its impact chain names | canvas 2d | Now (§13.4; the impact chain waits for design item cards) |
 | Design item cards: rules limits, physical limits, verdict, impact chain, smart proposals, Keep or Delete | canvas Design item board | Later |
-| Idea loop inbox: capture, sort, analyse, show, decide, apply; statuses | canvas 2e | Later |
+| Idea loop inbox: capture, sort, analyse, show, decide, apply; statuses | canvas 2e | Now (§13.5) |
 | Room Review path, 7 levels outside in, one card per room with target and plan ft² | canvas Room Review | Later |
 | 7 plan checks: flow, storage, housework, light and space, sound and comfort, safety and age, feel | handoff | Later |
 | Storage by use: daily within 3 steps, weekly same floor, seasonal, archive | handoff | Later |
 | Room energy score: 40% measurable, 30% feng shui form rules, 30% family feeling | handoff (L3 fix) | Later |
 | Review criteria: context step, weight profiles, gates, 0–10 scores, conditions and value engineering, cost score | canvas Main | Later |
-| Decision cards with "+ New comparison" | canvas Decisions | Later |
-| Hidden works as its own category through every stage | canvas Main | Later |
+| Decision cards with "+ New comparison" | canvas Decisions | Now (§13.6) |
+| Hidden works as its own category through every stage | canvas Main | Now (§13.7) |
 | Systems fine-tune checklist: smart home, HVAC and HRV, air quality (radon, filters, humidity), efficiency, EV and solar ready, sound | handoff 7-step process (step 6) | Later |
 | Furniture fit and 3D walk-through | canvas 2b D4g | Later (3D view from the spike) |
 | Rate table v0 with sources, estimate classes | canvas Rate Table | Later |
@@ -425,7 +426,59 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Builder price and mortgage draw schedule | handoff 7-step process (step 7) | Later |
 | Permit checklist and City steps | canvas Stage 4 | Later |
 | Builder checks, contract and money checks, myth library | canvas Site Walks | Later |
-| Build tracking: change orders re-checked, stage cost against budget, photo and video record before drywall | canvas Stage 5 | Later |
+| Build tracking: change orders re-checked, stage cost against budget, photo and video record before drywall | canvas Stage 5 | Now (§13.8) |
 | Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Later |
 | Furniture placement: Pascal scene with Furnish2 parts (was: export each level from Pascal to Furnish) | chat-D17 (build base) | Now (changed by chat-D17) |
 | Lego rules proposed, not decided: wet rooms together, hallways about 12%, simple outer shape, each room marked now or later | handoff 2026-10-29 (chat-D5 proposal) | Later (decision open) |
+
+## 13. Batch A: stages, decisions and build records (chat-D46, chat-D47)
+
+Built together, in one PR. Two new tabs: **Stages** (13.1, 13.7, 13.8) and **Decide** (13.4–13.6); the Budget tab gets 13.3 and the Plan intake tab 13.2. Saved as two fields of the project document: `plan` (schedule, likedPlans, checklist, cheapWins, ideas, decisions, hiddenWorks, build) and `versions`. Same Firestore rules. Tests use made-up items only.
+
+### 13.1 Schedule view, stage by stage
+
+- The 7 stages and their gates exactly as section 1 lists them: Stage 0 (no gate), 1 D1, 2 D4 D5, 3 D7 D8 D9 D6, 4 D18 D19 D10 D11 D12, 5 D13 D14 D15 D16 D17 D21, 6 D20: 19 gates. Section 1 names no D2 or D3; they are left out until written (owner, 2026-11-06).
+- Each gate: open, passed or not needed, with the date, who and a note. A stage is done when every gate in it is passed or not needed.
+- D5 shows the budget meter's verdict (within the goal at the high total, only at the low total, over, no goal). D21 shows the rooms photographed before drywall and the hidden works not yet photographed. The owner still ticks the gate.
+- K1 the schedule shows the 7 stages with the 19 gates in section 1 order. K2 passing a gate saves date and who and survives a reload; a stage with every gate passed or not needed shows done. K3 D5 shows the budget verdict (made-up B4 numbers: within the goal).
+
+### 13.2 Liked floor plans with "why I like it"
+
+- A liked plan: name, where it came from, reasons ("why I like it"). A picture of it stays on the device that holds it, as chat-D27.
+- A reason can go to the **plan checklist**: open, met or dropped, with an optional room. Stage 2 shows how many are met.
+- K4 a plan with 2 reasons, one sent to the checklist: it shows open, then met; a reload keeps both.
+
+### 13.3 Cheap wins, kept when the budget is tight
+
+- A cheap win: name, rough cost, note, status idea, keep or done. When the budget meter is over the goal, the Budget tab shows the kept ones at the top.
+- K5 two cheap wins (one keep, one idea): with the goal under the total only the kept one shows; a reload keeps them.
+
+### 13.4 Plan versions
+
+- Save a version: name, date, who and a copy of rooms, answers, lot, clusters and budget (not the 3D scene, which is rebuilt from them, and not the plan picture). At most 20 versions, so the project document stays well under Firestore's 1 MiB limit (assumed, not checked); nothing is removed without asking.
+- Compare two versions: rooms added, removed and resized (old to new size). Restore a version: the current design is saved as a version first.
+- "A decision re-opens only the rooms its impact chain names" waits for design item cards (the impact chain is defined there).
+- K6 save v1, resize a room, save v2: compare lists that room old to new. K7 restoring v1 brings the old size back and keeps the replaced design as a version. K8 versions survive a reload; a 21st is refused and nothing is removed.
+
+### 13.5 Idea loop inbox
+
+- An idea: text, who, date, room or topic, and its status, one step at a time: captured, sorted, analysed, shown, decided (keep, drop or later), applied. Only a kept idea goes on to applied. Each step keeps its date and who.
+- K9 an idea moves through the statuses in order and cannot skip one. K10 the filter shows one status with a count per status; a reload keeps ideas and their history.
+
+### 13.6 Decision cards with "+ New comparison"
+
+- A card: question, 2–5 options, criteria (cost, effort, how hard to undo, plus typed ones), a note per option per criterion, the pick, why, date, status open or decided, and an optional link to a version. "+ New comparison" starts blank or copies another card's criteria.
+- K11 a card with 3 options and 3 criteria saves the pick and why; a new comparison copied from it has the same criteria and no options. K12 a reload keeps cards.
+
+### 13.7 Hidden works through every stage
+
+- An item behind walls or floors (plumbing, wiring, ducts, insulation, blocking, other) with a room, the stage it is decided in, the stage it is built in, and "photographed before drywall". It shows under both stages.
+- K13 an item shows under its decide stage and its build stage. K14 the D21 gate lists items not yet photographed.
+
+### 13.8 Build tracking
+
+- Change orders: what changes, cost change (+ or −), date, approved. Approved ones are their own line on the budget meter, so the goal is checked again.
+- Stage cost: planned and actual per stage, with the difference.
+- Photo and video record before drywall: per room a tick, its date and where the files are kept (typed; the app does not store photos).
+- K15 an approved +5,000 change order raises the B4 total by 5,000 and re-checks the goal; a not-approved one changes nothing. K16 planned 100,000 and actual 112,000 shows +12,000; photo ticks survive a reload.
+

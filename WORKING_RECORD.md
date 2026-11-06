@@ -246,3 +246,30 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - The Wall, Door, Window and Room hints say the same.
   - Headless check, PC, both languages: the box shows, no sideways scroll, 0 errors.
 - Owner, same message: no more small PRs; build the rest and leave 3D to the end (chat-D46). This work rides on PR #9 instead of a new one.
+
+## Batch A: stages, decisions and build records (2026-11-06)
+
+- Owner: "All 8, one PR"; D2 and D3 left out; batch C drafted from search snippets later. Sections and tests are in SPEC §13 (chat-D47).
+- Built:
+  - **Stages tab:** the 19 gates, D5 budget verdict, D21 photo record, hidden works under their two stages, change orders, stage cost, photo record.
+  - **Decide tab:** versions (save, compare, restore), idea inbox, decision cards.
+  - **Budget tab:** cheap wins, plus a change-order line.
+  - **Plan intake tab:** liked floor plans and the plan checklist.
+  - **Saved as:** two project fields, `plan` and `versions`.
+- **Tests:**
+  - `npm run test:rules`: 94 of 94 pass locally.
+  - K1–K16 are in `test/plan.test.js` (15 tests).
+  - The save and reload of every new field is one emulator test in `test/rules.test.js`.
+- **Headless Chromium (browser storage), PC 1280 px, English, made-up data:**
+  - a gate ticked "passed" kept its date and who;
+  - D5 read "within the goal at the high total";
+  - a hidden-works item showed under Stage 2 and Stage 5, and D21 listed it as not photographed;
+  - an approved 5,000 change order showed as its own budget line;
+  - a version was saved;
+  - an idea moved to "sorted";
+  - a card with 2 options was decided;
+  - a liked plan's reason went to the checklist;
+  - with the goal under the total, the kept cheap win showed at the top of the Budget tab;
+  - after a reload all of it was still there.
+  Stages, Decide, Budget and Plan intake have no sideways scroll in either language (only Stages and Decide checked in Chinese). 0 console errors.
+- **Not checked:** the owner's own use on a PC.
