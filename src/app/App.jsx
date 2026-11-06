@@ -194,7 +194,7 @@ export default function App({ store, pluginReady }) {
       {ready && tab === 'trace' && <LikedPlans plan={plan} onPlan={setPlan} rooms={rooms} />}
       {ready && tab === 'lot' && <LotBoard rooms={rooms} lot={lot} clusters={clusters} rules={rules} st={st} fps={fps} onRooms={setRooms} onLot={setLot} onClusters={setClusters} onOpenRoom={(id) => { setSelId(id); location.hash = 'rooms' }} />}
       {ready && tab === 'budget' && <Budget budget={budget} rooms={rooms} st={st} rules={rules} plan={plan} onPlan={setPlan} onBudget={setBudget} onRules={setRules} />}
-      {ready && tab === 'stages' && <StagesTab plan={plan} onPlan={setPlan} rooms={rooms} budget={budget} st={st} rules={rules} by={who()} />}
+      {ready && tab === 'stages' && <StagesTab plan={plan} onPlan={setPlan} rooms={rooms} budget={budget} st={st} rules={rules} by={who()} onGoal={(g) => setBudget({ ...newBudget(), ...budget, goal: g })} />}
       {ready && tab === 'decide' && <DecideTab plan={plan} onPlan={setPlan} versions={versions} onVersions={setVersions} design={{ rooms, answers, lot, clusters, budget }} onRestore={(d) => { setRooms(d.rooms || []); setAnswers(d.answers || {}); setLot(d.lot || newLot()); setClusters(d.clusters || []); setBudget(d.budget || newBudget()) }} rules={rules} by={who()} />}
       {ready && tab === 'rules' && <RulesTable overrides={rules} onChange={setRules} />}
       {tab === 'tests' && <SpecTests />}

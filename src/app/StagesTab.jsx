@@ -4,11 +4,12 @@ import { useState } from 'react'
 import * as P from '../plan/plan.js'
 import { budgetState } from '../budget/budget.js'
 import { t, tx } from '../i18n.js'
+import { CodeChecklist, Money, Permits, Warranty } from './AlbertaPanels.jsx'
 
 const money = (n) => (Number.isFinite(n) ? `${n < 0 ? '−' : ''}C$${Math.round(Math.abs(n)).toLocaleString('en-CA')}` : '–')
 const num = (v) => (v === '' || v == null ? null : Number.isFinite(Number(v)) ? Number(v) : null)
 
-export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by }) {
+export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by, onGoal }) {
   const set = (patch) => onPlan({ ...plan, ...patch })
   const build = { ...P.newBuild(), ...(plan.build || {}) }
   const setBuild = (patch) => set({ build: { ...build, ...patch } })
@@ -57,6 +58,9 @@ export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by }
                 )
               })}
             </ul>
+            {stage.n === 3 && <CodeChecklist plan={plan} set={set} rooms={rooms} />}
+            {stage.n === 4 && <><Permits plan={plan} set={set} /><Money plan={plan} set={set} onGoal={onGoal} /></>}
+            {stage.n === 6 && <Warranty plan={plan} set={set} />}
             {stage.n === 2 && plan.checklist.length > 0 && <p className="small">{t('stg.checklist', { met: plan.checklist.filter((c) => c.status === 'met').length, n: plan.checklist.length })}</p>}
             {hidden.length > 0 && <>
               <div className="q-label small">{t('hw.inStage')}</div>

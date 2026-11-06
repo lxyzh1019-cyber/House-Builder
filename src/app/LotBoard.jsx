@@ -3,6 +3,7 @@
 // one cluster. Room outlines are read from the Pascal scene (readLot); a drag shows a preview first.
 import { useRef, useState } from 'react'
 import { LEVELS } from '../rooms/types.js'
+import { FillRL } from './AlbertaPanels.jsx'
 import { coverage, lotFt, lotSideOf, localSideOf, lotState, moveRoom, newSite, placeRoom, rotateRoom } from '../lot/lot.js'
 import { portsOf, newId } from '../rooms/types.js'
 import { ftToM, sizeFt } from '../units.js'
@@ -63,7 +64,7 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
       <section className="panel lot-side">
         <h2>{t('lot.title')}</h2>
         <div className="chips" data-testid="lot-level" role="group" aria-label={t('ed.level')}>{LEVELS.map((lv) => <button key={lv} className={`chip ${level === lv ? 'on' : ''}`} aria-pressed={level === lv} onClick={() => { setLevel(lv); setSel(null) }}>{t(`level.${lv}`)} ({rooms.filter((r) => (r.level || 'main') === lv).length})</button>)}</div>
-        <div className="lot-inputs">
+        <div className="lot-inputs" key={[L.front, L.rear, L.left, L.right].map((x) => x.toFixed(3)).join('|')}>
           {[['w', L.w], ['d', L.d], ['front', L.front], ['rear', L.rear], ['left', L.left], ['right', L.right]].map(([k, v]) => (
             <label key={k}>{t(`lot.${k}`)}<input id={`lot-${k}`} type="number" step="1" min="0" defaultValue={+v.toFixed(2)} onBlur={(e) => setLotFt(k, e.target.value)} onKeyDown={(e) => e.key === 'Enter' && setLotFt(k, e.target.value)} /></label>
           ))}
@@ -162,9 +163,10 @@ function Site({ lot, st, onLot }) {
   const c = coverage(lot, st)
   const set = (k, v) => onLot({ ...lot, site: { ...site, [k]: k === 'zone' ? v : v === '' ? null : Number(v) } })
   return (
-    <div className="item-edit site">
+    <div className="item-edit site" key={`${site.zone}|${site.maxHeightFt}|${site.maxCoveragePct}`}>
       <div className="q-label">{t('site.title')}</div>
       <p className="muted small">{t('site.help')}</p>
+      <FillRL lot={lot} onLot={onLot} />
       <div className="lot-inputs">
         <label>{t('site.zone')}<input id="site-zone" type="text" defaultValue={site.zone} onBlur={(e) => set('zone', e.target.value.trim())} /></label>
         <label>{t('site.height')}<input id="site-height" type="number" step="0.5" min="0" defaultValue={site.maxHeightFt ?? ''} onBlur={(e) => set('maxHeightFt', e.target.value)} /></label>
