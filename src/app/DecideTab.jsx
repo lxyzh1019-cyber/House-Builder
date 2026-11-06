@@ -3,16 +3,21 @@ import { useState } from 'react'
 import * as P from '../plan/plan.js'
 import { ftIn, mToFt } from '../units.js'
 import { t, tx } from '../i18n.js'
+import { ItemCards, Sheets } from './BatchD.jsx'
+import { Lifecycle } from './EnergyPanels.jsx'
 
 const size = (s) => (s ? `${ftIn(mToFt(s.w))} x ${ftIn(mToFt(s.d))}` : t('ver.min'))
 
-export default function DecideTab({ plan, onPlan, versions, onVersions, design, onRestore, by }) {
+export default function DecideTab({ plan, onPlan, versions, onVersions, design, onRestore, by, rooms = [], rules = {} }) {
   const set = (patch) => onPlan({ ...plan, ...patch })
   return (
     <main className="decide">
       <Versions versions={versions} onVersions={onVersions} design={design} onRestore={onRestore} by={by} />
       <Ideas ideas={plan.ideas} onIdeas={(ideas) => set({ ideas })} by={by} />
       <Cards cards={plan.decisions} onCards={(decisions) => set({ decisions })} versions={versions} by={by} />
+      <ItemCards plan={plan} set={set} rooms={rooms} />
+      <Sheets plan={plan} set={set} />
+      <Lifecycle plan={plan} set={set} rules={rules} />
     </main>
   )
 }

@@ -74,6 +74,8 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D46 (how pieces are delivered) | No more small PRs: the remaining features are built together and handed over in as few PRs as possible; 3D work (furniture fit, 3D walk-through) comes last. | 2026-11-06 |
 | chat-D47 (batch A sections) | Section 13 written and approved as one batch: schedule view, liked floor plans, cheap wins, plan versions (at most 20), idea inbox, decision cards, hidden works, build tracking; done-when K1–K16. The schedule shows the 19 gates section 1 lists (no D2 or D3). | 2026-11-06 |
 | chat-D48 (batch C, Red Deer) | Section 14 built from facts opened on the official pages and checked on 2026-11-06 (Alberta, NRC, City of Red Deer, UCA, AUC, CMHC); Red Deer first; tests M1–M8. Health Canada's radon level and the federal pre-approval page stay out until checked. | 2026-11-06 |
+| chat-D49 (batch D) | Section 15 approved and built as one batch: structures the owner fills in (no invented numbers or rules), tests W1–W14. Lego rules become soft checks (warnings, each can be turned off). Storage by use waits for the "3 steps" distance. | 2026-11-06 |
+| chat-D50 (batch E, reduced) | Official cost per ft², component life spans and a price-rise figure were not found (2026-11-06). Built: the 9.36 energy tier reference with a target-tier pick, and a 30-year cost calculator with no built-in life spans or price rise. The rate table with estimate classes and the comparison with the city wait for sources. | 2026-11-06 |
 
 ## 4. Architecture
 
@@ -390,13 +392,13 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Element library (E1 templates that cards start from) | canvas Main | Later |
 | Many projects: method shared, data per project | canvas Main | Now (data model) |
 | Schedule view, stage by stage | canvas Main | Now (§13.1) |
-| Who leads, which AI, time and cost shown on every step | canvas Main | Later |
-| Current-house video tour instructions and pain-point list | canvas 1a | Later |
+| Who leads, which AI, time and cost shown on every step | canvas Main | Now (§15.1) |
+| Current-house video tour instructions and pain-point list | canvas 1a | Pain-point list now (§15.2); tour instructions wait for the canvas text |
 | Wish-list questionnaire: 11 sections, 6 answer types, each person answers, ideas you may not know, play back and approve | canvas Questionnaire | Later (sections 4–6 feed Rooms from contents now, R11; section 3 with the kitchen type) |
-| Pictures we like: Pinterest and Houzz scan, house style profile | canvas 1c | Later |
+| Pictures we like: Pinterest and Houzz scan, house style profile | canvas 1c | Now without scanning (§15.3) |
 | Liked floor plans with "why I like it", turned into a plan checklist | handoff 7-step process | Now (§13.2) |
 | Cheap wins list, kept when the budget is tight | canvas 1c | Now (§13.3) |
-| Lot checklist for buying the lot | handoff 7-step process | Later |
+| Lot checklist for buying the lot | handoff 7-step process | Now (§15.4) |
 | Mortgage pre-approval sets the budget | handoff 7-step process | Now (§14.5) |
 | Plan intake: trace once, 3 sizes match, overlay check, sample plan | canvas 2a, technical flow | Now (parallel method, chat-D18) |
 | Test fit and new-design branch | handoff (G1 fix) | Now (after both methods' pieces) |
@@ -406,31 +408,31 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Lot board, shared walkway, core-route cluster | chat | Now |
 | Budget meter with editable lines | chat | Now |
 | Family sharing with members | chat | Now |
-| Design sprints D4a–D4g, each with a fit check, a live rules check and a saved version | canvas 2b | Later |
+| Design sprints D4a–D4g, each with a fit check, a live rules check and a saved version | canvas 2b | Now (§15.5) |
 | Plan versions; a decision re-opens only the rooms its impact chain names | canvas 2d | Now (§13.4; the impact chain waits for design item cards) |
-| Design item cards: rules limits, physical limits, verdict, impact chain, smart proposals, Keep or Delete | canvas Design item board | Later |
+| Design item cards: rules limits, physical limits, verdict, impact chain, smart proposals, Keep or Delete | canvas Design item board | Now with typed proposals (§15.6) |
 | Idea loop inbox: capture, sort, analyse, show, decide, apply; statuses | canvas 2e | Now (§13.5) |
 | Room Review path, 7 levels outside in, one card per room with target and plan ft² | canvas Room Review | Later |
 | 7 plan checks: flow, storage, housework, light and space, sound and comfort, safety and age, feel | handoff | Later |
 | Storage by use: daily within 3 steps, weekly same floor, seasonal, archive | handoff | Later |
 | Room energy score: 40% measurable, 30% feng shui form rules, 30% family feeling | handoff (L3 fix) | Later |
-| Review criteria: context step, weight profiles, gates, 0–10 scores, conditions and value engineering, cost score | canvas Main | Later |
+| Review criteria: context step, weight profiles, gates, 0–10 scores, conditions and value engineering, cost score | canvas Main | Now (§15.7) |
 | Decision cards with "+ New comparison" | canvas Decisions | Now (§13.6) |
 | Hidden works as its own category through every stage | canvas Main | Now (§13.7) |
-| Systems fine-tune checklist: smart home, HVAC and HRV, air quality (radon, filters, humidity), efficiency, EV and solar ready, sound | handoff 7-step process (step 6) | Later |
+| Systems fine-tune checklist: smart home, HVAC and HRV, air quality (radon, filters, humidity), efficiency, EV and solar ready, sound | handoff 7-step process (step 6) | Now (§15.8) |
 | Furniture fit and 3D walk-through | canvas 2b D4g | Later (3D view from the spike) |
 | Rate table v0 with sources, estimate classes | canvas Rate Table | Later |
-| Energy model | canvas Energy Model | Later |
-| Lifecycle cost, 30 years | canvas Lifecycle Cost | Later |
+| Energy model | canvas Energy Model | 9.36 tier reference and target now (§16); a model waits for an official method |
+| Lifecycle cost, 30 years | canvas Lifecycle Cost | Calculator now (§16); no built-in life spans or price rise |
 | Final rules gate with code clause links | canvas Stage 3 | Now (§14.1) |
-| Work packages: scope per trade, allowances, who supplies, DIY flags | handoff 7-step process | Later |
-| Builder price and mortgage draw schedule | handoff 7-step process (step 7) | Draw schedule now (§14.5); builder price later |
+| Work packages: scope per trade, allowances, who supplies, DIY flags | handoff 7-step process | Now (§15.9) |
+| Builder price and mortgage draw schedule | handoff 7-step process (step 7) | Now (§14.5, §15.10) |
 | Permit checklist and City steps | canvas Stage 4 | Now for Red Deer (§14.2) |
 | Builder checks, contract and money checks, myth library | canvas Site Walks | Later |
 | Build tracking: change orders re-checked, stage cost against budget, photo and video record before drywall | canvas Stage 5 | Now (§13.8) |
-| Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Warranty walks now (§14.6); possession walk later |
+| Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Now (§14.6, §15.11) |
 | Furniture placement: Pascal scene with Furnish2 parts (was: export each level from Pascal to Furnish) | chat-D17 (build base) | Now (changed by chat-D17) |
-| Lego rules proposed, not decided: wet rooms together, hallways about 12%, simple outer shape, each room marked now or later | handoff 2026-10-29 (chat-D5 proposal) | Later (decision open) |
+| Lego rules proposed, not decided: wet rooms together, hallways about 12%, simple outer shape, each room marked now or later | handoff 2026-10-29 (chat-D5 proposal) | Now as soft checks (§15.12, chat-D49) |
 
 ## 13. Batch A: stages, decisions and build records (chat-D46, chat-D47)
 
@@ -534,4 +536,30 @@ Tests (done when):
 - M6 a 600,000 pre-approval, used as the goal, shows 600,000 on the Budget tab.
 - M7 advances that do not add up to the loan are flagged.
 - M8 a possession date of 2028-06-01 gives walks on 2029-06-01, 2030-06-01, 2033-06-01 and 2038-06-01.
+
+## 15. Batch D: structures the family fills in (chat-D49)
+
+The owner types the content; the app keeps it, adds it up and links it. Nothing here invents a number or a rule. Saved in the project's `plan` field (and `phase` on each room).
+
+- 15.1 Step owners: on every gate, who leads (a household person or typed), which AI (typed), time in hours and cost; each stage shows the sums.
+- 15.2 Pain points (Stage 1): room, what bothers us, how often (daily, weekly, rarely), who. One can be sent to the idea inbox, once, as captured. The video-tour instructions wait for the canvas text.
+- 15.3 Pictures we like (Stage 1): a link or "on this device", a room, tags. The style profile is the tags counted, highest first. No Pinterest or Houzz scanning (no AI or outside service in the app).
+- 15.4 Lot checklist (Stage 0): starts with the checked Red Deer items (the lot's zone on the City map, certificate of title within 30 days, soils report for City lots, the zone's setbacks, height and coverage, building grade certificate) plus the owner's own; each open, done or not needed with a note.
+- 15.5 Design sprints D4a–D4g (Stage 2): layout and daily paths, kitchen and mudroom, hidden works, exterior, windows and energy, finishes, furniture fit. Each picks its rooms and shows their Check my size status (fit check) and the 14.1 code items still open (live rules check), and saves a version named after the sprint.
+- 15.6 Design item cards (Decide): item, rules limits (with a code item), physical limits, verdict (fits, does not fit, unknown), the rooms it touches (impact chain), proposals (typed), keep or delete.
+- 15.7 Review criteria sheets (Decide): context, criteria with weights, gates, 0–10 scores per option, conditions and value engineering, cost score. Total = sum of weight × score ÷ sum of weights, to 1 decimal; an option that fails a gate shows "fails gate".
+- 15.8 Systems fine-tune checklist (Stage 2): smart home; HVAC and HRV (code 9.32.3); air quality: radon (9.13.4), filters, humidity; efficiency; EV ready (no rule found for houses); solar ready (Red Deer: building and electrical permits for panels); sound. Each line holds the decision.
+- 15.9 Work packages (Stage 4): trade, scope, allowance, who supplies (builder, owner, trade), DIY; allowances totalled.
+- 15.10 Builder price (Stage 4): price and date against the budget's build range and goal; above the high estimate, or over the goal, is flagged.
+- 15.11 Possession walk (Stage 6): per room, items to fix, each fixed with its date; open items counted.
+- 15.12 Lego soft checks (Lot board; warnings only, each can be turned off): wet rooms together (a kitchen or back kitchen touches another wet room on its level or sits over or under one; bathroom and laundry join when those types exist); hallway share and simple outer shape shown as numbers (the share of the rooms' outline that is not rooms, next to the 12% target; the share the rooms fill, 100% = a rectangle), with no pass or fail; each room marked now or later, unmarked rooms listed.
+
+Tests (done when): W1 a gate's time and cost add up in its stage. W2 a pain point goes to the idea inbox once, as captured. W3 three tagged pictures give the profile in count order. W4 the lot checklist starts with the 5 checked items. W5 7 sprints in order; a sprint shows its rooms' fit and the open code items. W6 a design item card lists the rooms in its impact chain. W7 weights 2 and 1 with scores 8 and 5 give 7.0; a failed gate shows instead. W8 the systems checklist has 9 lines. W9 work packages total their allowances. W10 a builder price above the high build total is flagged. W11 possession walk items count open per room. W12 a kitchen alone warns; touching a back kitchen clears it. W13 fill and hallway share for 2 made-up rooms. W14 an unmarked room is listed; marking it clears it.
+
+## 16. Batch E, reduced: energy tiers and 30-year cost (chat-D50)
+
+- 16.1 Energy tier target (Stage 2): NBC(AE) 2023 section 9.36, 2nd printing (NRC), checked 2026-11-06. Performance path, Table 9.36.7.2 (houses over 300 m³): tier 1 no heat-loss reduction, improvement ≥0% or energy target ≤100%; tier 2 ≥5%, ≥10% or ≤90%; tier 3 ≥10%, ≥20% or ≤80%; tier 4 ≥20%, ≥40% or ≤60%; tier 5 ≥40%, ≥70% or ≤30%. Houses of 300 m³ or less: heat loss n/a, 0, 5, 15, 25%; improvement 0, 0, 10, 30, 60%; target ≤100, 100, 90, 70, 40%. Prescriptive path, Table 9.36.8.2: tier 1 is the baseline, tier 2 needs 10 energy conservation points, tiers 3–5 reserved. The owner picks a target tier. Which tier Alberta requires is not stated in these sections: confirm with the City at the building permit.
+- 16.2 30-year cost (Decide tab): energy each year (kWh × the Rules table's electricity rate + GJ × the chosen gas rate row) plus each part replaced every "life" years, all rising by the price-rise % typed. No life span or price rise is built in; a part without cost or life is listed, not counted; no price rise typed means prices are held flat (and the panel says so). Gas rate rows: ATCO Gas area 1.893 and Apex Utilities area 1.993 $/GJ for November 2026 (UCA, excluding delivery); which utility serves the lot is not checked.
+
+Tests (done when): Y1 the tier tables are as the code states (tier 3 over 300 m³: 10, 20, 80) and the gas rows carry their source and date. Y2 the target tier and the calculator inputs survive a reload. Y3 10,000 kWh at 12.06 ¢ for 30 years plus an 8,000 furnace lasting 20 years, no price rise, totals 44,180; at 2% the furnace at year 20 costs 8,000 × 1.02^20. Y4 a part without a life span is listed as missing and not counted.
 

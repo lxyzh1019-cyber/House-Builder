@@ -4,6 +4,7 @@
 import { useRef, useState } from 'react'
 import { LEVELS } from '../rooms/types.js'
 import { FillRL } from './AlbertaPanels.jsx'
+import { LegoChecks } from './BatchD.jsx'
 import { coverage, lotFt, lotSideOf, localSideOf, lotState, moveRoom, newSite, placeRoom, rotateRoom } from '../lot/lot.js'
 import { portsOf, newId } from '../rooms/types.js'
 import { ftToM, sizeFt } from '../units.js'
@@ -11,7 +12,7 @@ import { t, tlist, tn, tx } from '../i18n.js'
 
 const PORTS = ['door', 'open', 'wall']
 
-export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms, onLot, onClusters, onOpenRoom }) {
+export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms, onLot, onClusters, onOpenRoom, plan, onPlan }) {
   const svgRef = useRef(null)
   const [sel, setSel] = useState(null)
   const [drag, setDrag] = useState(null) // { id, px, py, bx, by, rooms }
@@ -71,6 +72,7 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
         </div>
         <p className="muted small">{t('lot.setbackHelp')}</p>
         <Site lot={lot} st={st} onLot={onLot} />
+        {plan && <LegoChecks plan={plan} set={(patch) => onPlan({ ...plan, ...patch })} rooms={rooms} st={st} level={level} />}
 
         {tray.length > 0 && <>
           <h3>{t('lot.tray')}</h3>

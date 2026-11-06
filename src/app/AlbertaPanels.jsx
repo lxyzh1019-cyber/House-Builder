@@ -10,7 +10,7 @@ const Src = ({ href, k = 'ab.source' }) => <a className="small" href={href} targ
 export function CodeChecklist({ plan, set, rooms }) {
   const sleep = A.egressRooms(rooms)
   return (
-    <div className="item-edit" data-testid="code-checklist">
+    <div className="item-edit block" data-testid="code-checklist">
       <div className="q-label">{t('code.title')} <Src href={A.SRC.code} k="code.link" /></div>
       <ul className="tray">{A.CODE_ITEMS.map((c) => (
         <li key={c.id} data-testid={`code-${c.id}`}><span><b>{c.clause}</b> {t(`code.${c.id}`)}{c.id === 'egress' && sleep.length > 0 && <span className="tag warn"> {t('code.egressRooms', { list: sleep.map((r) => tx(r.name)).join(t('list.sep')) })}</span>}</span>
@@ -25,7 +25,7 @@ export function Permits({ plan, set }) {
   const st = plan.permits || {}, docs = plan.docs || {}
   const blocked = A.bpBlocked(st)
   return (
-    <div className="item-edit" data-testid="permits">
+    <div className="item-edit block" data-testid="permits">
       <div className="q-label">{t('pm.title')} <Src href={A.SRC.permits} /></div>
       <p className="muted small">{t('pm.help')}</p>
       <ul className="tray">{A.PERMITS.map((k) => (
@@ -46,7 +46,7 @@ export function Money({ plan, set, onGoal }) {
   const setM = (patch) => set({ money: { ...m, ...patch } })
   const d = A.drawCheck(m)
   return (
-    <div className="item-edit" data-testid="money">
+    <div className="item-edit block" data-testid="money">
       <div className="q-label">{t('mn.title')} <Src href={A.SRC.cmhc} k="mn.cmhc" /></div>
       <div className="add-row">
         <label>{t('mn.pre')}<input id="mn-pre" type="number" step="1000" min="0" value={m.preapproval ?? ''} onChange={(e) => setM({ preapproval: num(e.target.value) })} /></label>
@@ -63,7 +63,7 @@ export function Money({ plan, set, onGoal }) {
 export function Warranty({ plan, set }) {
   const walks = A.warrantyWalks(plan.possession)
   return (
-    <div className="item-edit" data-testid="warranty">
+    <div className="item-edit block" data-testid="warranty">
       <div className="q-label">{t('wr.title')} <Src href={A.SRC.warranty} /></div>
       <label className="small">{t('wr.possession')}<input id="wr-date" type="date" value={plan.possession || ''} onChange={(e) => set({ possession: e.target.value })} /></label>
       {walks.length > 0 && <ul className="tray" data-testid="warranty-walks">{walks.map((w) => <li key={w.years}><span><b>{w.date}</b> · {t('wr.walk', { n: w.years })} · {t(`wr.${w.key}`)}</span></li>)}</ul>}
