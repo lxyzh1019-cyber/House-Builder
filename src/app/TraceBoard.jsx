@@ -8,6 +8,7 @@ import { readTrace } from '../scene/sync.js'
 import { ftIn, ftToM, mToFt } from '../units.js'
 import { t, tm, tn, tx, useLang } from '../i18n.js'
 import { fitOf, fitRoom, fitVerdict, newFit, rectFt } from '../trace/fit.js'
+import { traceStep } from '../trace/guide.js'
 import { ROOM_TYPES, TYPE_ORDER, applyOptions } from '../rooms/types.js'
 
 const TOOLS = ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']
@@ -23,6 +24,7 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
   const [scaleFt, setScaleFt] = useState(trace.scale?.ft ?? '')
   const [checkWall, setCheckWall] = useState(null), [checkFt, setCheckFt] = useState('')
   const [busy, setBusy] = useState(false)
+  const [blocked, setBlocked] = useState(false) // a greyed-out tool was tapped before the scale is set
   const img = trace.image, k = mPerPx(trace)
   const level = trace.levels.find((l) => l.id === lvId) || trace.levels[0]
   const fromScene = useMemo(() => readTrace(nodes), [nodes])
@@ -31,7 +33,7 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
 
   const commit = (next) => { setUndo([...undo.slice(-29), trace]); onTrace(next) }
   const withLevel = (fn) => commit({ ...trace, levels: trace.levels.map((l) => (l.id === level.id ? fn(l) : l)) })
-  const pick = (tl) => { setTool(tl); setPts([]); setCheckWall(null) }
+  const pick = (tl) => { if (tl !== 'scale' && !k) { setBlocked(true); return } setBlocked(false); setTool(tl); setPts([]); setCheckWall(null) }
   const r = () => 14 * (img ? img.w / (svgRef.current?.clientWidth || img.w) : 1) // 14 screen px, in picture px
   const pt = (e) => { const p = svgRef.current.createSVGPoint(); p.x = e.clientX; p.y = e.clientY; const q = p.matrixTransform(svgRef.current.getScreenCTM().inverse()); return { x: q.x, y: q.y } }
 
@@ -99,6 +101,10 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
       <section className="panel lot-side">
         <h2>{t('tr.title')}</h2>
         <p className="muted small">{t('tr.help')}</p>
+        <details className="trace-guide" data-testid="trace-guide" open={!trace.levels.some((l) => l.walls.length)}>
+          <summary><b>{t('guide.title')}</b></summary>
+          <ol className="small">{[1, 2, 3, 4, 5, 6].map((n) => <li key={n}>{tn(`guide.${n}`)}</li>)}</ol>
+        </details>
         <div className="chips">
           <button className={`chip ${img?.kind === 'sample' ? 'on' : ''}`} onClick={onSample}>{t('tr.sample')}</button>
           <button className={`chip ${img?.kind === 'local' ? 'on' : ''}`} disabled={busy} onClick={() => fileRef.current?.click()}>{busy ? t('tr.reading') : t('tr.upload')}</button>
@@ -115,7 +121,8 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
           )}
 
           <h3>{t('tr.toolsH')}</h3>
-          <div className="chips">{TOOLS.map((tl) => <button key={tl} data-testid={`tool-${tl}`} className={`chip ${tool === tl ? 'on' : ''}`} disabled={tl !== 'scale' && !k} onClick={() => pick(tl)}>{t(`tr.tool.${tl}`)}</button>)}</div>
+          <div className="chips">{TOOLS.map((tl) => <button key={tl} data-testid={`tool-${tl}`} className={`chip ${tool === tl ? 'on' : ''} ${tl !== 'scale' && !k ? 'off' : ''}`} aria-disabled={tl !== 'scale' && !k} title={tl !== 'scale' && !k ? t('step.needScale') : undefined} onClick={() => pick(tl)}>{t(`tr.tool.${tl}`)}</button>)}</div>
+          {blocked && !k && <div className="note small" data-testid="tool-blocked">{t('step.needScale')}</div>}
           <p className="muted small">{t(`tr.how.${tool}`)}</p>
           {tool === 'door' && <label className="small">{t('tr.doorW')}<input type="number" step="0.5" min="1" value={doorFt} onChange={(e) => setDoorFt(Number(e.target.value) || 3)} /></label>}
           {tool === 'window' && <label className="small">{t('tr.winW')}<input type="number" step="0.5" min="1" value={winFt} onChange={(e) => setWinFt(Number(e.target.value) || 4)} /></label>}
@@ -148,6 +155,7 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
       </section>
 
       <section className="panel lot-board">
+        {img && <StepStrip step={traceStep({ trace, tool: k ? tool : 'scale', pts, level, checkWall, rules })} />}
         {!img ? <div className="drawing-empty">{t('tr.empty')}</div> : (
           <svg ref={svgRef} className="lot-svg trace-svg" viewBox={`${-pad} ${-pad} ${img.w + 2 * pad} ${img.h + 2 * pad}`} onClick={tap} role="img" aria-label={t('tr.aria', { name: tx(img.name) })} data-testid="trace-svg">
             <rect x={0} y={0} width={img.w} height={img.h} fill="var(--floor)" />
@@ -182,6 +190,15 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
         {img && k && <p className="muted small">{t('tr.size', { w: ftIn(mToFt(img.w * k)), d: ftIn(mToFt(img.h * k)) })}</p>}
       </section>
     </main>
+  )
+}
+
+// The step strip (SPEC §11 P7, chat-D43): which step, what to tap next, where the result shows.
+function StepStrip({ step }) {
+  return (
+    <div className="step-strip" role="status" aria-live="polite" data-testid="trace-step" data-step={step.n}>
+      {step.n > 0 && <b>{t('step.of', { n: step.n, of: step.of })} · {t(`step.title.${step.n}`)}</b>}{step.n > 0 ? ' — ' : ''}{t(step.key, step.params)}
+    </div>
   )
 }
 

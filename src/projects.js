@@ -5,10 +5,10 @@
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore'
 
 const clean = (data) => JSON.parse(JSON.stringify(data)) // drops undefined values Firestore refuses
-const FIELDS = ['scene', 'rooms', 'answers', 'rules', 'lot', 'clusters', 'trace', 'budget', 'setup']
+const FIELDS = ['scene', 'rooms', 'answers', 'rules', 'lot', 'clusters', 'trace', 'budget', 'setup', 'plan', 'versions']
 const shape = (id, d) => {
-  const { scene = null, rooms = [], answers = {}, rules = {}, lot = null, clusters = [], trace = null, budget = null, setup = null, owner, members = [], memberNames = {} } = d
-  return { id, scene, rooms, answers, rules, lot, clusters, trace, budget, setup, owner, members, memberNames }
+  const { scene = null, rooms = [], answers = {}, rules = {}, lot = null, clusters = [], trace = null, budget = null, setup = null, plan = null, versions = [], owner, members = [], memberNames = {} } = d
+  return { id, scene, rooms, answers, rules, lot, clusters, trace, budget, setup, plan, versions, owner, members, memberNames }
 }
 const summary = (d, role) => ({ id: d.id, name: d.data().setup?.name || '', owner: d.data().owner, role })
 

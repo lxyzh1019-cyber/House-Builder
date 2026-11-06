@@ -217,3 +217,59 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - 0 console errors.
   - 3D draws an upper-level office raised above the main floor. Its height was not measured.
 - **Not checked:** the owner's T7 on a phone with the new questions, and how saved real projects migrate (seen only with made-up rooms).
+
+## Plan intake step strip and PC first (2026-11-06)
+
+- Owner, after trying Plan intake on a PC: "on scale is clickable, I click on trace, no status showing up, no idea which step this is and where to find the result." Also: "for now, i do not think i will use this on the phone, as the phone screen is too small."
+- Cause (from the code; I did not watch the owner's screen):
+  - every tool but Scale was greyed out until the scale was set, with no reason given;
+  - after the first scale tap only a small dot appeared;
+  - the length box appeared only after the second tap;
+  - nothing said which step you were on or where its result showed.
+  My headless checks knew the steps, and I8 was not run before the merge, so this gap was not seen.
+- **DN12 → chat-D43, the owner's pick "Step strip".** A live line above the picture (`src/trace/guide.js`):
+  - "Step N of 5 · Scale / Walls / Doors and windows / Rooms / Size check", then what to tap next and where the result shows;
+  - tapping a greyed-out tool says "Set the scale first (Step 1)".
+- **DN11 → chat-D44, the owner's pick "T7 on a PC".** T7 is now a PC test. The phone layout stays readable but is not a done-when gate. Spike DONE WHEN 6 (the phone GPU line) is closed as not needed.
+- **Tests:** N1 and N2 in `test/guide.test.js`. `npm run test:rules`: 78 of 78 pass locally.
+- **Headless Chromium (browser storage), PC 1280 px, English and Chinese, on the sample plan:**
+  - the strip walks: Step 1 "0 of 2 points" → "1 of 2" → "type its real length on the left" → Step 2 "tap a corner…" → "2 walls, last 30′ 0″" → Step 5 "0 of 3 sizes typed";
+  - back on Scale it says "scale set";
+  - tapping Wall before the scale is set gives the "Set the scale first" note;
+  - no sideways scroll, 0 console errors.
+- **Not checked:**
+  - the phone walk: the script's taps landed off-screen, and the phone is no longer a gate;
+  - N3, the owner's I8 on a PC.
+- Owner, 2026-11-06: "please include the instructions for the trace, especially on wall (do i trace a wall with windows, doors) why the room is separate with wall?"
+  - Added a "How to trace" box at the top of Plan intake (chat-D45). It opens until the first wall is traced.
+  - It says: trace one straight line per wall, straight through doors and windows; place doors and windows on the wall afterwards; rooms are traced on their own because walls make the building and rooms are the named spaces.
+  - The Wall, Door, Window and Room hints say the same.
+  - Headless check, PC, both languages: the box shows, no sideways scroll, 0 errors.
+- Owner, same message: no more small PRs; build the rest and leave 3D to the end (chat-D46). This work rides on PR #9 instead of a new one.
+
+## Batch A: stages, decisions and build records (2026-11-06)
+
+- Owner: "All 8, one PR"; D2 and D3 left out; batch C drafted from search snippets later. Sections and tests are in SPEC §13 (chat-D47).
+- Built:
+  - **Stages tab:** the 19 gates, D5 budget verdict, D21 photo record, hidden works under their two stages, change orders, stage cost, photo record.
+  - **Decide tab:** versions (save, compare, restore), idea inbox, decision cards.
+  - **Budget tab:** cheap wins, plus a change-order line.
+  - **Plan intake tab:** liked floor plans and the plan checklist.
+  - **Saved as:** two project fields, `plan` and `versions`.
+- **Tests:**
+  - `npm run test:rules`: 94 of 94 pass locally.
+  - K1–K16 are in `test/plan.test.js` (15 tests).
+  - The save and reload of every new field is one emulator test in `test/rules.test.js`.
+- **Headless Chromium (browser storage), PC 1280 px, English, made-up data:**
+  - a gate ticked "passed" kept its date and who;
+  - D5 read "within the goal at the high total";
+  - a hidden-works item showed under Stage 2 and Stage 5, and D21 listed it as not photographed;
+  - an approved 5,000 change order showed as its own budget line;
+  - a version was saved;
+  - an idea moved to "sorted";
+  - a card with 2 options was decided;
+  - a liked plan's reason went to the checklist;
+  - with the goal under the total, the kept cheap win showed at the top of the Budget tab;
+  - after a reload all of it was still there.
+  Stages, Decide, Budget and Plan intake have no sideways scroll in either language (only Stages and Decide checked in Chinese). 0 console errors.
+- **Not checked:** the owner's own use on a PC.

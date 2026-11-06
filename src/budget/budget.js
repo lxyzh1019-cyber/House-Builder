@@ -11,7 +11,8 @@ export const bid = () => `s${Date.now().toString(36)}${(n++).toString(36)}`
 export const newBudget = () => ({ goal: null, lotPrice: null, lotInGoal: true, soft: [], contingencyPct: null })
 const num = (v) => (Number.isFinite(v) ? v : 0)
 
-export function budgetState(budget, rooms, st, overrides) {
+// changeOrders (SPEC §13.8): approved ones add to the total as their own line, so the meter re-checks the goal.
+export function budgetState(budget, rooms, st, overrides, changeOrders = []) {
   const b = { ...newBudget(), ...(budget || {}) }
   const R = ruleValues(overrides)
   const counted = [], notCounted = []
@@ -25,8 +26,9 @@ export function budgetState(budget, rooms, st, overrides) {
   const cont = { lo: build.lo * pct, hi: build.hi * pct }
   const soft = b.soft.reduce((s, x) => s + num(x.amount), 0)
   const lot = b.lotInGoal ? num(b.lotPrice) : 0
-  const total = { lo: build.lo + cont.lo + soft + lot, hi: build.hi + cont.hi + soft + lot }
+  const co = (changeOrders || []).filter((c) => c.approved).reduce((s, c) => s + num(c.amount), 0)
+  const total = { lo: build.lo + cont.lo + soft + lot + co, hi: build.hi + cont.hi + soft + lot + co }
   const hasGoal = Number.isFinite(b.goal)
   const left = hasGoal ? { lo: b.goal - total.lo, hi: b.goal - total.hi } : null // lo = left at the low rate
-  return { area, counted, notCounted, rates: { lo: R.rateLow, hi: R.rateHigh }, build, cont, soft, lot, total, left, over: !!left && left.hi < 0, overAtLow: !!left && left.lo < 0 }
+  return { area, counted, notCounted, rates: { lo: R.rateLow, hi: R.rateHigh }, build, cont, soft, lot, co, total, left, over: !!left && left.hi < 0, overAtLow: !!left && left.lo < 0 }
 }

@@ -10,6 +10,6 @@ export function sampleFit() {
   t.image = { kind: 'sample', name: SAMPLE.name, w: SAMPLE.w, h: SAMPLE.h }
   t.scale = { ...SAMPLE.dim }
   t.levels[0].rooms = [R('liv', 'Living', 60, 80, 460, 440), R('bath', 'Bath', 340, 440, 460, 680), R('bed1', 'Bedroom 1', 60, 440, 340, 680)]
-  t.fit = { on: true, rooms: { liv: fitRoom('living', 'Family TV room'), bath: fitRoom('office', 'Home office') } }
+  t.fit = { on: true, rooms: { liv: fitRoom('living'), bath: fitRoom('office') } }
   return t
 }
