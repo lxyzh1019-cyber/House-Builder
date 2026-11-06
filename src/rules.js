@@ -19,6 +19,8 @@ export const RULES = [
   { id: 'facingSeats', label: 'Seats facing each other, no TV', value: 8, unit: 'ft apart', tag: 'E3', date: '2026-11-06', source: 'SPEC v1.3 §6.3 (kept for the later no-TV preset)' },
   { id: 'rateLow', label: 'Build rate, low', value: 175, unit: 'C$/ft²', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §6 R7 default' },
   { id: 'rateHigh', label: 'Build rate, high', value: 275, unit: 'C$/ft²', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §6 R7 default' },
+  { id: 'elecRate', label: 'Red Deer electricity, Rate of Last Resort (ENMAX), Jan 2025 – Dec 2026', value: 12.06, unit: '¢/kWh', tag: 'E2', date: '2026-11-06', source: 'City of Red Deer, Rate of Last Resort page (reddeer.ca)' },
+  { id: 'elecDaily', label: 'Red Deer electricity, daily charge (ENMAX), Jan 2025 – Dec 2026', value: 0.2498, unit: '$/day', tag: 'E2', date: '2026-11-06', source: 'City of Red Deer, Rate of Last Resort page (reddeer.ca)' },
   { id: 'lotW', label: 'Lot width (new project)', value: 60, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
   { id: 'lotD', label: 'Lot depth (new project)', value: 100, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
   { id: 'lotSnap', label: 'Lot board snap', value: 2, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7' },

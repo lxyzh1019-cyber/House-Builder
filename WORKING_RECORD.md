@@ -273,3 +273,36 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - after a reload all of it was still there.
   Stages, Decide, Budget and Plan intake have no sideways scroll in either language (only Stages and Decide checked in Chinese). 0 console errors.
 - **Not checked:** the owner's own use on a PC.
+
+## Batch C: Alberta rules and Red Deer steps (2026-11-06)
+
+- **Network.** The owner chose "Let Claude open them" and Red Deer. The owner approved a personal environment "House-Builder" that can reach 12 official hosts; this session uses it.
+- **Checked against the official pages:**
+  - the code clauses, from the NBC(AE) 2023 2nd-printing PDF at NRC;
+  - Red Deer permits and their document lists;
+  - Zoning Bylaw 3357/2024 R-L values;
+  - the Rate of Last Resort;
+  - the CMHC notes;
+  - the warranty periods.
+
+  canada.ca did not answer, so the radon guideline and the federal pre-approval page are left out.
+- **Built (SPEC §14, chat-D48):**
+  - the Stage 3 code checklist (gate D7);
+  - Stage 4: Red Deer permits with their order rule and document ticks, and money (pre-approval → budget goal, draw schedule against the loan);
+  - Stage 6: warranty walks;
+  - the Lot board's "Fill from R-L";
+  - two rate rows in the Rules table.
+- **Tests:**
+  - `npm run test:rules`: all pass locally.
+  - M1–M5, M7 and M8 are in `test/alberta.test.js`. M6 is a screen check.
+  - I dropped one test I had written for M6: it only restated its own input, so it could not fail.
+- **Headless Chromium (browser storage), PC 1280 px:**
+  - the checklist showed 6 items;
+  - the building permit rule showed, then cleared after the development permit was issued and the 4 others were applied for;
+  - the 600,000 pre-approval became the Budget goal (M6);
+  - the draw check flagged C$0 against a 500,000 loan;
+  - possession 2028-06-01 listed the 2029 walk first;
+  - "Fill from R-L" set front 9.84 ft, sides 4.92 ft, coverage 45 and height 49.2;
+  - a reload kept the ticks and the date;
+  - no sideways scroll in English or Chinese, 0 console errors.
+- **Not checked:** the owner's own use.

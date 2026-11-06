@@ -73,6 +73,7 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D45 (trace instructions) | Plan intake has a "How to trace" box: one straight line per wall, corner to corner, traced straight through doors and windows (they are placed on the wall afterwards); rooms are traced on their own because walls make the building (3D, size check) and rooms are the named spaces (Test fit, Rooms). | 2026-11-06 |
 | chat-D46 (how pieces are delivered) | No more small PRs: the remaining features are built together and handed over in as few PRs as possible; 3D work (furniture fit, 3D walk-through) comes last. | 2026-11-06 |
 | chat-D47 (batch A sections) | Section 13 written and approved as one batch: schedule view, liked floor plans, cheap wins, plan versions (at most 20), idea inbox, decision cards, hidden works, build tracking; done-when K1–K16. The schedule shows the 19 gates section 1 lists (no D2 or D3). | 2026-11-06 |
+| chat-D48 (batch C, Red Deer) | Section 14 built from facts opened on the official pages and checked on 2026-11-06 (Alberta, NRC, City of Red Deer, UCA, AUC, CMHC); Red Deer first; tests M1–M8. Health Canada's radon level and the federal pre-approval page stay out until checked. | 2026-11-06 |
 
 ## 4. Architecture
 
@@ -384,7 +385,7 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Feature | Source | Status |
 |---|---|---|
 | Stage 0 project setup: name, type, city, household, budget goal | canvas Main | Now (spike, sharing) |
-| Stage 0: code, zoning and permit steps for the city; local gas and power rates | canvas Main | Later |
+| Stage 0: code, zoning and permit steps for the city; local gas and power rates | canvas Main | Now for Red Deer (§14.1–14.4); other cities later |
 | Rate rows rated against the city (near, national average) | canvas Main | Later |
 | Element library (E1 templates that cards start from) | canvas Main | Later |
 | Many projects: method shared, data per project | canvas Main | Now (data model) |
@@ -396,7 +397,7 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Liked floor plans with "why I like it", turned into a plan checklist | handoff 7-step process | Now (§13.2) |
 | Cheap wins list, kept when the budget is tight | canvas 1c | Now (§13.3) |
 | Lot checklist for buying the lot | handoff 7-step process | Later |
-| Mortgage pre-approval sets the budget | handoff 7-step process | Later (budget meter input) |
+| Mortgage pre-approval sets the budget | handoff 7-step process | Now (§14.5) |
 | Plan intake: trace once, 3 sizes match, overlay check, sample plan | canvas 2a, technical flow | Now (parallel method, chat-D18) |
 | Test fit and new-design branch | handoff (G1 fix) | Now (after both methods' pieces) |
 | Rooms from contents, Check my size, smallest changes, spare cost | chat | Now |
@@ -421,13 +422,13 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Rate table v0 with sources, estimate classes | canvas Rate Table | Later |
 | Energy model | canvas Energy Model | Later |
 | Lifecycle cost, 30 years | canvas Lifecycle Cost | Later |
-| Final rules gate with code clause links | canvas Stage 3 | Later |
+| Final rules gate with code clause links | canvas Stage 3 | Now (§14.1) |
 | Work packages: scope per trade, allowances, who supplies, DIY flags | handoff 7-step process | Later |
-| Builder price and mortgage draw schedule | handoff 7-step process (step 7) | Later |
-| Permit checklist and City steps | canvas Stage 4 | Later |
+| Builder price and mortgage draw schedule | handoff 7-step process (step 7) | Draw schedule now (§14.5); builder price later |
+| Permit checklist and City steps | canvas Stage 4 | Now for Red Deer (§14.2) |
 | Builder checks, contract and money checks, myth library | canvas Site Walks | Later |
 | Build tracking: change orders re-checked, stage cost against budget, photo and video record before drywall | canvas Stage 5 | Now (§13.8) |
-| Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Later |
+| Move-in, possession walk and warranty walks | canvas Stage 6, Site Walks | Warranty walks now (§14.6); possession walk later |
 | Furniture placement: Pascal scene with Furnish2 parts (was: export each level from Pascal to Furnish) | chat-D17 (build base) | Now (changed by chat-D17) |
 | Lego rules proposed, not decided: wet rooms together, hallways about 12%, simple outer shape, each room marked now or later | handoff 2026-10-29 (chat-D5 proposal) | Later (decision open) |
 
@@ -481,4 +482,56 @@ Built together, in one PR. Two new tabs: **Stages** (13.1, 13.7, 13.8) and **Dec
 - Stage cost: planned and actual per stage, with the difference.
 - Photo and video record before drywall: per room a tick, its date and where the files are kept (typed; the app does not store photos).
 - K15 an approved +5,000 change order raises the B4 total by 5,000 and re-checks the goal; a not-approved one changes nothing. K16 planned 100,000 and actual 112,000 shows +12,000; photo ticks survive a reload.
+
+## 14. Batch C: Alberta rules and Red Deer steps (chat-D48)
+
+Every fact here was opened on its official page and checked on 2026-11-06. Each panel links its page. The facts live in `src/plan/alberta.js`; the ticks and amounts are saved in the project's `plan` field.
+
+### 14.1 Final rules checklist (Stage 3, gate D7)
+
+- National Building Code – 2023 Alberta Edition (in force in Alberta since May 1, 2024), 2nd printing (August 2026), Part 9, free from NRC:
+  - 9.9.10.1 bedroom egress window: opening at least 0.35 m², no side under 380 mm, 760 mm clear in front in a window well;
+  - 9.10.19 smoke alarms: every storey, each bedroom, between bedrooms and the rest of the storey, hard-wired with a 7-day battery and interconnected;
+  - 9.32.3.9 CO alarms where there is a fuel-burning appliance or an attached garage, in each bedroom or within 5 m of its door;
+  - 9.32.3 mechanical ventilation: principal fan by bedrooms (Table 9.32.3.3), kitchen fan at least 50 L/s; an HRV is one way to meet it;
+  - 9.8.4 stairs in a house: rise 125–200 mm, run 255–355 mm;
+  - 9.13.4 radon rough-in.
+- Each item is not yet, met or not needed. The egress item names the rooms that need it: bedrooms, and offices with a sofa bed or bedroom-ready (R15).
+
+### 14.2 Red Deer permits (Stage 4, gates D10–D12)
+
+- A development permit, a building permit, and electrical, gas (licensed gasfitter only), heating (licensed heating contractor only) and plumbing permits; MyPermits and ProjectDox.
+- The building permit is issued only after the development permit is issued and the other permits are applied for.
+- Document checklists from the City's lists. Development permit: site plan with setbacks, elevations, floor plan, letter of authorization, letter of intent, certificate of title within 30 days, signed building grade certificate. Building permit: site plan, CSA F280 heat loss, new home warranty registration, soils report (City lots), plans 11×17 or larger with the radon rough-in, truss and floor designs, 9.36 energy summary.
+- Review takes 7–10 business days; fees change each May 1 (fee schedule linked).
+
+### 14.3 Zoning (Lot board site review)
+
+- Red Deer Zoning Bylaw 3357/2024 (amended June 9, 2026) and the City's interactive zoning map are linked.
+- "Fill from R-L" (R-L Residential Low-Density, sections 6.10.5 and 6.10.8) sets the front setback to 3.0 m, the rear to 7.5 m, both sides to 1.5 m, the height to 15 m (3 storeys) and the coverage to 45%. The note gives the attached-garage rule (front 6.0 m; rear 6.0 m with a rear attached garage) and says infill lots follow section 3.190. Whether R-L is the most common house zone is not checked: the user checks the lot's own zone on the map.
+
+### 14.4 Rates
+
+- Rules rows: Red Deer electricity, Rate of Last Resort (ENMAX), 12.06 ¢/kWh and $0.2498/day, January 2025 to December 2026 (E2, City of Red Deer page). The gas default rate changes every month; its page is linked for the later energy model.
+
+### 14.5 Money (Stage 4, gate D19)
+
+- The mortgage pre-approval amount, typed, can be used as the budget goal.
+- Construction loan and the advance at each stage (2 to 6); the app flags advances that do not add up to the loan.
+- CMHC Improvement notes: up to 95% of the as-improved value for an owner-occupied home, approved before or early in construction, no advance on vacant land, a new home warranty required.
+
+### 14.6 Warranty walks (Stage 6)
+
+- From the possession date: walks at 1 year (labour and materials), 2 years (delivery and distribution systems), 5 years (building envelope) and 10 years (major structure), Alberta's minimum new home warranty; the registry is linked.
+
+Tests (done when):
+
+- M1 the checklist shows the 6 code items with their clauses.
+- M2 a bedroom-ready office and the bedrooms are named for the egress item; a plain office is not.
+- M3 the building permit shows its rule until the development permit is issued and the 4 other permits are applied for.
+- M4 "Fill from R-L" sets the setbacks (3.0, 7.5, 1.5, 1.5 m), the height (15 m = 49.2 ft) and the coverage (45%).
+- M5 the rate rows show their source and date.
+- M6 a 600,000 pre-approval, used as the goal, shows 600,000 on the Budget tab.
+- M7 advances that do not add up to the loan are flagged.
+- M8 a possession date of 2028-06-01 gives walks on 2029-06-01, 2030-06-01, 2033-06-01 and 2038-06-01.
 
