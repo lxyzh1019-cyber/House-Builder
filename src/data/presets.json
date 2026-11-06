@@ -1,0 +1,46 @@
+{
+  "rules": {
+    "walkway_main": 3.0, "walkway_side": 3.0, "shared_strip": 0.5,
+    "tv_factor": 1.4, "tv_factor_low": 1.2, "tv_factor_high": 1.6,
+    "tv_band": 0.25, "eye_to_sofa_back": 1.5, "seat_depth": 3.0,
+    "desk_depth": 2.5, "desk_chair": 3.0, "shelf_depth": 1.0,
+    "dining_chair": 3.0, "bed_side_zone": 2.5, "bed_foot_walkway": 3.0,
+    "dresser_depth": 1.667, "closet_depth": 2.0,
+    "locker_depth": 1.667, "door_zone": 3.0, "bench_depth": 1.5,
+    "sofa_bed_open": 6.5, "sofa_bed_width": 7.0
+  },
+  "options": {
+    "tv_in": [55, 65, 75, 85],
+    "seat_group": {"4": 10.5, "6-8": 12.0, "10+": 14.0},
+    "desk_len": [5.0, 6.0],
+    "dining_table": {"4": [4.0, 3.0], "6": [6.0, 3.0], "8": [8.0, 3.5]},
+    "bed_in": {"twin": [38, 75], "queen": [60, 80], "king": [76, 80]},
+    "locker_w": {"normal": 1.5, "heavy": 2.0},
+    "kid_desk": [4.0, 2.0]
+  },
+  "presets": {
+    "living_tv":    {"type": "living", "name": "Family TV room", "side_walkway": true, "defaults": {"seats": "6-8", "tv_in": 75, "open": false},
+                     "bands": ["tv", "viewing_gap", "seat_group", "rear_walkway"]},
+    "office_desk":  {"type": "office", "side_walkway": true, "defaults": {"desks": 1, "desk_len": 6.0, "shelf": true, "sofa_bed": false, "bedroom_ready": false},
+                     "bands": ["desks", "desk_chair", "walkway_main", "sofa_bed_if_chosen", "shelf", "closet_if_bedroom_ready"]},
+    "dining_table": {"type": "dining", "side_walkway": false, "defaults": {"seats": "6"},
+                     "bands": ["chair_space", "table", "chair_space"], "width": "chair_space + table + chair_space"},
+    "primary_bed":  {"type": "primary_bedroom", "side_walkway": false, "defaults": {"bed": "queen", "dresser": true},
+                     "bands": ["bed_row: side_zone + bed + side_zone", "bed_foot_walkway", "dresser_if_chosen"]},
+    "kid_bed_desk": {"type": "kid_bedroom", "side_walkway": false, "defaults": {"bed": "twin", "desk": true},
+                     "bands": ["closet", "walkway_main", "bed_row: bed + bed_side_zone + (desk_chair + kid_desk depth) or dresser"]},
+    "mudroom_lockers": {"type": "mudroom", "side_walkway": false, "defaults": {"people": 4, "gear": "normal", "bench_opposite": false},
+                     "bands": ["lockers: people x locker_w + door_zone", "walkway_main", "bench_if_chosen"]}
+  },
+  "tests": [
+    {"id": "T1",  "preset": "living_tv", "opts": {"seats": "6-8", "tv_in": 75, "open": false}, "min": [15.0, 13.5]},
+    {"id": "T2",  "preset": "living_tv", "opts": {"seats": "6-8", "tv_in": 75, "open": true},  "min": [15.0, 11.0]},
+    {"id": "T3",  "preset": "office_desk", "opts": {"desks": 1, "desk_len": 6.0, "shelf": true, "sofa_bed": false, "bedroom_ready": false}, "min": [9.0, 9.5]},
+    {"id": "T8",  "preset": "dining_table", "opts": {"seats": "6"}, "min": [12.0, 9.0]},
+    {"id": "T9",  "preset": "primary_bed", "opts": {"bed": "queen", "dresser": true}, "min": [10.0, 11.33]},
+    {"id": "T10", "preset": "kid_bed_desk", "opts": {"bed": "twin", "desk": true}, "min": [10.67, 11.25]},
+    {"id": "T11", "preset": "mudroom_lockers", "opts": {"people": 4, "gear": "normal", "bench_opposite": false}, "min": [9.0, 4.67]},
+    {"id": "T12", "preset": "office_desk", "opts": {"desks": 1, "desk_len": 6.0, "shelf": true, "sofa_bed": false, "bedroom_ready": true}, "min": [9.0, 11.5]},
+    {"id": "T15", "preset": "office_desk", "opts": {"desks": 1, "desk_len": 6.0, "shelf": true, "sofa_bed": true, "bedroom_ready": false}, "min": [10.0, 16.0]}
+  ]
+}
