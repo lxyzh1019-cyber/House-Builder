@@ -167,4 +167,4 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - a second PC project kept its own data when switching back;
   - Chinese fully Chinese, no sideways scroll, 0 console errors.
 - All tabs (7 + 3D), PC and phone, both languages: no sideways scroll, 0 console errors.
-- Not checked: real devices against the real Firestore (needs the new rules published), S7 by the owner.
+- Owner, 2026-11-06, after publishing the new rules: the phone listed the PC's project as "Untitled project · shared with you" (no name typed yet). The owner opened it, and the rooms matched the PC: "Pass". **S7 passes** on real devices against the real Firestore. Device and browser not reported.
