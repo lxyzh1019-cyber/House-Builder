@@ -1,14 +1,14 @@
 // Firestore access for projects/{projectId} = { owner, members, memberNames, setup, scene: "<Pascal scene
-// JSON>", rooms, rules, lot, clusters, trace, budget }. Takes a Firestore instance so the same code runs in
+// JSON>", rooms, answers (chat-D40), rules, lot, clusters, trace, budget }. Takes a Firestore instance so the same code runs in
 // the app and in the emulator test. The scene stays a JSON string: Firestore cannot store nested arrays.
 // Many projects per person (SPEC §12); shared projects by device code (SPEC §9, chat-D33).
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, limit, query, updateDoc, where } from 'firebase/firestore'
 
 const clean = (data) => JSON.parse(JSON.stringify(data)) // drops undefined values Firestore refuses
-const FIELDS = ['scene', 'rooms', 'rules', 'lot', 'clusters', 'trace', 'budget', 'setup']
+const FIELDS = ['scene', 'rooms', 'answers', 'rules', 'lot', 'clusters', 'trace', 'budget', 'setup']
 const shape = (id, d) => {
-  const { scene = null, rooms = [], rules = {}, lot = null, clusters = [], trace = null, budget = null, setup = null, owner, members = [], memberNames = {} } = d
-  return { id, scene, rooms, rules, lot, clusters, trace, budget, setup, owner, members, memberNames }
+  const { scene = null, rooms = [], answers = {}, rules = {}, lot = null, clusters = [], trace = null, budget = null, setup = null, owner, members = [], memberNames = {} } = d
+  return { id, scene, rooms, answers, rules, lot, clusters, trace, budget, setup, owner, members, memberNames }
 }
 const summary = (d, role) => ({ id: d.id, name: d.data().setup?.name || '', owner: d.data().owner, role })
 

@@ -45,6 +45,8 @@
       .panel, .editor { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; }
       .rooms { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 12px; align-items: start; }
       .room-list { display: grid; gap: 8px; }
+      .rooms-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; min-width: 0; }
+      .hq .q { margin: 8px 0; } .hq h3 { margin: 12px 0 4px; } .hq .person { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
       .room-card { display: grid; gap: 2px; text-align: left; font: inherit; color: inherit; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; }
       .room-card.on { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
       .room-card span:nth-child(2) { font: 600 14px var(--font-data); font-variant-numeric: tabular-nums; }
@@ -74,7 +76,8 @@
       label { display: grid; gap: 2px; font-size: 12px; color: var(--muted); }
       input, select { font: 15px var(--font-ui); min-height: 38px; padding: 0 8px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); min-width: 0; }
       input[type=number] { width: 6.5em; font-family: var(--font-data); }
-      .add-row select, .add-row #custom-name { flex: 1; min-width: 10em; }
+      .add-row select, .add-row #custom-name { flex: 1 1 10em; min-width: 0; max-width: 100%; }
+      .add-row select { width: 100%; }
       .min-line { font-size: 15px; } .min-line b { font-family: var(--font-data); }
       .result { padding: 10px 12px; border-radius: 8px; border: 1px solid; display: grid; gap: 6px; }
       .result.ok { border-color: var(--ok); } .result.bad { border-color: var(--warn); }

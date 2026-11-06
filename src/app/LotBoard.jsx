@@ -2,6 +2,7 @@
 // crossings in red, set each side to a door, an open side or a wall, and glue the daily core route into
 // one cluster. Room outlines are read from the Pascal scene (readLot); a drag shows a preview first.
 import { useRef, useState } from 'react'
+import { LEVELS } from '../rooms/types.js'
 import { coverage, lotFt, lotSideOf, localSideOf, lotState, moveRoom, newSite, placeRoom, rotateRoom } from '../lot/lot.js'
 import { portsOf, newId } from '../rooms/types.js'
 import { ftToM, sizeFt } from '../units.js'
@@ -14,12 +15,15 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
   const [sel, setSel] = useState(null)
   const [drag, setDrag] = useState(null) // { id, px, py, bx, by, rooms }
   const [glue, setGlue] = useState([])
+  // One level at a time (SPEC §7, chat-D38); the lot outline and setbacks show on every level.
+  const [level, setLevel] = useState('main')
+  const onLevel = (r) => (r.level || 'main') === level
   const L = lotFt(lot)
   const preview = drag?.rooms ? lotState(drag.rooms, lot, rules) : null
   const view = preview || st
   const fpOf = (id) => (preview ? preview[id]?.fp : fps[id] || st[id]?.fp)
-  const placed = rooms.filter((r) => fpOf(r.id))
-  const tray = rooms.filter((r) => !r.place)
+  const placed = rooms.filter((r) => fpOf(r.id) && onLevel(r))
+  const tray = rooms.filter((r) => !r.place && onLevel(r))
   const selRoom = rooms.find((r) => r.id === sel)
   const clusterOf = (id) => clusters.find((c) => c.roomIds.includes(id))
 
@@ -58,6 +62,7 @@ export default function LotBoard({ rooms, lot, clusters, rules, st, fps, onRooms
     <main className="lot">
       <section className="panel lot-side">
         <h2>{t('lot.title')}</h2>
+        <div className="chips" data-testid="lot-level" role="group" aria-label={t('ed.level')}>{LEVELS.map((lv) => <button key={lv} className={`chip ${level === lv ? 'on' : ''}`} aria-pressed={level === lv} onClick={() => { setLevel(lv); setSel(null) }}>{t(`level.${lv}`)} ({rooms.filter((r) => (r.level || 'main') === lv).length})</button>)}</div>
         <div className="lot-inputs">
           {[['w', L.w], ['d', L.d], ['front', L.front], ['rear', L.rear], ['left', L.left], ['right', L.right]].map(([k, v]) => (
             <label key={k}>{t(`lot.${k}`)}<input id={`lot-${k}`} type="number" step="1" min="0" defaultValue={+v.toFixed(2)} onBlur={(e) => setLotFt(k, e.target.value)} onKeyDown={(e) => e.key === 'Enter' && setLotFt(k, e.target.value)} /></label>

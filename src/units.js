@@ -12,6 +12,8 @@ export function ftIn(ft) {
   return `${f}′ ${i}″`
 }
 export const ft1 = (ft) => (Math.round(ft * 10) / 10).toFixed(1)
-export const sizeFt = (w, d) => `${ft1(w)} x ${ft1(d)} ft`
+// Sizes on screen: feet and inches, nearest inch (SPEC §4). sizeDec keeps the decimal feet for a second look.
+export const sizeFt = (w, d) => `${ftIn(w)} x ${ftIn(d)}`
+export const sizeDec = (w, d) => `${ft1(w)} x ${ft1(d)} ft`
 // Round up to the next step (the size step rule); the epsilon absorbs float noise like 13.250000000000002.
 export const roundUp = (x, step) => Math.ceil(x / step - 1e-9) * step

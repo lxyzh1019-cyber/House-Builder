@@ -15,12 +15,12 @@ describe('Test fit (SPEC §11 P5, R13)', () => {
     expect(v.spare).toBeCloseTo(157.5, 6)
   })
 
-  it('F2 the sample Bath (6 x 12) as a home office is too small: width short 4.0 ft, depth 0, with a way out', () => {
+  it('F2 the sample Bath (6 x 12) as a home office is too small: width short 3.0 ft, depth 0; it needs 9 x 9.5 (T3)', () => {
     const t = sampleFit()
     const v = fitVerdict(t, room(t, 'bath'))
     expect(v.status).toBe('too-small')
-    expect(v.shortW).toBeCloseTo(4, 6); expect(v.shortD).toBeCloseTo(0, 6)
-    expect(v.min).toMatchObject({ w: 10, d: 10 })
+    expect(v.shortW).toBeCloseTo(3, 6); expect(v.shortD).toBeCloseTo(0, 6)
+    expect(v.min).toMatchObject({ w: 9, d: 9.5 })
   })
 
   it('F3 a traced room that is not a rectangle says the check needs a rectangle', () => {

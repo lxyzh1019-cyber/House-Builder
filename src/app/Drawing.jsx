@@ -7,6 +7,9 @@ import { layoutRoom } from '../rooms/engine.js'
 import { ftIn, mmToFt } from '../units.js'
 import { t, tx } from '../i18n.js'
 
+// Rough label width in em: a Chinese character is about 1 em, a Latin letter about 0.55 em.
+const textEm = (s) => [...s].reduce((n, c) => n + (/[一-鿿（）]/.test(c) ? 1 : 0.55), 0)
+
 export default function Drawing({ room, geo, sizeFt, rules, ctx, selectedId, onSelect, onMove }) {
   const svgRef = useRef(null)
   const [drag, setDrag] = useState(null) // { id, ox, oy, cx, cy }
@@ -63,7 +66,7 @@ export default function Drawing({ room, geo, sizeFt, rules, ctx, selectedId, onS
         return (
           <g key={f.id} transform={`translate(${f.cx} ${f.cy}) rotate(${f.rot})`} onPointerDown={(e) => down(e, f)} style={{ cursor: 'grab', touchAction: 'none' }}>
             <rect x={-f.w / 2} y={-f.d / 2} width={f.w} height={f.d} rx={40} fill={bad ? 'url(#redhatch)' : 'var(--item)'} stroke={bad ? 'var(--warn)' : f.id === selectedId ? 'var(--accent)' : 'var(--item-line)'} strokeWidth={f.id === selectedId ? 40 : 20} />
-            {Math.min(f.w, f.d) > 300 && <text x={0} y={0} fontSize={Math.min(fs, f.d * 0.4)} textAnchor="middle" dominantBaseline="central" fill="var(--ink)" transform={Math.abs(f.rot % 180) === 90 ? 'rotate(-90)' : undefined} pointerEvents="none">{tx(f.name)}</text>}
+            {Math.min(f.w, f.d) > 300 && textEm(tx(f.name)) * Math.min(fs, f.d * 0.4) < (Math.abs(f.rot % 180) === 90 ? f.d : f.w) && <text x={0} y={0} fontSize={Math.min(fs, f.d * 0.4)} textAnchor="middle" dominantBaseline="central" fill="var(--ink)" transform={Math.abs(f.rot % 180) === 90 ? 'rotate(-90)' : undefined} pointerEvents="none">{tx(f.name)}</text>}
           </g>
         )
       })}

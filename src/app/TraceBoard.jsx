@@ -6,9 +6,9 @@ import { useMemo, useRef, useState } from 'react'
 import { CHECKS_NEEDED, mPerPx, nearestWall, placeOpening, roomAreaFt2, sizeCheck, snapPoint, tid, wallEnds, wallFt } from '../trace/trace.js'
 import { readTrace } from '../scene/sync.js'
 import { ftIn, ftToM, mToFt } from '../units.js'
-import { t, tm, tn, tx } from '../i18n.js'
+import { t, tm, tn, tx, useLang } from '../i18n.js'
 import { fitOf, fitRoom, fitVerdict, newFit, rectFt } from '../trace/fit.js'
-import { ROOM_TYPES, TYPE_ORDER, applyAnswers } from '../rooms/types.js'
+import { ROOM_TYPES, TYPE_ORDER, applyOptions } from '../rooms/types.js'
 
 const TOOLS = ['scale', 'wall', 'door', 'window', 'room', 'check', 'erase']
 const inside = (p, pts) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const a = pts[i], b = pts[j]; if ((a.y > p.y) !== (b.y > p.y) && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x) c = !c } return c }
@@ -187,6 +187,7 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
 
 // P5 test fit: name each traced room's type and contents; Rooms from contents checks it at its traced size.
 function TestFit({ trace, rules, onTrace, onCopyRooms }) {
+  const lang = useLang()
   const [open, setOpen] = useState(null)
   const [copied, setCopied] = useState(null)
   const fit = trace.fit || newFit()
@@ -210,9 +211,9 @@ function TestFit({ trace, rules, onTrace, onCopyRooms }) {
               <option value="">{t('fit.pickType')}</option>
               {TYPE_ORDER.map((k) => <option key={k} value={k}>{tx(ROOM_TYPES[k].label)}</option>)}
             </select>
-            {ty && !ty.plain && <div className="chips">{Object.keys(ty.presets).map((p) => <button key={p} className={`chip ${f.preset === p ? 'on' : ''}`} onClick={() => setRoom(rm.id, fitRoom(f.type, p))}>{tx(p)}</button>)}<button className="chip" onClick={() => setOpen(open === rm.id ? null : rm.id)}>{t(open === rm.id ? 'fit.hideContents' : 'fit.contents')}</button></div>}
+            {ty && !ty.plain && <div className="chips"><span className="chip on">{tx(ty.presetName)}</span><button className="chip" onClick={() => setOpen(open === rm.id ? null : rm.id)}>{t(open === rm.id ? 'fit.hideContents' : 'fit.contents')}</button></div>}
             {ty && !ty.plain && open === rm.id && ty.questions.map((q) => (
-              <div key={q.id} className="q"><div className="q-label small">{tx(q.label)}</div><div className="chips">{q.options.map(([val, label]) => <button key={val} className={`chip ${f.answers?.[q.id] === val ? 'on' : ''}`} onClick={() => { const r = applyAnswers({ ...f, items: f.items || [] }, { ...f.answers, [q.id]: val }); setRoom(rm.id, { type: f.type, preset: f.preset, answers: r.answers, items: r.items }) }}>{tx(label)}</button>)}</div></div>
+              <div key={q.key} className="q"><div className="q-label small">{q.label[lang === 'zh' ? 1 : 0]}</div><div className="chips">{q.options.map(([val, en, zh]) => <button key={String(val)} className={`chip ${String(f.options?.[q.key]) === String(val) ? 'on' : ''}`} onClick={() => { const r = applyOptions({ ...f, id: rm.id, items: f.items || [] }, { [q.key]: val }, rules); setRoom(rm.id, { type: f.type, preset: f.preset, options: r.options, items: r.items }) }}>{lang === 'zh' ? zh : en}</button>)}</div></div>
             ))}
             <Verdict v={v} />
           </div>
@@ -234,7 +235,7 @@ function Verdict({ v }) {
   return (
     <div className="result bad" data-testid="fit-verdict">
       <div>{tn('fit.tooSmall', { w: v.shortW.toFixed(1), d: v.shortD.toFixed(1), min: `${v.min.w.toFixed(1)} x ${v.min.d.toFixed(1)} ft` })}</div>
-      {v.changes?.length > 0 && <ul className="small">{v.changes.map((c, i) => <li key={i}>{(c.msgs || c.changes).map(tm).join(' + ')}</li>)}</ul>}
+      {v.changes?.length > 0 && <ul className="small">{v.changes.map((c, i) => <li key={i}>{t(`res.side.${c.side}`)}: {tm(c.msg)} ({t(`res.sideNew.${c.side}`, { ft: c.ft.toFixed(2) })})</li>)}</ul>}
     </div>
   )
 }
