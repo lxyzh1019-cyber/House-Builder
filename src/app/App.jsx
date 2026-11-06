@@ -12,6 +12,7 @@ import { LANGS, setLang, t, tlist, tx, useLang } from '../i18n.js'
 import TraceBoard from './TraceBoard.jsx'
 import Budget from './Budget.jsx'
 import { newBudget } from '../budget/budget.js'
+import { startFrom } from '../load.js'
 import { newTrace, traceFrame } from '../trace/trace.js'
 import { copyToRooms, knownSizes } from '../trace/fit.js'
 import { SAMPLE, sampleUrl } from '../trace/sample.js'
@@ -52,10 +53,10 @@ export default function App({ store, pluginReady }) {
         await pluginReady
         const data = await store.load()
         if (!alive) return
-        if (data?.rooms?.length) { setRooms(data.rooms); setRules(data.rules || {}); setLot(data.lot || newLot(data.rules)); setClusters(data.clusters || []); setSelId(data.rooms[0].id); setSaveState('loaded') }
-        if (data?.trace) { setTrace(data.trace); await showPicture(data.trace.image) }
-        if (data?.budget) setBudget(data.budget)
-        else { const start = [newRoom('living', 'Family TV room'), newRoom('office', 'Home office')]; setRooms(start); setSelId(start[0].id); setSaveState('new') }
+        const p = startFrom(data)
+        setRooms(p.rooms); setRules(p.rules); setLot(p.lot); setClusters(p.clusters); setTrace(p.trace); setBudget(p.budget)
+        setSelId(p.rooms[0].id); setSaveState(p.isNew ? 'new' : 'loaded')
+        if (data?.trace) await showPicture(data.trace.image)
         setReady(true)
       } catch (e) { console.error(e); setError(String(e?.message || e)); setSaveState('error') }
     })()
