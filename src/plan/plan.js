@@ -2,7 +2,7 @@
 // hidden works and build tracking. Pure functions over plain data; each is a field of the project document
 // (chat-D40 style): schedule, likedPlans, cheapWins, versions, ideas, decisions, hiddenWorks, build.
 // The project's `plan` field holds everything here but versions, which have their own field.
-export const newPlan = () => ({ schedule: { gates: {} }, likedPlans: [], checklist: [], cheapWins: [], ideas: [], decisions: [], hiddenWorks: [], build: { changeOrders: [], stageCost: {}, photos: {} }, code: {}, permits: {}, docs: {}, money: { preapproval: null, loan: null, draws: {} }, possession: '', steps: {}, pains: [], pictures: [], lotItems: null, sprints: {}, itemCards: [], sheets: [], systems: {}, packages: [], builderPrice: { price: null, date: '' }, walk: [], lego: { off: {} } })
+export const newPlan = () => ({ schedule: { gates: {} }, likedPlans: [], checklist: [], cheapWins: [], ideas: [], decisions: [], hiddenWorks: [], build: { changeOrders: [], stageCost: {}, photos: {} }, code: {}, permits: {}, docs: {}, money: { preapproval: null, loan: null, draws: {} }, possession: '', steps: {}, pains: [], pictures: [], lotItems: null, sprints: {}, itemCards: [], sheets: [], systems: {}, packages: [], builderPrice: { price: null, date: '' }, walk: [], lego: { off: {} }, energy: { targetTier: null, path: 'performance', size: 'over300' }, life: { kWh: null, gasGJ: null, gasRow: 'gasAtco', escalationPct: null, items: [] } })
 
 let n = 0
 export const pid = (p = 'p') => `${p}${Date.now().toString(36)}${(n++).toString(36)}`

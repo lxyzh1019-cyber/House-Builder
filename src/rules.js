@@ -21,6 +21,8 @@ export const RULES = [
   { id: 'rateHigh', label: 'Build rate, high', value: 275, unit: 'C$/ft²', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §6 R7 default' },
   { id: 'elecRate', label: 'Red Deer electricity, Rate of Last Resort (ENMAX), Jan 2025 – Dec 2026', value: 12.06, unit: '¢/kWh', tag: 'E2', date: '2026-11-06', source: 'City of Red Deer, Rate of Last Resort page (reddeer.ca)' },
   { id: 'elecDaily', label: 'Red Deer electricity, daily charge (ENMAX), Jan 2025 – Dec 2026', value: 0.2498, unit: '$/day', tag: 'E2', date: '2026-11-06', source: 'City of Red Deer, Rate of Last Resort page (reddeer.ca)' },
+  { id: 'gasAtco', label: 'Alberta default gas rate, ATCO Gas area (Direct Energy Regulated Services), November 2026', value: 1.893, unit: '$/GJ', tag: 'E2', date: '2026-11-06', source: 'Utilities Consumer Advocate, Default rates (ucahelps.alberta.ca); changes monthly, excludes delivery' },
+  { id: 'gasApex', label: 'Alberta default gas rate, Apex Utilities area, November 2026', value: 1.993, unit: '$/GJ', tag: 'E2', date: '2026-11-06', source: 'Utilities Consumer Advocate, Default rates (ucahelps.alberta.ca); changes monthly, excludes delivery' },
   { id: 'lotW', label: 'Lot width (new project)', value: 60, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
   { id: 'lotD', label: 'Lot depth (new project)', value: 100, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7 default' },
   { id: 'lotSnap', label: 'Lot board snap', value: 2, unit: 'ft', tag: 'E3', date: '2026-11-04', source: 'SPEC v1 §7' },

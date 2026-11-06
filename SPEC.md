@@ -75,6 +75,7 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D47 (batch A sections) | Section 13 written and approved as one batch: schedule view, liked floor plans, cheap wins, plan versions (at most 20), idea inbox, decision cards, hidden works, build tracking; done-when K1–K16. The schedule shows the 19 gates section 1 lists (no D2 or D3). | 2026-11-06 |
 | chat-D48 (batch C, Red Deer) | Section 14 built from facts opened on the official pages and checked on 2026-11-06 (Alberta, NRC, City of Red Deer, UCA, AUC, CMHC); Red Deer first; tests M1–M8. Health Canada's radon level and the federal pre-approval page stay out until checked. | 2026-11-06 |
 | chat-D49 (batch D) | Section 15 approved and built as one batch: structures the owner fills in (no invented numbers or rules), tests W1–W14. Lego rules become soft checks (warnings, each can be turned off). Storage by use waits for the "3 steps" distance. | 2026-11-06 |
+| chat-D50 (batch E, reduced) | Official cost per ft², component life spans and a price-rise figure were not found (2026-11-06). Built: the 9.36 energy tier reference with a target-tier pick, and a 30-year cost calculator with no built-in life spans or price rise. The rate table with estimate classes and the comparison with the city wait for sources. | 2026-11-06 |
 
 ## 4. Architecture
 
@@ -421,8 +422,8 @@ Status: Now = in a planned piece; Later = kept, its section is written before it
 | Systems fine-tune checklist: smart home, HVAC and HRV, air quality (radon, filters, humidity), efficiency, EV and solar ready, sound | handoff 7-step process (step 6) | Now (§15.8) |
 | Furniture fit and 3D walk-through | canvas 2b D4g | Later (3D view from the spike) |
 | Rate table v0 with sources, estimate classes | canvas Rate Table | Later |
-| Energy model | canvas Energy Model | Later |
-| Lifecycle cost, 30 years | canvas Lifecycle Cost | Later |
+| Energy model | canvas Energy Model | 9.36 tier reference and target now (§16); a model waits for an official method |
+| Lifecycle cost, 30 years | canvas Lifecycle Cost | Calculator now (§16); no built-in life spans or price rise |
 | Final rules gate with code clause links | canvas Stage 3 | Now (§14.1) |
 | Work packages: scope per trade, allowances, who supplies, DIY flags | handoff 7-step process | Now (§15.9) |
 | Builder price and mortgage draw schedule | handoff 7-step process (step 7) | Now (§14.5, §15.10) |
@@ -554,4 +555,11 @@ The owner types the content; the app keeps it, adds it up and links it. Nothing 
 - 15.12 Lego soft checks (Lot board; warnings only, each can be turned off): wet rooms together (a kitchen or back kitchen touches another wet room on its level or sits over or under one; bathroom and laundry join when those types exist); hallway share and simple outer shape shown as numbers (the share of the rooms' outline that is not rooms, next to the 12% target; the share the rooms fill, 100% = a rectangle), with no pass or fail; each room marked now or later, unmarked rooms listed.
 
 Tests (done when): W1 a gate's time and cost add up in its stage. W2 a pain point goes to the idea inbox once, as captured. W3 three tagged pictures give the profile in count order. W4 the lot checklist starts with the 5 checked items. W5 7 sprints in order; a sprint shows its rooms' fit and the open code items. W6 a design item card lists the rooms in its impact chain. W7 weights 2 and 1 with scores 8 and 5 give 7.0; a failed gate shows instead. W8 the systems checklist has 9 lines. W9 work packages total their allowances. W10 a builder price above the high build total is flagged. W11 possession walk items count open per room. W12 a kitchen alone warns; touching a back kitchen clears it. W13 fill and hallway share for 2 made-up rooms. W14 an unmarked room is listed; marking it clears it.
+
+## 16. Batch E, reduced: energy tiers and 30-year cost (chat-D50)
+
+- 16.1 Energy tier target (Stage 2): NBC(AE) 2023 section 9.36, 2nd printing (NRC), checked 2026-11-06. Performance path, Table 9.36.7.2 (houses over 300 m³): tier 1 no heat-loss reduction, improvement ≥0% or energy target ≤100%; tier 2 ≥5%, ≥10% or ≤90%; tier 3 ≥10%, ≥20% or ≤80%; tier 4 ≥20%, ≥40% or ≤60%; tier 5 ≥40%, ≥70% or ≤30%. Houses of 300 m³ or less: heat loss n/a, 0, 5, 15, 25%; improvement 0, 0, 10, 30, 60%; target ≤100, 100, 90, 70, 40%. Prescriptive path, Table 9.36.8.2: tier 1 is the baseline, tier 2 needs 10 energy conservation points, tiers 3–5 reserved. The owner picks a target tier. Which tier Alberta requires is not stated in these sections: confirm with the City at the building permit.
+- 16.2 30-year cost (Decide tab): energy each year (kWh × the Rules table's electricity rate + GJ × the chosen gas rate row) plus each part replaced every "life" years, all rising by the price-rise % typed. No life span or price rise is built in; a part without cost or life is listed, not counted; no price rise typed means prices are held flat (and the panel says so). Gas rate rows: ATCO Gas area 1.893 and Apex Utilities area 1.993 $/GJ for November 2026 (UCA, excluding delivery); which utility serves the lot is not checked.
+
+Tests (done when): Y1 the tier tables are as the code states (tier 3 over 300 m³: 10, 20, 80) and the gas rows carry their source and date. Y2 the target tier and the calculator inputs survive a reload. Y3 10,000 kWh at 12.06 ¢ for 30 years plus an 8,000 furnace lasting 20 years, no price rise, totals 44,180; at 2% the furnace at year 20 costs 8,000 × 1.02^20. Y4 a part without a life span is listed as missing and not counted.
 

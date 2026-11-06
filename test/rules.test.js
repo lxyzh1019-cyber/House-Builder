@@ -260,7 +260,7 @@ describe('project save and load round trip (emulator)', () => {
       sprints: { D4a: { roomIds: ['r1'], notes: 'paths' } }, itemCards: [{ id: 'ic', item: 'stair', verdict: 'fits', impactRoomIds: ['r1'], proposals: ['move it'], keep: true }],
       sheets: [{ id: 's', criteria: [{ id: 'c', name: 'cost', weight: 2 }], options: [{ id: 'o', name: 'A' }], scores: { 'o|c': 8 }, gateFail: {} }],
       systems: { hvac: 'HRV' }, packages: [{ id: 'w', trade: 'paint', allowance: 5000, supplier: 'owner', diy: true }], builderPrice: { price: 450000, date: '2027-03-01' },
-      walk: [{ id: 'k', roomId: 'r1', text: 'scratch', fixed: false }], lego: { off: { hall: true } } }
+      walk: [{ id: 'k', roomId: 'r1', text: 'scratch', fixed: false }], lego: { off: { hall: true } }, energy: { targetTier: 3, path: 'performance', size: 'over300' }, life: { kWh: 9000, escalationPct: 2, gasRow: 'gasApex', items: [{ id: 'f', name: 'furnace', cost: 8000, life: 20 }] } }
     const room = { ...newRoom('office'), id: 'r1', phase: 'later' }
     await createProject(db('lee'), 'lee', { scene: '{}', rooms: [toSaved(room, {})], plan })
     const p = startFrom(await findProject(db('lee'), 'lee'))
@@ -270,5 +270,7 @@ describe('project save and load round trip (emulator)', () => {
     expect(p.plan.walk[0].text).toBe('scratch')
     expect(p.plan.builderPrice.price).toBe(450000)
     expect(p.rooms[0].phase).toBe('later')
+    expect(p.plan.energy.targetTier).toBe(3) // Y2
+    expect(p.plan.life).toMatchObject({ kWh: 9000, escalationPct: 2, gasRow: 'gasApex' })
   })
 })

@@ -5,6 +5,7 @@ import * as P from '../plan/plan.js'
 import { budgetState } from '../budget/budget.js'
 import { t, tx } from '../i18n.js'
 import { CodeChecklist, Money, Permits, Warranty } from './AlbertaPanels.jsx'
+import { EnergyTier } from './EnergyPanels.jsx'
 import { BuilderPrice, LotChecklist, Packages, Pains, Pictures, Sprints, StageEffort, StepOwner, Systems, Walk } from './BatchD.jsx'
 
 const money = (n) => (Number.isFinite(n) ? `${n < 0 ? '−' : ''}C$${Math.round(Math.abs(n)).toLocaleString('en-CA')}` : '–')
@@ -62,7 +63,7 @@ export default function StagesTab({ plan, onPlan, rooms, budget, st, rules, by, 
             </ul>
             {stage.n === 0 && <LotChecklist plan={plan} set={set} />}
             {stage.n === 1 && <><Pains plan={plan} set={set} rooms={rooms} by={by} /><Pictures plan={plan} set={set} rooms={rooms} /></>}
-            {stage.n === 2 && <><Sprints plan={plan} set={set} rooms={rooms} st={st} versions={versions} onVersions={onVersions} design={design} by={by} /><Systems plan={plan} set={set} /></>}
+            {stage.n === 2 && <><Sprints plan={plan} set={set} rooms={rooms} st={st} versions={versions} onVersions={onVersions} design={design} by={by} /><Systems plan={plan} set={set} /><EnergyTier plan={plan} set={set} /></>}
             {stage.n === 3 && <CodeChecklist plan={plan} set={set} rooms={rooms} />}
             {stage.n === 4 && <><Permits plan={plan} set={set} /><Money plan={plan} set={set} onGoal={onGoal} /><Packages plan={plan} set={set} /><BuilderPrice plan={plan} set={set} bs={bs} /></>}
             {stage.n === 6 && <><Walk plan={plan} set={set} rooms={rooms} /><Warranty plan={plan} set={set} /></>}

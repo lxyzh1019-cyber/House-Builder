@@ -341,3 +341,24 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 - **Fixed during the check:** panel titles were squeezed beside their content (panels now stack), and the review total now shows 1 decimal.
 - **Batch E research:** the background run ended at a container restart with no report. It will be run again.
 - **Not checked:** the owner's own use.
+
+## Batch E, reduced: energy tiers and 30-year cost (2026-11-06)
+
+- **Research (official hosts only):**
+  - **Checked:** the 9.36 tier tables (NRC NBC(AE) 2023, 2nd printing), the Red Deer electricity Rate of Last Resort, and the UCA 2026 monthly gas default rates.
+  - **Not found:** an official cost per ft², component life spans, a price-rise figure, a live source for the estimate classes.
+- **Owner:** "Build reduced E" (chat-D50).
+- **Built:**
+  - Stage 2 energy tier target: performance and prescriptive tables, with the tier you pick saved;
+  - Decide tab 30-year cost calculator;
+  - two gas rate rows in the Rules table.
+
+  It rides on PR #11 (no new PR).
+- **Tests:**
+  - `npm run test:rules`: 120 of 120 pass locally.
+  - Y1, Y3 and Y4 are in `test/energy.test.js`; Y2 is in the emulator test.
+- **Headless Chromium, PC:**
+  - tier 3 read "≥ 10% / ≥ 20% / ≤ 80%" and stayed chosen after a reload;
+  - 10,000 kWh with an 8,000 furnace lasting 20 years gave C$1,206 a year and C$44,180 over 30 years, the same after a reload;
+  - no sideways scroll in English or Chinese, 0 console errors.
+- **Not checked:** the owner's own use, and which gas utility serves the owner's lot.
