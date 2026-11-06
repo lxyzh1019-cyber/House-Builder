@@ -70,6 +70,8 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D42 (moved items and clearance) | A moved item carries its band's clearance (a desk its 3 ft chair space, a dining table 3 ft all round, a bed its side zones and foot walkway); the main and side walkways stay where the preset put them. | 2026-11-06 |
 | chat-D43 (Plan intake step strip) | A step strip above the picture says the current step, what to tap next and where its result shows (P7); a greyed-out tool says why. Done-when N1–N3 in section 11. Was DN12. | 2026-11-06 |
 | chat-D44 (PC first) | The owner uses the app on a PC; the phone screen is too small. T7 runs on a PC. The phone layout stays readable but is no longer a done-when gate. Was DN11. | 2026-11-06 |
+| chat-D45 (trace instructions) | Plan intake has a "How to trace" box: one straight line per wall, corner to corner, traced straight through doors and windows (they are placed on the wall afterwards); rooms are traced on their own because walls make the building (3D, size check) and rooms are the named spaces (Test fit, Rooms). | 2026-11-06 |
+| chat-D46 (how pieces are delivered) | No more small PRs: the remaining features are built together and handed over in as few PRs as possible; 3D work (furniture fit, 3D walk-through) comes last. | 2026-11-06 |
 
 ## 4. Architecture
 
@@ -345,7 +347,7 @@ Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovatio
 - P4 With no real plan yet, every piece works on a sample plan.
 - P5 Test fit (a traced plan marked "test fit"): the user names each traced room's type and picks its contents (or a preset). Rooms from contents then gives each room a Check my size verdict: fits with spare, or too small by how much. A new design is a separate branch, not a change to a traced plan.
 - P6 The site review finds the zone (from the land title or the City zoning map) to set setbacks, height and lot coverage.
-- P7 A step strip above the picture says the current step (Scale, Walls, Doors and windows, Rooms, Size check), what to tap next and where its result shows; a greyed-out tool says why (chat-D43).
+- P7 A step strip above the picture says the current step (Scale, Walls, Doors and windows, Rooms, Size check), what to tap next and where its result shows; a greyed-out tool says why (chat-D43). A "How to trace" box explains each step (chat-D45).
 
 Tests (done when, chat-D30):
 

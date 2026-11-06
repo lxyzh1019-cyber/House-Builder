@@ -240,3 +240,9 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
 - **Not checked:**
   - the phone walk: the script's taps landed off-screen, and the phone is no longer a gate;
   - N3, the owner's I8 on a PC.
+- Owner, 2026-11-06: "please include the instructions for the trace, especially on wall (do i trace a wall with windows, doors) why the room is separate with wall?"
+  - Added a "How to trace" box at the top of Plan intake (chat-D45). It opens until the first wall is traced.
+  - It says: trace one straight line per wall, straight through doors and windows; place doors and windows on the wall afterwards; rooms are traced on their own because walls make the building and rooms are the named spaces.
+  - The Wall, Door, Window and Room hints say the same.
+  - Headless check, PC, both languages: the box shows, no sideways scroll, 0 errors.
+- Owner, same message: no more small PRs; build the rest and leave 3D to the end (chat-D46). This work rides on PR #9 instead of a new one.

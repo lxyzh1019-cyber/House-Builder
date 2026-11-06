@@ -101,6 +101,10 @@ export default function TraceBoard({ trace, rules, nodes, pictureUrl, pictureNot
       <section className="panel lot-side">
         <h2>{t('tr.title')}</h2>
         <p className="muted small">{t('tr.help')}</p>
+        <details className="trace-guide" data-testid="trace-guide" open={!trace.levels.some((l) => l.walls.length)}>
+          <summary><b>{t('guide.title')}</b></summary>
+          <ol className="small">{[1, 2, 3, 4, 5, 6].map((n) => <li key={n}>{tn(`guide.${n}`)}</li>)}</ol>
+        </details>
         <div className="chips">
           <button className={`chip ${img?.kind === 'sample' ? 'on' : ''}`} onClick={onSample}>{t('tr.sample')}</button>
           <button className={`chip ${img?.kind === 'local' ? 'on' : ''}`} disabled={busy} onClick={() => fileRef.current?.click()}>{busy ? t('tr.reading') : t('tr.upload')}</button>
