@@ -28,7 +28,7 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 
 - Chat decisions are written "chat-Dn (meaning)". Gate numbers D1–D21 above keep their own meaning. A chat decision number is never reused.
 - Evidence tags on every rule or rate: E1 own experience, E2 a quote or spec sheet with its source, E3 general knowledge (a starting value).
-- Requirement and test labels: R = Rooms from contents requirement, T = test, P = plan intake step, L = lot board test, B = budget test, S = sharing test, I = plan intake test, F = test fit test. Canvas fix labels (C1, L2 …) are explained in section 10.
+- Requirement and test labels: R = Rooms from contents requirement, T = test, P = plan intake step, L = lot board test, B = budget test, S = sharing test, I = plan intake test, F = test fit test, N = step strip test. Canvas fix labels (C1, L2 …) are explained in section 10.
 
 ## 3. Decision ledger
 
@@ -68,6 +68,8 @@ The method has 7 stages. The numbers D1–D21 are the method's gates (yes = go o
 | chat-D40 (where rooms and answers are saved) | `rooms` and `answers` are fields of the project document, keyed by id; no subcollections, so the Firestore rules stay as they are. | 2026-11-06 |
 | chat-D41 (rooms saved before v1.3) | Each room keeps its type, name, set size, place on the lot and ports; its contents reset to the v1.3 preset, keeping the answers that still exist (TV 55–85 in, 6–8 seats, 5 or 6 ft desk, shelf wall, open). | 2026-11-06 |
 | chat-D42 (moved items and clearance) | A moved item carries its band's clearance (a desk its 3 ft chair space, a dining table 3 ft all round, a bed its side zones and foot walkway); the main and side walkways stay where the preset put them. | 2026-11-06 |
+| chat-D43 (Plan intake step strip) | A step strip above the picture says the current step, what to tap next and where its result shows (P7); a greyed-out tool says why. Done-when N1–N3 in section 11. Was DN12. | 2026-11-06 |
+| chat-D44 (PC first) | The owner uses the app on a PC; the phone screen is too small. T7 runs on a PC. The phone layout stays readable but is no longer a done-when gate. Was DN11. | 2026-11-06 |
 
 ## 4. Architecture
 
@@ -250,7 +252,7 @@ From questionnaire section 6, Guests + family (客人与家人):
 - T4 User sets T1's room to 20 x 20 ft: accepted, saved, still 20 x 20 after reload; spare 197.5 ft².
 - T5 User sets T1's room to 14 x 13 ft: "Too small", width short 1.0 ft, depth short 0.5 ft. Smallest changes listed: width: 4-seat group (13.5 ft wide); depth: 65-in TV (12.33 ft deep) or sit at 1.2x (12.25 ft deep); "or make it 15 x 13.5".
 - T6 Round trip: the minimum passes its own check; 0.5 ft smaller in either side fails.
-- T7 Owner's phone test: a family member sizes the living room and office alone, in under 10 minutes each.
+- T7 Owner's PC test (chat-D44; was a phone test): a family member sizes the living room and office alone, in under 10 minutes each.
 - T8 Dining, 6 seats: 12 x 9 ft.
 - T9 Primary bedroom, queen bed, dresser: 10 x 11.33 ft (10' 0" x 11' 4").
 - T10 Kid bedroom, twin bed and desk: 10.67 x 11.25 ft (10' 8" x 11' 3").
@@ -343,6 +345,7 @@ Restored from canvas v54 (Stage 2a and the technical flow). Used for a renovatio
 - P4 With no real plan yet, every piece works on a sample plan.
 - P5 Test fit (a traced plan marked "test fit"): the user names each traced room's type and picks its contents (or a preset). Rooms from contents then gives each room a Check my size verdict: fits with spare, or too small by how much. A new design is a separate branch, not a change to a traced plan.
 - P6 The site review finds the zone (from the land title or the City zoning map) to set setbacks, height and lot coverage.
+- P7 A step strip above the picture says the current step (Scale, Walls, Doors and windows, Rooms, Size check), what to tap next and where its result shows; a greyed-out tool says why (chat-D43).
 
 Tests (done when, chat-D30):
 
@@ -354,6 +357,12 @@ Tests (done when, chat-D30):
 - I6 The trace is saved and survives a reload (the picture stays as chat-D27 says).
 - I7 The site limits (zone, height, lot coverage) are saved; coverage = area under the placed rooms / lot area, flagged when over the limit.
 - I8 The owner traces the sample plan's outside walls on a PC in 10 minutes or less.
+
+Step strip tests (done when, chat-D43):
+
+- N1 The strip shows each step's line: Scale 0 of 2, 1 of 2, type the length, scale set; walls with their count and last length; doors and windows counted; rooms with the last area; size check 2 of 3, matches, trace again naming the size.
+- N2 Tapping a greyed-out tool before the scale is set says "Set the scale first (Step 1)", in both languages.
+- N3 The owner traces the sample plan's outside walls on a PC without asking which step comes next (I8).
 
 Test fit tests (done when, chat-D31; F2 worked out again for the 9 x 9.5 ft office, chat-D39):
 

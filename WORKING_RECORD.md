@@ -217,3 +217,26 @@ Stop rules (from the task): no 3D on the phone → report the device, the browse
   - 0 console errors.
   - 3D draws an upper-level office raised above the main floor. Its height was not measured.
 - **Not checked:** the owner's T7 on a phone with the new questions, and how saved real projects migrate (seen only with made-up rooms).
+
+## Plan intake step strip and PC first (2026-11-06)
+
+- Owner, after trying Plan intake on a PC: "on scale is clickable, I click on trace, no status showing up, no idea which step this is and where to find the result." Also: "for now, i do not think i will use this on the phone, as the phone screen is too small."
+- Cause (from the code; I did not watch the owner's screen):
+  - every tool but Scale was greyed out until the scale was set, with no reason given;
+  - after the first scale tap only a small dot appeared;
+  - the length box appeared only after the second tap;
+  - nothing said which step you were on or where its result showed.
+  My headless checks knew the steps, and I8 was not run before the merge, so this gap was not seen.
+- **DN12 → chat-D43, the owner's pick "Step strip".** A live line above the picture (`src/trace/guide.js`):
+  - "Step N of 5 · Scale / Walls / Doors and windows / Rooms / Size check", then what to tap next and where the result shows;
+  - tapping a greyed-out tool says "Set the scale first (Step 1)".
+- **DN11 → chat-D44, the owner's pick "T7 on a PC".** T7 is now a PC test. The phone layout stays readable but is not a done-when gate. Spike DONE WHEN 6 (the phone GPU line) is closed as not needed.
+- **Tests:** N1 and N2 in `test/guide.test.js`. `npm run test:rules`: 78 of 78 pass locally.
+- **Headless Chromium (browser storage), PC 1280 px, English and Chinese, on the sample plan:**
+  - the strip walks: Step 1 "0 of 2 points" → "1 of 2" → "type its real length on the left" → Step 2 "tap a corner…" → "2 walls, last 30′ 0″" → Step 5 "0 of 3 sizes typed";
+  - back on Scale it says "scale set";
+  - tapping Wall before the scale is set gives the "Set the scale first" note;
+  - no sideways scroll, 0 console errors.
+- **Not checked:**
+  - the phone walk: the script's taps landed off-screen, and the phone is no longer a gate;
+  - N3, the owner's I8 on a PC.
